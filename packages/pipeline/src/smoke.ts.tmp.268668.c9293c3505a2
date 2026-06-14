@@ -1,0 +1,36 @@
+import { loadPipelineEnv, requireEnv } from "./env.js";
+import { GitHubApiClient } from "./ingestion/github-client.js";
+import { createNvidiaClient } from "./adapters/nvidia-nim.js";
+
+// Live smoke test: one GitHub API call + one minimal NVIDIA completion.
+// Validates that both credentials work and that the configured model IDs exist,
+// before spending tokens on the full 5-repo corpus.
+
+const env = loadPipelineEnv();
+
+// --- GitHub ---
+try {
+  const github = new GitHubApiClient(requireEnv(env.GITHUB_TOKEN, "GITHUB_TOKEN"));
+  const repo = await github.getRepo("supabase", "supabase");
+  process.stdout.write(`GitHub OK: ${repo.fullName} (default branch ${repo.defaultBranch}, created ${repo.createdAt ?? "?"})\n`);
+} catch (error) {
+  process.stdout.write(`GitHub FAILED: ${error instanceof Error ? error.message : String(error)}\n`);
+  process.exitCode = 1;
+}
+
+// --- NVIDIA NIM (architecture model) ---
+try {
+  const nvidia = createNvidiaClient(env);
+  const model = env.NVIDIA_ARCHITECTURE_MODEL;
+  const completion = await nvidia.chat.completions.create({
+    model,
+    messages: [{ role: "user", content: 'Reply with the single word: ok' }],
+    max_tokens: 16,
+    temperature: 0,
+  });
+  const text = completion.choices[0]?.message?.content ?? "";
+  process.stdout.write(`NVIDIA OK: model "${model}" replied "${text.trim().slice(0, 40)}" (tokens: ${completion.usage?.total_tokens ?? "?"})\n`);
+} catch (error) {
+  process.stdout.write(`NVIDIA FAILED (model "${env.NVIDIA_ARCHITECTURE_MODEL}"): ${error instanceof Error ? error.message : String(error)}\n`);
+  process.exitCode = 1;
+}

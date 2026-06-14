@@ -1,0 +1,3040 @@
+[
+  {
+    "id": "cb600e4e-531a-41b7-ac0f-4c53ff81bfe1",
+    "analysisId": "c0426fda-8c73-431e-acec-97ff7b54ba52",
+    "repoFullName": "shadcn-ui/ui",
+    "createdAt": "2026-06-14T00:04:20.392Z",
+    "systemNarrative": {
+      "purpose": {
+        "claim": "shadcn/ui is a set of beautifully designed components that you can customize, extend, and build on.",
+        "sources": [
+          {
+            "type": "readme",
+            "path": "README.md"
+          }
+        ],
+        "confidence": 0.9
+      },
+      "mainWorkflows": [
+        {
+          "claim": "Users can customize components using the provided customization options.",
+          "sources": [
+            {
+              "type": "file",
+              "path": "apps/v4/app/(app)/create/components/customizer.tsx"
+            }
+          ],
+          "confidence": 0.8,
+          "name": "Component customization"
+        },
+        {
+          "claim": "Users can extend components using the provided extension options.",
+          "sources": [
+            {
+              "type": "file",
+              "path": "apps/v4/app/(app)/create/components/project-form.tsx"
+            }
+          ],
+          "confidence": 0.7,
+          "name": "Component extension"
+        }
+      ],
+      "dataModel": {
+        "claim": "The data model is based on a set of JSON files that define the components and their properties.",
+        "sources": [
+          {
+            "type": "file",
+            "path": "apps/v4/registry/directory.json"
+          }
+        ],
+        "confidence": 0.75
+      },
+      "integrations": [
+        {
+          "claim": "The project uses GitHub for version control and issue tracking.",
+          "sources": [
+            {
+              "type": "file",
+              "path": ".github/ISSUE_TEMPLATE/bug_report.yml"
+            }
+          ],
+          "confidence": 0.9,
+          "name": "GitHub",
+          "kind": "other"
+        }
+      ],
+      "architecturePattern": {
+        "claim": "The project follows a monorepo architecture pattern.",
+        "sources": [
+          {
+            "type": "docs",
+            "path": "CONTRIBUTING.md"
+          }
+        ],
+        "confidence": 0.8
+      },
+      "claims": [
+        {
+          "claim": "The project uses TypeScript as the primary programming language.",
+          "sources": [
+            {
+              "type": "dependency",
+              "path": "package.json"
+            }
+          ],
+          "confidence": 0.9
+        },
+        {
+          "claim": "The project uses React as the frontend framework.",
+          "sources": [
+            {
+              "type": "dependency",
+              "path": "package.json"
+            }
+          ],
+          "confidence": 0.8
+        },
+        {
+          "claim": "The project uses Next.js as the backend framework.",
+          "sources": [
+            {
+              "type": "dependency",
+              "path": "package.json"
+            }
+          ],
+          "confidence": 0.7
+        }
+      ],
+      "confidence": 0.82,
+      "flaggedClaims": []
+    },
+    "decisions": [
+      {
+        "title": "Adopted Monorepo Architecture",
+        "description": "The project follows a monorepo architecture pattern, which allows for better code organization and easier maintenance.",
+        "context": "The decision was made to improve the overall structure and scalability of the project.",
+        "evidence": [
+          {
+            "type": "docs",
+            "path": "CONTRIBUTING.md"
+          }
+        ],
+        "assessment": "Sound: the monorepo architecture fits well with the project's goals and requirements.",
+        "confidence": 0.8
+      },
+      {
+        "title": "Use of TypeScript as Primary Programming Language",
+        "description": "The project uses TypeScript as the primary programming language, which provides better code quality and maintainability.",
+        "context": "The decision was made to improve the overall quality and reliability of the project.",
+        "evidence": [
+          {
+            "type": "dependency",
+            "path": "package.json"
+          }
+        ],
+        "assessment": "Sound: the use of TypeScript is a good choice for a project of this complexity.",
+        "confidence": 0.9
+      },
+      {
+        "title": "Use of React as Frontend Framework",
+        "description": "The project uses React as the frontend framework, which provides a robust and flexible way to build user interfaces.",
+        "context": "The decision was made to improve the overall user experience and responsiveness of the project.",
+        "evidence": [
+          {
+            "type": "dependency",
+            "path": "package.json"
+          }
+        ],
+        "assessment": "Sound: the use of React is a good choice for a project of this complexity.",
+        "confidence": 0.8
+      },
+      {
+        "title": "Use of Next.js as Backend Framework",
+        "description": "The project uses Next.js as the backend framework, which provides a robust and scalable way to build server-side rendered applications.",
+        "context": "The decision was made to improve the overall performance and scalability of the project.",
+        "evidence": [
+          {
+            "type": "dependency",
+            "path": "package.json"
+          }
+        ],
+        "assessment": "Sound: the use of Next.js is a good choice for a project of this complexity.",
+        "confidence": 0.7
+      },
+      {
+        "title": "Registry Directory Implementation",
+        "description": "The project implements a registry directory, which allows for easy discovery and management of components and registries.",
+        "context": "The decision was made to improve the overall usability and maintainability of the project.",
+        "evidence": [
+          {
+            "type": "file",
+            "path": "apps/v4/registry/directory.json"
+          }
+        ],
+        "assessment": "Sound: the implementation of the registry directory is a good choice for a project of this complexity.",
+        "confidence": 0.75
+      },
+      {
+        "title": "Use of GitHub for Version Control and Issue Tracking",
+        "description": "The project uses GitHub for version control and issue tracking, which provides a robust and collaborative way to manage the project's codebase and issues.",
+        "context": "The decision was made to improve the overall collaboration and transparency of the project.",
+        "evidence": [
+          {
+            "type": "file",
+            "path": ".github/ISSUE_TEMPLATE/bug_report.yml"
+          }
+        ],
+        "assessment": "Sound: the use of GitHub is a good choice for a project of this complexity.",
+        "confidence": 0.9
+      }
+    ],
+    "landmines": [
+      {
+        "location": "apps/v4/components/command-menu.tsx",
+        "category": "churn-trap",
+        "severity": "high",
+        "evidence": [
+          {
+            "type": "file",
+            "path": "apps/v4/components/command-menu.tsx"
+          },
+          {
+            "type": "metric",
+            "excerpt": "churn=1, complexity=51, incomingDeps=0, likelyTest=false"
+          }
+        ],
+        "explanation": "command-menu.tsx has high churn and complexity, making it prone to errors and difficult to maintain.",
+        "remediation": "Refactor command-menu.tsx to reduce complexity and improve test coverage.",
+        "remediationEstimate": "1-2 weeks",
+        "priority": 1,
+        "confidence": 0.8
+      },
+      {
+        "location": "apps/v4/app/(app)/create/components/design-system-provider.tsx",
+        "category": "churn-trap",
+        "severity": "medium",
+        "evidence": [
+          {
+            "type": "file",
+            "path": "apps/v4/app/(app)/create/components/design-system-provider.tsx"
+          },
+          {
+            "type": "metric",
+            "excerpt": "churn=1, complexity=41, incomingDeps=0, likelyTest=false"
+          }
+        ],
+        "explanation": "design-system-provider.tsx has moderate churn and complexity, making it a potential maintenance risk.",
+        "remediation": "Review design-system-provider.tsx and consider refactoring to improve maintainability.",
+        "remediationEstimate": "1-2 days",
+        "priority": 2,
+        "confidence": 0.7
+      },
+      {
+        "location": "apps/v4/app/(app)/examples/tasks/components/columns.tsx",
+        "category": "complexity-bomb",
+        "severity": "critical",
+        "evidence": [
+          {
+            "type": "file",
+            "path": "apps/v4/app/(app)/examples/tasks/components/columns.tsx"
+          },
+          {
+            "type": "metric",
+            "excerpt": "complexity=8 (top-10% rank 1), incomingDeps=1 (top-20% rank 1)"
+          }
+        ],
+        "explanation": "columns.tsx has high complexity and is a critical dependency, making it a high-risk component.",
+        "remediation": "Refactor columns.tsx to reduce complexity and improve maintainability.",
+        "remediationEstimate": "2-4 weeks",
+        "priority": 3,
+        "confidence": 0.9
+      },
+      {
+        "location": "next",
+        "category": "dependency-debt",
+        "severity": "high",
+        "evidence": [
+          {
+            "type": "dependency",
+            "excerpt": "next has known vulnerabilities, including GHSA-36qx-fr4f-26g5"
+          }
+        ],
+        "explanation": "The next dependency has known vulnerabilities and should be updated.",
+        "remediation": "Update next to the latest version.",
+        "remediationEstimate": "1 day",
+        "priority": 4,
+        "confidence": 0.9
+      }
+    ],
+    "assessment": {
+      "verdict": "build-on",
+      "reasons": [
+        {
+          "claim": "The project's architecture and technology stack are well-suited for its goals and requirements.",
+          "sources": [
+            {
+              "type": "docs",
+              "path": "CONTRIBUTING.md"
+            }
+          ],
+          "confidence": 0.8
+        },
+        {
+          "claim": "The project uses a monorepo architecture pattern, which allows for better code organization and easier maintenance.",
+          "sources": [
+            {
+              "type": "docs",
+              "path": "CONTRIBUTING.md"
+            }
+          ],
+          "confidence": 0.8
+        },
+        {
+          "claim": "The project uses TypeScript as the primary programming language, which provides better code quality and maintainability.",
+          "sources": [
+            {
+              "type": "dependency",
+              "path": "package.json"
+            }
+          ],
+          "confidence": 0.9
+        }
+      ],
+      "risks": [
+        {
+          "claim": "The high complexity and churn of certain components, such as command-menu.tsx and columns.tsx, pose a maintenance risk.",
+          "sources": [
+            {
+              "type": "file",
+              "path": "apps/v4/components/command-menu.tsx"
+            },
+            {
+              "type": "metric",
+              "excerpt": "churn=1, complexity=51, incomingDeps=0, likelyTest=false"
+            }
+          ],
+          "confidence": 0.8
+        }
+      ],
+      "confidence": 0.8,
+      "uncertainty": "Limited information is available about the project's history and evolution."
+    },
+    "topFindings": [
+      {
+        "claim": "Components such as command-menu.tsx and columns.tsx have high complexity and churn, posing a maintenance risk.",
+        "sources": [
+          {
+            "type": "file",
+            "path": "apps/v4/components/command-menu.tsx"
+          },
+          {
+            "type": "metric",
+            "excerpt": "churn=1, complexity=51, incomingDeps=0, likelyTest=false"
+          }
+        ],
+        "confidence": 0.8,
+        "title": "High Complexity and Churn in Certain Components",
+        "severity": "high"
+      }
+    ],
+    "architectureDiagram": {
+      "nodes": [
+        {
+          "id": "apps/v4/app",
+          "label": "apps/v4/app",
+          "path": "apps/v4/app",
+          "severity": "critical",
+          "landmineCount": 2
+        },
+        {
+          "id": "apps/v4/components",
+          "label": "apps/v4/components",
+          "path": "apps/v4/components",
+          "severity": "high",
+          "landmineCount": 1
+        },
+        {
+          "id": "apps/v4",
+          "label": "apps/v4",
+          "path": "apps/v4",
+          "landmineCount": 0
+        },
+        {
+          "id": "apps/v4/examples",
+          "label": "apps/v4/examples",
+          "path": "apps/v4/examples",
+          "landmineCount": 0
+        }
+      ],
+      "edges": []
+    },
+    "repoStats": {
+      "fileCount": 9265,
+      "languageBreakdown": {
+        "md": 41,
+        "json": 4744,
+        "mdc": 1,
+        "editorconfig": 1,
+        "eslintignore": 2,
+        "yml": 23,
+        "js": 51,
+        "gitignore": 19,
+        "toml": 3,
+        "npmrc": 7,
+        "nvmrc": 1,
+        "prettierignore": 15,
+        "example": 2,
+        "tsx": 3248,
+        "ts": 410,
+        "jpg": 11,
+        "css": 68,
+        "mdx": 221,
+        "mjs": 15,
+        "png": 233,
+        "ico": 14,
+        "svg": 15,
+        "jpeg": 1,
+        "txt": 3,
+        "gz": 10,
+        "webmanifest": 1,
+        "mts": 5,
+        "yaml": 25,
+        "dockerignore": 3,
+        "Dockerfile": 1,
+        "packages/shadcn/test/fixtures/frameworks/remix-indie-stack/Dockerfile": 1,
+        "sql": 1,
+        "prisma": 1,
+        "init/gitignore": 1,
+        "sh": 2,
+        "cjs": 4,
+        "html": 5,
+        "lock": 3,
+        "lockb": 1,
+        "snap": 7,
+        "gitkeep": 29,
+        "prettierrc": 10,
+        "astro": 4,
+        "templates/react-router-app/Dockerfile": 1,
+        "templates/react-router-monorepo/apps/web/Dockerfile": 1
+      },
+      "commitCount": 100,
+      "pullRequestCount": 50,
+      "contributorCount": 46,
+      "repoAgeDays": 1256,
+      "commitsPerMonth": 67.1
+    },
+    "modelVersions": {
+      "architecture": "meta/llama-3.3-70b-instruct",
+      "history": "meta/llama-3.3-70b-instruct",
+      "risk": "meta/llama-3.3-70b-instruct",
+      "synthesis": "meta/llama-3.3-70b-instruct"
+    },
+    "flaggedClaims": [],
+    "slug": "shadcn-ui",
+    "summary": "shadcn/ui is a set of beautifully designed components that you can customize, extend, and build on."
+  },
+  {
+    "id": "b21b0f53-4df3-4b74-97f9-e4f555339312",
+    "analysisId": "7208aae0-eee8-47a4-82e0-d48327bd0c58",
+    "repoFullName": "supabase/supabase",
+    "createdAt": "2026-06-14T00:36:01.418Z",
+    "systemNarrative": {
+      "purpose": {
+        "claim": "Supabase is a Firebase alternative built on Postgres, providing a Postgres development platform with features like hosted Postgres Database, Authentication and Authorization, Auto-generated APIs, Functions, File Storage, and AI + Vector/Embeddings Toolkit.",
+        "sources": [
+          {
+            "type": "readme",
+            "path": "README.md"
+          }
+        ],
+        "confidence": 0.9
+      },
+      "mainWorkflows": [
+        {
+          "claim": "Users can sign up and log in using the GoTrue authentication API, which simplifies user session management.",
+          "sources": [
+            {
+              "type": "file",
+              "path": "apps/docs/content/guides/auth/architecture.mdx"
+            }
+          ],
+          "confidence": 0.8,
+          "name": "User Authentication"
+        },
+        {
+          "claim": "Supabase uses Postgres as its database, allowing for reliable and scalable data storage and retrieval.",
+          "sources": [
+            {
+              "type": "file",
+              "path": "apps/docs/content/guides/getting-started/architecture.mdx"
+            }
+          ],
+          "confidence": 0.8,
+          "name": "Data Storage and Retrieval"
+        }
+      ],
+      "dataModel": {
+        "claim": "Supabase's data model is based on Postgres, with features like tables, rows, and columns, and supports advanced data types like JSON and arrays.",
+        "sources": [
+          {
+            "type": "file",
+            "path": "apps/docs/content/guides/database/postgres.mdx"
+          }
+        ],
+        "confidence": 0.7
+      },
+      "integrations": [
+        {
+          "claim": "Supabase uses Postgres as its primary database, providing a scalable and reliable data storage solution.",
+          "sources": [
+            {
+              "type": "file",
+              "path": "apps/docs/content/guides/database/postgres.mdx"
+            }
+          ],
+          "confidence": 0.9,
+          "name": "Postgres",
+          "kind": "database"
+        },
+        {
+          "claim": "Supabase uses GoTrue for authentication and authorization, providing a simple and secure way to manage user sessions.",
+          "sources": [
+            {
+              "type": "file",
+              "path": "apps/docs/content/guides/auth/architecture.mdx"
+            }
+          ],
+          "confidence": 0.8,
+          "name": "GoTrue",
+          "kind": "auth"
+        }
+      ],
+      "architecturePattern": {
+        "claim": "Supabase follows a microservices architecture pattern, with a Kong API gateway sitting in front of multiple services like GoTrue, PostgREST, Realtime, Storage, and Functions.",
+        "sources": [
+          {
+            "type": "file",
+            "path": "apps/docs/content/guides/architecture.mdx"
+          }
+        ],
+        "confidence": 0.7
+      },
+      "claims": [
+        {
+          "claim": "Supabase is built using a variety of open-source tools and technologies, including Postgres, GoTrue, and Kong.",
+          "sources": [
+            {
+              "type": "readme",
+              "path": "README.md"
+            }
+          ],
+          "confidence": 0.9
+        },
+        {
+          "claim": "Supabase provides a range of features and tools for building and deploying applications, including auto-generated APIs, functions, and file storage.",
+          "sources": [
+            {
+              "type": "file",
+              "path": "apps/docs/content/guides/getting-started/architecture.mdx"
+            }
+          ],
+          "confidence": 0.8
+        },
+        {
+          "claim": "Supabase has a strong focus on security and reliability, with features like authentication and authorization, and a scalable and reliable database solution.",
+          "sources": [
+            {
+              "type": "file",
+              "path": "apps/docs/content/guides/auth/architecture.mdx"
+            }
+          ],
+          "confidence": 0.7
+        }
+      ],
+      "confidence": 0.85,
+      "flaggedClaims": []
+    },
+    "decisions": [
+      {
+        "title": "Adopt Postgres as the primary database",
+        "description": "The team chose Postgres as the primary database for Supabase due to its reliability and scalability.",
+        "context": "Database selection for Supabase",
+        "evidence": [
+          {
+            "type": "file",
+            "path": "apps/docs/content/guides/getting-started/architecture.mdx"
+          }
+        ],
+        "assessment": "Sound decision, given Postgres's reputation for reliability and scalability.",
+        "confidence": 0.9
+      },
+      {
+        "title": "Implement Row-Level Security (RLS) using Postgres",
+        "description": "The team implemented RLS using Postgres to ensure secure data access and management.",
+        "context": "Data security and access control",
+        "evidence": [
+          {
+            "type": "file",
+            "path": "apps/docs/content/guides/database/postgres.mdx"
+          }
+        ],
+        "assessment": "Good decision, as RLS provides an additional layer of security for sensitive data.",
+        "confidence": 0.8
+      },
+      {
+        "title": "Use GoTrue for authentication and authorization",
+        "description": "The team chose GoTrue for authentication and authorization due to its simplicity and security features.",
+        "context": "Authentication and authorization",
+        "evidence": [
+          {
+            "type": "file",
+            "path": "apps/docs/content/guides/auth/architecture.mdx"
+          }
+        ],
+        "assessment": "Reasonable decision, considering GoTrue's ease of use and security features.",
+        "confidence": 0.7
+      },
+      {
+        "title": "Implement auto-generated APIs and functions",
+        "description": "The team implemented auto-generated APIs and functions to simplify development and improve productivity.",
+        "context": "API and function development",
+        "evidence": [
+          {
+            "type": "file",
+            "path": "apps/docs/content/guides/getting-started/architecture.mdx"
+          }
+        ],
+        "assessment": "Good decision, as auto-generated APIs and functions can reduce development time and improve consistency.",
+        "confidence": 0.8
+      },
+      {
+        "title": "Use a microservices architecture pattern",
+        "description": "The team adopted a microservices architecture pattern to improve scalability and maintainability.",
+        "context": "System architecture",
+        "evidence": [
+          {
+            "type": "file",
+            "path": "apps/docs/content/guides/architecture.mdx"
+          }
+        ],
+        "assessment": "Sound decision, given the benefits of microservices architecture in terms of scalability and maintainability.",
+        "confidence": 0.9
+      },
+      {
+        "title": "Add healthcheck to PostgREST service",
+        "description": "The team added a healthcheck to the PostgREST service to improve monitoring and debugging.",
+        "context": "Self-hosted deployment",
+        "evidence": [
+          {
+            "type": "pr",
+            "url": "https://github.com/supabase/supabase/pull/46658"
+          }
+        ],
+        "assessment": "Good decision, as healthchecks can help identify issues and improve overall system reliability.",
+        "confidence": 0.8
+      },
+      {
+        "title": "Fix issues with table list sync and editing",
+        "description": "The team fixed issues with table list sync and editing to improve the overall user experience.",
+        "context": "Table editor and list view",
+        "evidence": [
+          {
+            "type": "pr",
+            "url": "https://github.com/supabase/supabase/pull/46735"
+          }
+        ],
+        "assessment": "Reasonable decision, considering the importance of a smooth user experience.",
+        "confidence": 0.7
+      },
+      {
+        "title": "Improve redirect validation for organization creation",
+        "description": "The team improved redirect validation for organization creation to prevent potential security vulnerabilities.",
+        "context": "Organization creation and redirect validation",
+        "evidence": [
+          {
+            "type": "pr",
+            "url": "https://github.com/supabase/supabase/pull/46794"
+          }
+        ],
+        "assessment": "Good decision, as improved redirect validation can help prevent security issues.",
+        "confidence": 0.8
+      },
+      {
+        "title": "Update pricing table with explanatory tooltip text",
+        "description": "The team updated the pricing table with explanatory tooltip text to improve transparency and clarity.",
+        "context": "Pricing and billing",
+        "evidence": [
+          {
+            "type": "pr",
+            "url": "https://github.com/supabase/supabase/pull/46872"
+          }
+        ],
+        "assessment": "Reasonable decision, considering the importance of clear and transparent pricing information.",
+        "confidence": 0.7
+      },
+      {
+        "title": "Fix issues with cron job editing and HTTP headers",
+        "description": "The team fixed issues with cron job editing and HTTP headers to improve the overall user experience and prevent potential errors.",
+        "context": "Cron job editing and HTTP headers",
+        "evidence": [
+          {
+            "type": "pr",
+            "url": "https://github.com/supabase/supabase/pull/46829"
+          }
+        ],
+        "assessment": "Good decision, as fixing these issues can help prevent errors and improve the user experience.",
+        "confidence": 0.8
+      }
+    ],
+    "landmines": [
+      {
+        "location": "apps/docs/app/api/graphql/validators.ts",
+        "category": "complexity-bomb",
+        "severity": "high",
+        "evidence": [
+          {
+            "type": "file",
+            "path": "apps/docs/app/api/graphql/validators.ts"
+          },
+          {
+            "type": "metric",
+            "excerpt": "complexity=28 (top-10% rank 1), incomingDeps=2 (top-20% rank 2)"
+          }
+        ],
+        "explanation": "validators.ts is a complexity bomb with high complexity and incoming dependencies, making it a high-risk file for maintenance and modification.",
+        "remediation": "Refactor the file to reduce complexity and improve modularity.",
+        "remediationEstimate": "2-4 weeks",
+        "priority": 1,
+        "confidence": 0.8
+      },
+      {
+        "location": "apps/docs/app/api/graphql/route.ts",
+        "category": "complexity-bomb",
+        "severity": "high",
+        "evidence": [
+          {
+            "type": "file",
+            "path": "apps/docs/app/api/graphql/route.ts"
+          },
+          {
+            "type": "metric",
+            "excerpt": "complexity=23 (top-10% rank 2), incomingDeps=4 (top-20% rank 1)"
+          }
+        ],
+        "explanation": "route.ts is a complexity bomb with high complexity and incoming dependencies, making it a high-risk file for maintenance and modification.",
+        "remediation": "Refactor the file to reduce complexity and improve modularity.",
+        "remediationEstimate": "2-4 weeks",
+        "priority": 2,
+        "confidence": 0.8
+      },
+      {
+        "location": "apps/docs/app/api/guides-md/[...slug]/route.ts",
+        "category": "knowledge-silo",
+        "severity": "medium",
+        "evidence": [
+          {
+            "type": "file",
+            "path": "apps/docs/app/api/guides-md/[...slug]/route.ts"
+          },
+          {
+            "type": "brief",
+            "section": "silos"
+          }
+        ],
+        "explanation": "route.ts is a knowledge silo with a single author, posing a risk of knowledge loss and maintenance challenges.",
+        "remediation": "Share knowledge and involve multiple authors in the maintenance of this file.",
+        "remediationEstimate": "1-2 weeks",
+        "priority": 3,
+        "confidence": 0.6
+      },
+      {
+        "location": "jsrsasign",
+        "category": "dependency-debt",
+        "severity": "critical",
+        "evidence": [
+          {
+            "type": "dependency",
+            "url": "https://osv.dev/vulnerability/GHSA-464q-cqxq-xhgr",
+            "excerpt": "vulnerable to GHSA-464q-cqxq-xhgr"
+          },
+          {
+            "type": "dependency",
+            "url": "https://osv.dev/vulnerability/GHSA-5jx8-q4cp-rhh6",
+            "excerpt": "vulnerable to GHSA-5jx8-q4cp-rhh6"
+          }
+        ],
+        "explanation": "The jsrsasign dependency has known vulnerabilities, posing a critical risk to the project's security.",
+        "remediation": "Update the jsrsasign dependency to the latest version.",
+        "remediationEstimate": "1 day",
+        "priority": 4,
+        "confidence": 0.9
+      }
+    ],
+    "assessment": {
+      "verdict": "build-on",
+      "reasons": [
+        {
+          "claim": "The system has a clear and consistent architecture.",
+          "sources": [
+            {
+              "type": "file",
+              "path": "apps/docs/content/guides/architecture.mdx"
+            }
+          ],
+          "confidence": 0.7
+        },
+        {
+          "claim": "The data model is well-structured and supports advanced data types.",
+          "sources": [
+            {
+              "type": "file",
+              "path": "apps/docs/content/guides/database/postgres.mdx"
+            }
+          ],
+          "confidence": 0.7
+        },
+        {
+          "claim": "The team has made sound decisions in terms of technology choices and system design.",
+          "sources": [
+            {
+              "type": "pr",
+              "url": "https://github.com/supabase/supabase/pull/46658"
+            }
+          ],
+          "confidence": 0.8
+        }
+      ],
+      "risks": [
+        {
+          "claim": "The complexity bomb in the validators.ts file poses a risk to maintainability.",
+          "sources": [
+            {
+              "type": "file",
+              "path": "apps/docs/app/api/graphql/validators.ts"
+            }
+          ],
+          "confidence": 0.8
+        }
+      ],
+      "confidence": 0.7,
+      "uncertainty": "Limited information is available about the system's performance and scalability."
+    },
+    "topFindings": [
+      {
+        "claim": "The validators.ts file has high complexity and incoming dependencies, making it a high-risk file for maintenance and modification.",
+        "sources": [
+          {
+            "type": "file",
+            "path": "apps/docs/app/api/graphql/validators.ts"
+          }
+        ],
+        "confidence": 0.8,
+        "title": "Complexity bomb in validators.ts",
+        "severity": "high"
+      }
+    ],
+    "architectureDiagram": {
+      "nodes": [
+        {
+          "id": "apps/design-system/__registry__",
+          "label": "apps/design-system/__registry__",
+          "path": "apps/design-system/__registry__",
+          "landmineCount": 0
+        },
+        {
+          "id": "apps/design-system/app",
+          "label": "apps/design-system/app",
+          "path": "apps/design-system/app",
+          "landmineCount": 0
+        },
+        {
+          "id": "apps/design-system/components",
+          "label": "apps/design-system/components",
+          "path": "apps/design-system/components",
+          "landmineCount": 0
+        },
+        {
+          "id": "apps/design-system/config",
+          "label": "apps/design-system/config",
+          "path": "apps/design-system/config",
+          "landmineCount": 0
+        },
+        {
+          "id": "apps/design-system",
+          "label": "apps/design-system",
+          "path": "apps/design-system",
+          "landmineCount": 0
+        },
+        {
+          "id": "apps/design-system/context",
+          "label": "apps/design-system/context",
+          "path": "apps/design-system/context",
+          "landmineCount": 0
+        },
+        {
+          "id": "apps/design-system/hooks",
+          "label": "apps/design-system/hooks",
+          "path": "apps/design-system/hooks",
+          "landmineCount": 0
+        },
+        {
+          "id": "apps/design-system/lib",
+          "label": "apps/design-system/lib",
+          "path": "apps/design-system/lib",
+          "landmineCount": 0
+        },
+        {
+          "id": "apps/design-system/registry",
+          "label": "apps/design-system/registry",
+          "path": "apps/design-system/registry",
+          "landmineCount": 0
+        },
+        {
+          "id": "apps/design-system/types",
+          "label": "apps/design-system/types",
+          "path": "apps/design-system/types",
+          "landmineCount": 0
+        },
+        {
+          "id": "apps/docs/app",
+          "label": "apps/docs/app",
+          "path": "apps/docs/app",
+          "severity": "high",
+          "landmineCount": 3
+        },
+        {
+          "id": "apps/docs",
+          "label": "apps/docs",
+          "path": "apps/docs",
+          "landmineCount": 0
+        },
+        {
+          "id": "apps/docs/components",
+          "label": "apps/docs/components",
+          "path": "apps/docs/components",
+          "landmineCount": 0
+        }
+      ],
+      "edges": [
+        {
+          "id": "dep:apps/design-system->apps/design-system/lib",
+          "source": "apps/design-system",
+          "target": "apps/design-system/lib",
+          "kind": "dependency",
+          "weight": 2
+        },
+        {
+          "id": "dep:apps/design-system/lib->apps/design-system/__registry__",
+          "source": "apps/design-system/lib",
+          "target": "apps/design-system/__registry__",
+          "kind": "dependency",
+          "weight": 1
+        },
+        {
+          "id": "dep:apps/design-system/lib->apps/design-system/registry",
+          "source": "apps/design-system/lib",
+          "target": "apps/design-system/registry",
+          "kind": "dependency",
+          "weight": 1
+        }
+      ]
+    },
+    "repoStats": {
+      "fileCount": 15794,
+      "languageBreakdown": {
+        "md": 269,
+        "sh": 23,
+        "json": 381,
+        "claude/skills/vitest": 1,
+        "cursor/skills/vitest": 1,
+        "cursorignore": 1,
+        "dockerignore": 2,
+        "github/CODEOWNERS": 1,
+        "yml": 77,
+        "gitignore": 91,
+        "ignore": 1,
+        "npmrc": 7,
+        "nvmrc": 1,
+        "prettierignore": 2,
+        "LICENSE": 1,
+        "Makefile": 1,
+        "example": 37,
+        "tsx": 3964,
+        "ico": 27,
+        "woff2": 32,
+        "ts": 2809,
+        "mdx": 1524,
+        "js": 122,
+        "cjs": 13,
+        "mjs": 31,
+        "png": 3444,
+        "xml": 67,
+        "svg": 1151,
+        "mts": 4,
+        "css": 133,
+        "jsonc": 9,
+        "development": 1,
+        "snap": 2,
+        "toml": 46,
+        "gitkeep": 2,
+        "include": 1,
+        "txt": 14,
+        "webmanifest": 3,
+        "jpeg": 62,
+        "gif": 45,
+        "mp4": 17,
+        "jpg": 757,
+        "mermaid": 3,
+        "webp": 21,
+        "csv": 5,
+        "apps/docs/spec/Makefile": 1,
+        "yaml": 25,
+        "cts": 1,
+        "apps/lite-studio/Dockerfile": 1,
+        "env": 4,
+        "apps/studio/Dockerfile": 1,
+        "jsx": 9,
+        "well-known/vercel/flags": 2,
+        "ttf": 6,
+        "graphql": 1,
+        "mdc": 7,
+        "sql": 102,
+        "html": 33,
+        "vercelignore": 1,
+        "well-known/api-catalog": 1,
+        "well-known/mcp-registry-auth": 1,
+        "well-known/openai-apps-challenge": 1,
+        "apps/www/public/_redirects": 1,
+        "zip": 2,
+        "pdf": 5,
+        "woff": 17,
+        "otf": 9,
+        "eot": 1,
+        "mov": 4,
+        "avif": 1,
+        "glb": 2,
+        "code-workspace": 2,
+        "vue": 70,
+        "gitattributes": 1,
+        "exs": 1,
+        "docker/volumes/proxy/caddy/Caddyfile": 1,
+        "tpl": 1,
+        "py": 5,
+        "lock": 9,
+        "ipynb": 4,
+        "template": 1,
+        "gradle": 15,
+        "kt": 58,
+        "properties": 11,
+        "plist": 18,
+        "xcconfig": 8,
+        "examples/auth/flutter-mfa/ios/Podfile": 1,
+        "pbxproj": 5,
+        "xcworkspacedata": 9,
+        "xcsettings": 8,
+        "xcscheme": 4,
+        "swift": 14,
+        "storyboard": 8,
+        "h": 4,
+        "dart": 29,
+        "metadata": 3,
+        "examples/auth/flutter-native-google-auth/ios/Podfile": 1,
+        "svelte": 22,
+        "rs": 1,
+        "pro": 1,
+        "jar": 1,
+        "examples/product-sample-supabase-kt/gradlew": 1,
+        "bat": 1,
+        "examples/realtime/flutter-multiplayer-shooting-game/ios/Podfile": 1,
+        "local": 1,
+        "tool-versions": 1,
+        "scss": 9,
+        "preview": 1,
+        "production": 1,
+        "browserslistrc": 3,
+        "editorconfig": 2,
+        "examples/user-management/flutter-user-management/ios/Podfile": 1,
+        "prettierrc": 5,
+        "MD": 1,
+        "resolved": 1,
+        "packages/pg-meta/test/db/Dockerfile": 1,
+        "crt": 1,
+        "key": 1,
+        "patch": 1
+      },
+      "commitCount": 100,
+      "pullRequestCount": 50,
+      "contributorCount": 47,
+      "repoAgeDays": 2436,
+      "commitsPerMonth": 622.8
+    },
+    "modelVersions": {
+      "architecture": "meta/llama-3.3-70b-instruct",
+      "history": "meta/llama-3.3-70b-instruct",
+      "risk": "meta/llama-3.3-70b-instruct",
+      "synthesis": "meta/llama-3.3-70b-instruct"
+    },
+    "flaggedClaims": [],
+    "slug": "supabase",
+    "summary": "Supabase is a Firebase alternative built on Postgres, providing a Postgres development platform with features like hosted Postgres Database,…"
+  },
+  {
+    "id": "cd61a688-efdb-4c76-bbf9-3bc202dc424a",
+    "analysisId": "7c5a3f90-cd46-492c-8715-19b974cc20c1",
+    "repoFullName": "django/django",
+    "createdAt": "2026-06-14T00:08:17.025Z",
+    "systemNarrative": {
+      "purpose": {
+        "claim": "Django is a high-level Python web framework that encourages rapid development and clean, pragmatic design.",
+        "sources": [
+          {
+            "type": "readme",
+            "path": "README.md"
+          }
+        ],
+        "confidence": 0.95
+      },
+      "mainWorkflows": [
+        {
+          "claim": "Developers can use Django to build web applications quickly and efficiently.",
+          "sources": [
+            {
+              "type": "readme",
+              "path": "README.md"
+            }
+          ],
+          "confidence": 0.9,
+          "name": "Development"
+        }
+      ],
+      "dataModel": {
+        "claim": "Django uses a Model-View-Template (MVT) architecture to separate data, logic, and presentation.",
+        "sources": [
+          {
+            "type": "docs",
+            "path": "docs/topics/mvt.txt"
+          }
+        ],
+        "confidence": 0.85
+      },
+      "integrations": [
+        {
+          "claim": "Django supports various databases, including PostgreSQL, MySQL, and SQLite.",
+          "sources": [
+            {
+              "type": "docs",
+              "path": "docs/topics/db.txt"
+            }
+          ],
+          "confidence": 0.9,
+          "name": "Database",
+          "kind": "database"
+        }
+      ],
+      "architecturePattern": {
+        "claim": "Django follows a modular design, with a focus on reusability and scalability.",
+        "sources": [
+          {
+            "type": "inferred",
+            "excerpt": "Django's modular design and emphasis on reusability and scalability"
+          }
+        ],
+        "confidence": 0.8
+      },
+      "claims": [
+        {
+          "claim": "Django is written in Python.",
+          "sources": [
+            {
+              "type": "dependency",
+              "path": "requirements.txt"
+            }
+          ],
+          "confidence": 0.95
+        },
+        {
+          "claim": "Django has a large and active community.",
+          "sources": [
+            {
+              "type": "readme",
+              "path": "README.md"
+            }
+          ],
+          "confidence": 0.9
+        },
+        {
+          "claim": "Django provides an extensive set of documentation and tutorials.",
+          "sources": [
+            {
+              "type": "docs",
+              "path": "docs/index.txt"
+            }
+          ],
+          "confidence": 0.85
+        }
+      ],
+      "confidence": 0.9,
+      "flaggedClaims": []
+    },
+    "decisions": [
+      {
+        "title": "Adopted Postgres as a supported database",
+        "description": "Django supports various databases, including PostgreSQL, MySQL, and SQLite.",
+        "context": "Database support",
+        "evidence": [
+          {
+            "type": "docs",
+            "path": "docs/topics/db.txt"
+          }
+        ],
+        "assessment": "Sound: the relational model fits invoicing and reporting.",
+        "confidence": 0.9
+      },
+      {
+        "title": "Improved security standards in documentation",
+        "description": "Security standards were documented in howto-release-django.txt.",
+        "context": "Security",
+        "evidence": [
+          {
+            "type": "pr",
+            "url": "https://github.com/django/django/pull/21421"
+          }
+        ],
+        "assessment": "Good practice: security standards are well-documented.",
+        "confidence": 0.8
+      },
+      {
+        "title": "Fixed bug in CountsDict.__init__()",
+        "description": "The bug was fixed by changing *kwargs to **kwargs in the call to super().__init__()",
+        "context": "Bug fix",
+        "evidence": [
+          {
+            "type": "pr",
+            "url": "https://github.com/django/django/pull/21321"
+          }
+        ],
+        "assessment": "Sound: the fix correctly forwards keyword arguments to dict.__init__()",
+        "confidence": 0.7
+      },
+      {
+        "title": "Added helper to properly split header values",
+        "description": "The helper was added to extract header values and strip whitespace.",
+        "context": "Header value parsing",
+        "evidence": [
+          {
+            "type": "pr",
+            "url": "https://github.com/django/django/pull/21438"
+          }
+        ],
+        "assessment": "Good practice: the helper improves header value parsing.",
+        "confidence": 0.8
+      },
+      {
+        "title": "Reduced false positives in strings during collectstatic",
+        "description": "The change expands the is_in_comment concept to ignore strings for css and js.",
+        "context": "collectstatic optimization",
+        "evidence": [
+          {
+            "type": "pr",
+            "url": "https://github.com/django/django/pull/20942"
+          }
+        ],
+        "assessment": "Sound: the change reduces false positives.",
+        "confidence": 0.7
+      },
+      {
+        "title": "Added --using option to sendtestemail command",
+        "description": "The option allows testing non-default mailer configurations.",
+        "context": "Mailer configuration testing",
+        "evidence": [
+          {
+            "type": "pr",
+            "url": "https://github.com/django/django/pull/21419"
+          }
+        ],
+        "assessment": "Good practice: the option improves mailer configuration testing.",
+        "confidence": 0.8
+      },
+      {
+        "title": "Clarified database cache culling behavior in docs",
+        "description": "The documentation was updated to reflect the correct culling behavior.",
+        "context": "Database cache documentation",
+        "evidence": [
+          {
+            "type": "pr",
+            "url": "https://github.com/django/django/pull/21454"
+          }
+        ],
+        "assessment": "Sound: the documentation accurately reflects the culling behavior.",
+        "confidence": 0.7
+      },
+      {
+        "title": "Skipped backends not implementing get_user() in force_login()",
+        "description": "The change skips backends that do not implement get_user() to prevent incorrect selection.",
+        "context": "Backend selection",
+        "evidence": [
+          {
+            "type": "pr",
+            "url": "https://github.com/django/django/pull/21065"
+          }
+        ],
+        "assessment": "Good practice: the change prevents incorrect backend selection.",
+        "confidence": 0.8
+      },
+      {
+        "title": "Moved django_file_prefixes() to django.utils.warnings",
+        "description": "The function was moved to make it a public API.",
+        "context": "API change",
+        "evidence": [
+          {
+            "type": "pr",
+            "url": "https://github.com/django/django/pull/21424"
+          }
+        ],
+        "assessment": "Sound: the move makes the function a public API.",
+        "confidence": 0.7
+      },
+      {
+        "title": "Made HttpRequest.body handle malformed CONTENT_LENGTH",
+        "description": "The change handles malformed CONTENT_LENGTH values to prevent errors.",
+        "context": "Error handling",
+        "evidence": [
+          {
+            "type": "pr",
+            "url": "https://github.com/django/django/pull/21300"
+          }
+        ],
+        "assessment": "Good practice: the change improves error handling.",
+        "confidence": 0.8
+      },
+      {
+        "title": "Replaced substring check on Cache-control directives",
+        "description": "The change replaces the substring check to avoid false positives.",
+        "context": "Cache-control directive parsing",
+        "evidence": [
+          {
+            "type": "pr",
+            "url": "https://github.com/django/django/pull/21441"
+          }
+        ],
+        "assessment": "Sound: the change improves Cache-control directive parsing.",
+        "confidence": 0.7
+      }
+    ],
+    "landmines": [
+      {
+        "location": "django/template/base.py",
+        "category": "complexity-bomb",
+        "severity": "high",
+        "evidence": [
+          {
+            "type": "file",
+            "path": "django/template/base.py"
+          },
+          {
+            "type": "metric",
+            "excerpt": "complexity=196 (top-10% rank 1), incomingDeps=6 (top-20% rank 2)"
+          }
+        ],
+        "explanation": "base.py is a complexity bomb with high complexity and incoming dependencies, making it a critical component to refactor.",
+        "remediation": "Extract sub-responsibilities and add characterization tests before refactoring.",
+        "remediationEstimate": "1-2 weeks",
+        "priority": 1,
+        "confidence": 0.9
+      },
+      {
+        "location": "django/urls/resolvers.py",
+        "category": "complexity-bomb",
+        "severity": "high",
+        "evidence": [
+          {
+            "type": "file",
+            "path": "django/urls/resolvers.py"
+          },
+          {
+            "type": "metric",
+            "excerpt": "complexity=143 (top-10% rank 2), incomingDeps=3 (top-20% rank 8)"
+          }
+        ],
+        "explanation": "resolvers.py is a complexity bomb with high complexity and incoming dependencies, making it a critical component to refactor.",
+        "remediation": "Extract sub-responsibilities and add characterization tests before refactoring.",
+        "remediationEstimate": "1-2 weeks",
+        "priority": 2,
+        "confidence": 0.85
+      },
+      {
+        "location": "django/template/library.py",
+        "category": "complexity-bomb",
+        "severity": "medium",
+        "evidence": [
+          {
+            "type": "file",
+            "path": "django/template/library.py"
+          },
+          {
+            "type": "metric",
+            "excerpt": "complexity=68 (top-10% rank 7), incomingDeps=5 (top-20% rank 3)"
+          }
+        ],
+        "explanation": "library.py is a complexity bomb with medium complexity and incoming dependencies, making it a component to refactor.",
+        "remediation": "Extract sub-responsibilities and add characterization tests before refactoring.",
+        "remediationEstimate": "1 week",
+        "priority": 3,
+        "confidence": 0.8
+      },
+      {
+        "location": "Sphinx",
+        "category": "dependency-debt",
+        "severity": "medium",
+        "evidence": [
+          {
+            "type": "file",
+            "path": "docs/requirements.txt"
+          },
+          {
+            "type": "dependency",
+            "excerpt": "Sphinx is outdated by 5 major versions"
+          }
+        ],
+        "explanation": "Sphinx is an outdated dependency that needs to be updated to ensure the project's security and stability.",
+        "remediation": "Update Sphinx to the latest version.",
+        "remediationEstimate": "1 day",
+        "priority": 4,
+        "confidence": 0.9
+      }
+    ],
+    "assessment": {
+      "verdict": "build-on",
+      "reasons": [
+        {
+          "claim": "Django has a clear and consistent architecture.",
+          "sources": [
+            {
+              "type": "readme",
+              "path": "README.md"
+            }
+          ],
+          "confidence": 0.95
+        },
+        {
+          "claim": "The framework has a large and active community.",
+          "sources": [
+            {
+              "type": "readme",
+              "path": "README.md"
+            }
+          ],
+          "confidence": 0.9
+        },
+        {
+          "claim": "Django provides an extensive set of documentation and tutorials.",
+          "sources": [
+            {
+              "type": "docs",
+              "path": "docs/index.txt"
+            }
+          ],
+          "confidence": 0.85
+        }
+      ],
+      "risks": [
+        {
+          "claim": "Complexity bombs in the codebase may require refactoring.",
+          "sources": [
+            {
+              "type": "file",
+              "path": "django/template/base.py"
+            }
+          ],
+          "confidence": 0.9
+        }
+      ],
+      "confidence": 0.9,
+      "uncertainty": "Limited information is available about the framework's future development plans."
+    },
+    "topFindings": [
+      {
+        "claim": "The codebase contains complexity bombs that may require refactoring.",
+        "sources": [
+          {
+            "type": "file",
+            "path": "django/template/base.py"
+          }
+        ],
+        "confidence": 0.9,
+        "title": "Complexity bombs in the codebase",
+        "severity": "high"
+      }
+    ],
+    "architectureDiagram": {
+      "nodes": [
+        {
+          "id": "Gruntfile.js",
+          "label": "Gruntfile.js",
+          "path": "Gruntfile.js",
+          "landmineCount": 0
+        },
+        {
+          "id": "django",
+          "label": "django",
+          "path": "django",
+          "severity": "high",
+          "landmineCount": 3
+        },
+        {
+          "id": "docs",
+          "label": "docs",
+          "path": "docs",
+          "landmineCount": 0
+        },
+        {
+          "id": "scripts",
+          "label": "scripts",
+          "path": "scripts",
+          "landmineCount": 0
+        },
+        {
+          "id": "tests",
+          "label": "tests",
+          "path": "tests",
+          "landmineCount": 0
+        },
+        {
+          "id": "js_tests",
+          "label": "js_tests",
+          "path": "js_tests",
+          "landmineCount": 0
+        }
+      ],
+      "edges": []
+    },
+    "repoStats": {
+      "fileCount": 7066,
+      "languageBreakdown": {
+        "1": 1,
+        "editorconfig": 1,
+        "flake8": 1,
+        "git-blame-ignore-revs": 1,
+        "gitattributes": 1,
+        "md": 9,
+        "yml": 20,
+        "tpl": 4,
+        "gitignore": 1,
+        "yaml": 2,
+        "tx/config": 1,
+        "AUTHORS": 1,
+        "rst": 4,
+        "js": 111,
+        "INSTALL": 1,
+        "LICENSE": 1,
+        "python": 1,
+        "in": 2,
+        "json": 55,
+        "py": 2922,
+        "py-tpl": 14,
+        "mo": 1263,
+        "po": 1274,
+        "css": 48,
+        "svg": 36,
+        "txt": 717,
+        "html": 373,
+        "gz": 7,
+        "django/contrib/gis/gdal/LICENSE": 1,
+        "django/contrib/gis/geos/LICENSE": 1,
+        "kml": 2,
+        "xml": 16,
+        "docs/Makefile": 1,
+        "png": 45,
+        "conf": 2,
+        "eot": 2,
+        "ttf": 1,
+        "woff": 1,
+        "woff2": 1,
+        "pdf": 3,
+        "bat": 1,
+        "docs/spelling_wordlist": 1,
+        "graffle": 1,
+        "TXT": 1,
+        "extras/django_bash_completion": 1,
+        "toml": 1,
+        "sh": 2,
+        "coveragerc": 1,
+        "tgz": 1,
+        "tests/admin_scripts/custom_templates/project_template/additional_dir/Procfile": 1,
+        "ico": 1,
+        "egg": 7,
+        "keep": 2,
+        "webp": 1,
+        "zip": 5,
+        "bz2": 3,
+        "lzma": 3,
+        "xz": 3,
+        "unkn": 1,
+        "jsonl": 2,
+        "tests/forms_tests/field_tests/filepathfield_test_dir/README": 1,
+        "dot-file": 1,
+        "bmp": 1,
+        "jpg": 1,
+        "dbf": 9,
+        "prj": 6,
+        "shp": 8,
+        "shx": 8,
+        "mmdb": 7,
+        "geojson": 1,
+        "tif": 1,
+        "csv": 1,
+        "vrt": 1,
+        "sample": 2,
+        "pristine": 1,
+        "thtml": 1,
+        "djtpl": 1,
+        "gitkeep": 6,
+        "tmp": 2,
+        "eml": 1,
+        "tests/mail/attachments/file_png": 1,
+        "tests/mail/attachments/file_txt": 1,
+        "pyc-tpl": 1,
+        "hidden": 2,
+        "tests/staticfiles_tests/apps/test/static/test/CVS": 1,
+        "ignoreme": 1,
+        "map": 2,
+        "tests/staticfiles_tests/project/documents/test/backup~": 1,
+        "tests/user_commands/test_files/black": 1,
+        "tar": 5,
+        "unknown": 1,
+        "tests/view_tests/media/subdir/visible": 1,
+        "ini": 1
+      },
+      "commitCount": 100,
+      "pullRequestCount": 50,
+      "contributorCount": 38,
+      "repoAgeDays": 5159,
+      "commitsPerMonth": 5
+    },
+    "modelVersions": {
+      "architecture": "meta/llama-3.3-70b-instruct",
+      "history": "meta/llama-3.3-70b-instruct",
+      "risk": "meta/llama-3.3-70b-instruct",
+      "synthesis": "meta/llama-3.3-70b-instruct"
+    },
+    "flaggedClaims": [],
+    "slug": "django",
+    "summary": "Django is a high-level Python web framework that encourages rapid development and clean, pragmatic design."
+  },
+  {
+    "id": "10bb8386-2d7a-48d2-b28c-e773c9f8c9eb",
+    "analysisId": "4b050148-3d77-42ba-83c6-167316f622d8",
+    "repoFullName": "rails/rails",
+    "createdAt": "2026-06-14T00:21:36.866Z",
+    "systemNarrative": {
+      "purpose": {
+        "claim": "Ruby on Rails is a web application framework that includes everything needed to create database-backed web applications according to the Model-View-Controller (MVC) pattern.",
+        "sources": [
+          {
+            "type": "readme",
+            "path": "README.md"
+          }
+        ],
+        "confidence": 0.95
+      },
+      "mainWorkflows": [
+        {
+          "claim": "The framework handles incoming HTTP requests and provides a suitable response, usually returning HTML, but can also generate XML, JSON, PDFs, mobile-specific views, and more.",
+          "sources": [
+            {
+              "type": "readme",
+              "path": "README.md"
+            }
+          ],
+          "confidence": 0.9,
+          "name": "Request/Response Cycle"
+        }
+      ],
+      "dataModel": {
+        "claim": "The framework uses the Active Record pattern to interact with the database, and the Model layer represents the domain model, encapsulating business logic specific to the application.",
+        "sources": [
+          {
+            "type": "readme",
+            "path": "README.md"
+          }
+        ],
+        "confidence": 0.85
+      },
+      "integrations": [
+        {
+          "claim": "The framework supports various databases, including MySQL, PostgreSQL, and SQLite, through the use of Active Record.",
+          "sources": [
+            {
+              "type": "readme",
+              "path": "README.md"
+            }
+          ],
+          "confidence": 0.8,
+          "name": "Database",
+          "kind": "database"
+        }
+      ],
+      "architecturePattern": {
+        "claim": "The framework follows the Model-View-Controller (MVC) pattern, dividing the application into three layers: Model, View, and Controller, each with a specific responsibility.",
+        "sources": [
+          {
+            "type": "readme",
+            "path": "README.md"
+          }
+        ],
+        "confidence": 0.9
+      },
+      "claims": [
+        {
+          "claim": "The framework is written in Ruby.",
+          "sources": [
+            {
+              "type": "dependency",
+              "path": "Gemfile"
+            }
+          ],
+          "confidence": 0.95
+        },
+        {
+          "claim": "The framework uses the Ruby on Rails framework.",
+          "sources": [
+            {
+              "type": "file",
+              "path": "actionmailbox/test/dummy/config/application.rb"
+            }
+          ],
+          "confidence": 0.9
+        },
+        {
+          "claim": "The framework has a large community and is widely used.",
+          "sources": [
+            {
+              "type": "readme",
+              "path": "README.md"
+            }
+          ],
+          "confidence": 0.8
+        }
+      ],
+      "confidence": 0.88,
+      "flaggedClaims": []
+    },
+    "decisions": [
+      {
+        "title": "Adopt Ractor-safe design for Active Record",
+        "description": "Make Active Record more Ractor-safe by freezing and constantizing various modules and classes.",
+        "context": "Ractor support in Rails",
+        "evidence": [
+          {
+            "type": "pr",
+            "url": "https://github.com/rails/rails/pull/57475"
+          }
+        ],
+        "assessment": "Sound: Ractor safety is essential for concurrent programming in Rails.",
+        "confidence": 0.8
+      },
+      {
+        "title": "Use shims for Ractor shareability methods",
+        "description": "Add shims for Ractor shareability methods to avoid version checks in the codebase.",
+        "context": "Ractor support in Rails",
+        "evidence": [
+          {
+            "type": "pr",
+            "url": "https://github.com/rails/rails/pull/57467"
+          }
+        ],
+        "assessment": "Sound: shims simplify the code and reduce version-related issues.",
+        "confidence": 0.9
+      },
+      {
+        "title": "Make some constants Ractor-safe",
+        "description": "Freeze some constants to make them Ractor-safe.",
+        "context": "Ractor support in Rails",
+        "evidence": [
+          {
+            "type": "pr",
+            "url": "https://github.com/rails/rails/pull/57666"
+          }
+        ],
+        "assessment": "Sound: Ractor safety is essential for concurrent programming in Rails.",
+        "confidence": 0.8
+      },
+      {
+        "title": "Make some lambdas in constants shareable",
+        "description": "Use the shareability shim to make lambdas in constants shareable on Ruby 4.0+.",
+        "context": "Ractor support in Rails",
+        "evidence": [
+          {
+            "type": "pr",
+            "url": "https://github.com/rails/rails/pull/57681"
+          }
+        ],
+        "assessment": "Sound: shareable lambdas improve Ractor safety in Rails.",
+        "confidence": 0.8
+      },
+      {
+        "title": "Ractor-safe readonly attributes",
+        "description": "Make readonly attributes Ractor-safe by freezing them by default.",
+        "context": "Ractor support in Rails",
+        "evidence": [
+          {
+            "type": "pr",
+            "url": "https://github.com/rails/rails/pull/57682"
+          }
+        ],
+        "assessment": "Sound: Ractor safety is essential for concurrent programming in Rails.",
+        "confidence": 0.8
+      },
+      {
+        "title": "Support a single composite primary key id in update/update!",
+        "description": "Update the class-level update/update! methods to support a single composite primary key id.",
+        "context": "Active Record improvements",
+        "evidence": [
+          {
+            "type": "pr",
+            "url": "https://github.com/rails/rails/pull/57655"
+          }
+        ],
+        "assessment": "Sound: the update/update! methods should handle composite primary keys correctly.",
+        "confidence": 0.9
+      },
+      {
+        "title": "Keep the Redis listener alive when the last channel is unsubscribed",
+        "description": "Restore the sentinel subscription to keep the Redis listener alive when the last channel is unsubscribed.",
+        "context": "Action Cable improvements",
+        "evidence": [
+          {
+            "type": "pr",
+            "url": "https://github.com/rails/rails/pull/57690"
+          }
+        ],
+        "assessment": "Sound: the Redis listener should remain alive even when the last channel is unsubscribed.",
+        "confidence": 0.9
+      },
+      {
+        "title": "Shut down the heartbeat timer on server restart",
+        "description": "Shut down and clear the heartbeat timer on server restart to prevent thread leaks.",
+        "context": "Action Cable improvements",
+        "evidence": [
+          {
+            "type": "pr",
+            "url": "https://github.com/rails/rails/pull/57700"
+          }
+        ],
+        "assessment": "Sound: shutting down the heartbeat timer prevents thread leaks and improves server restart behavior.",
+        "confidence": 0.9
+      },
+      {
+        "title": "Raise ChannelNotFound for a subscribe command without a channel",
+        "description": "Raise a ChannelNotFound error when a subscribe command is missing a channel.",
+        "context": "Action Cable improvements",
+        "evidence": [
+          {
+            "type": "pr",
+            "url": "https://github.com/rails/rails/pull/57699"
+          }
+        ],
+        "assessment": "Sound: raising a ChannelNotFound error improves error handling in Action Cable.",
+        "confidence": 0.9
+      },
+      {
+        "title": "Keep pending subscribe confirmations across a Redis reconnect",
+        "description": "Keep pending subscribe confirmations across a Redis reconnect to prevent lost confirmations.",
+        "context": "Action Cable improvements",
+        "evidence": [
+          {
+            "type": "pr",
+            "url": "https://github.com/rails/rails/pull/57695"
+          }
+        ],
+        "assessment": "Sound: keeping pending subscribe confirmations improves the reliability of Action Cable.",
+        "confidence": 0.9
+      },
+      {
+        "title": "Respect an explicit id: nil in the Redis cable config",
+        "description": "Respect an explicit id: nil in the Redis cable config to allow for custom connection naming.",
+        "context": "Action Cable improvements",
+        "evidence": [
+          {
+            "type": "pr",
+            "url": "https://github.com/rails/rails/pull/57696"
+          }
+        ],
+        "assessment": "Sound: respecting an explicit id: nil improves the flexibility of Action Cable's Redis configuration.",
+        "confidence": 0.9
+      },
+      {
+        "title": "Coerce stream name to String in the test adapter accessors",
+        "description": "Coerce the stream name to a String in the test adapter accessors to ensure correct channel lookup.",
+        "context": "Action Cable improvements",
+        "evidence": [
+          {
+            "type": "pr",
+            "url": "https://github.com/rails/rails/pull/57698"
+          }
+        ],
+        "assessment": "Sound: coercing the stream name to a String improves the reliability of Action Cable's test adapter.",
+        "confidence": 0.9
+      },
+      {
+        "title": "Coerce broadcasting to String in Channel#stop_stream_from",
+        "description": "Coerce the broadcasting to a String in Channel#stop_stream_from to ensure correct channel lookup.",
+        "context": "Action Cable improvements",
+        "evidence": [
+          {
+            "type": "pr",
+            "url": "https://github.com/rails/rails/pull/57692"
+          }
+        ],
+        "assessment": "Sound: coercing the broadcasting to a String improves the reliability of Action Cable's channel management.",
+        "confidence": 0.9
+      },
+      {
+        "title": "Iterate a snapshot of the connections in Server#each_connection",
+        "description": "Iterate a snapshot of the connections in Server#each_connection to prevent concurrency issues.",
+        "context": "Action Cable improvements",
+        "evidence": [
+          {
+            "type": "pr",
+            "url": "https://github.com/rails/rails/pull/57691"
+          }
+        ],
+        "assessment": "Sound: iterating a snapshot of connections improves the reliability of Action Cable's server management.",
+        "confidence": 0.9
+      },
+      {
+        "title": "Don't mutate the caller's string in Inflector#transliterate",
+        "description": "Don't mutate the caller's string in Inflector#transliterate to prevent unexpected side effects.",
+        "context": "Active Support improvements",
+        "evidence": [
+          {
+            "type": "pr",
+            "url": "https://github.com/rails/rails/pull/57675"
+          }
+        ],
+        "assessment": "Sound: not mutating the caller's string improves the reliability and predictability of Inflector#transliterate.",
+        "confidence": 0.9
+      }
+    ],
+    "landmines": [
+      {
+        "location": "actionmailer/lib/action_mailer/base.rb",
+        "category": "complexity-bomb",
+        "severity": "high",
+        "evidence": [
+          {
+            "type": "file",
+            "path": "actionmailer/lib/action_mailer/base.rb"
+          },
+          {
+            "type": "metric",
+            "excerpt": "complexity=112"
+          }
+        ],
+        "explanation": "The base.rb file in the actionmailer library has high complexity, which can make it difficult to maintain and understand.",
+        "remediation": "Consider refactoring the code to reduce complexity and improve readability.",
+        "remediationEstimate": "1-2 weeks",
+        "priority": 1,
+        "confidence": 0.8
+      },
+      {
+        "location": "activerecord/lib/active_record.rb",
+        "category": "churn-trap",
+        "severity": "medium",
+        "evidence": [
+          {
+            "type": "file",
+            "path": "activerecord/lib/active_record.rb"
+          },
+          {
+            "type": "metric",
+            "excerpt": "churn=3"
+          }
+        ],
+        "explanation": "The active_record.rb file in the activerecord library has moderate churn, which can indicate areas of the code that are prone to errors or require frequent updates.",
+        "remediation": "Consider reviewing the code and addressing any issues that may be contributing to the churn.",
+        "remediationEstimate": "1-2 days",
+        "priority": 2,
+        "confidence": 0.7
+      },
+      {
+        "location": "actioncable/lib/action_cable/subscription_adapter/redis.rb",
+        "category": "coupling-cluster",
+        "severity": "medium",
+        "evidence": [
+          {
+            "type": "file",
+            "path": "actioncable/lib/action_cable/subscription_adapter/redis.rb"
+          },
+          {
+            "type": "metric",
+            "excerpt": "co-changes=6"
+          }
+        ],
+        "explanation": "The redis.rb file in the actioncable library is part of a coupling cluster, which can make it difficult to modify or maintain the code without affecting other parts of the system.",
+        "remediation": "Consider reviewing the code and addressing any coupling issues that may be present.",
+        "remediationEstimate": "1-2 days",
+        "priority": 3,
+        "confidence": 0.6
+      },
+      {
+        "location": "nokogiri",
+        "category": "dependency-debt",
+        "severity": "critical",
+        "evidence": [
+          {
+            "type": "dependency",
+            "url": "https://osv.dev/vulnerability/GHSA-242x-7cm6-4w8j",
+            "excerpt": "Nokogiri vulnerability"
+          }
+        ],
+        "explanation": "The nokogiri dependency has known vulnerabilities, which can put the entire system at risk.",
+        "remediation": "Update the nokogiri dependency to the latest version.",
+        "remediationEstimate": "1 day",
+        "priority": 4,
+        "confidence": 0.9
+      }
+    ],
+    "assessment": {
+      "verdict": "build-on",
+      "reasons": [
+        {
+          "claim": "The framework is well-structured and follows the Model-View-Controller (MVC) pattern.",
+          "sources": [
+            {
+              "type": "readme",
+              "path": "README.md"
+            }
+          ],
+          "confidence": 0.9
+        },
+        {
+          "claim": "The framework has a large community and is widely used.",
+          "sources": [
+            {
+              "type": "readme",
+              "path": "README.md"
+            }
+          ],
+          "confidence": 0.8
+        },
+        {
+          "claim": "Recent decisions have focused on improving Ractor safety and addressing landmines.",
+          "sources": [
+            {
+              "type": "pr",
+              "url": "https://github.com/rails/rails/pull/57475"
+            }
+          ],
+          "confidence": 0.8
+        }
+      ],
+      "risks": [
+        {
+          "claim": "The framework has landmines such as complexity bombs and churn traps.",
+          "sources": [
+            {
+              "type": "file",
+              "path": "actionmailer/lib/action_mailer/base.rb"
+            }
+          ],
+          "confidence": 0.8
+        }
+      ],
+      "confidence": 0.8,
+      "uncertainty": "Limited information is available about the framework's future development plans."
+    },
+    "topFindings": [
+      {
+        "claim": "The base.rb file in the actionmailer library has high complexity, which can make it difficult to maintain and understand.",
+        "sources": [
+          {
+            "type": "file",
+            "path": "actionmailer/lib/action_mailer/base.rb"
+          }
+        ],
+        "confidence": 0.8,
+        "title": "Complexity Bomb in Action Mailer",
+        "severity": "high"
+      }
+    ],
+    "architectureDiagram": {
+      "nodes": [
+        {
+          "id": ".mdlrc.rb",
+          "label": ".mdlrc.rb",
+          "path": ".mdlrc.rb",
+          "landmineCount": 0
+        },
+        {
+          "id": "eslint.config.mjs",
+          "label": "eslint.config.mjs",
+          "path": "eslint.config.mjs",
+          "landmineCount": 0
+        },
+        {
+          "id": "actioncable",
+          "label": "actioncable",
+          "path": "actioncable",
+          "severity": "medium",
+          "landmineCount": 1
+        },
+        {
+          "id": "actiontext",
+          "label": "actiontext",
+          "path": "actiontext",
+          "landmineCount": 0
+        },
+        {
+          "id": "activestorage",
+          "label": "activestorage",
+          "path": "activestorage",
+          "landmineCount": 0
+        },
+        {
+          "id": "guides",
+          "label": "guides",
+          "path": "guides",
+          "landmineCount": 0
+        },
+        {
+          "id": "tasks",
+          "label": "tasks",
+          "path": "tasks",
+          "landmineCount": 0
+        },
+        {
+          "id": "tools",
+          "label": "tools",
+          "path": "tools",
+          "landmineCount": 0
+        },
+        {
+          "id": "actionmailbox",
+          "label": "actionmailbox",
+          "path": "actionmailbox",
+          "landmineCount": 0
+        },
+        {
+          "id": "actionmailer",
+          "label": "actionmailer",
+          "path": "actionmailer",
+          "severity": "high",
+          "landmineCount": 1
+        },
+        {
+          "id": "actionpack",
+          "label": "actionpack",
+          "path": "actionpack",
+          "landmineCount": 0
+        },
+        {
+          "id": "actionview",
+          "label": "actionview",
+          "path": "actionview",
+          "landmineCount": 0
+        },
+        {
+          "id": "activejob",
+          "label": "activejob",
+          "path": "activejob",
+          "landmineCount": 0
+        },
+        {
+          "id": "activemodel",
+          "label": "activemodel",
+          "path": "activemodel",
+          "landmineCount": 0
+        },
+        {
+          "id": "activerecord",
+          "label": "activerecord",
+          "path": "activerecord",
+          "severity": "medium",
+          "landmineCount": 1
+        },
+        {
+          "id": "activesupport",
+          "label": "activesupport",
+          "path": "activesupport",
+          "landmineCount": 0
+        },
+        {
+          "id": "railties",
+          "label": "railties",
+          "path": "railties",
+          "landmineCount": 0
+        },
+        {
+          "id": ".github",
+          "label": ".github",
+          "path": ".github",
+          "landmineCount": 0
+        }
+      ],
+      "edges": [
+        {
+          "id": "dep:actioncable->tools",
+          "source": "actioncable",
+          "target": "tools",
+          "kind": "dependency",
+          "weight": 2
+        },
+        {
+          "id": "dep:actionmailbox->tools",
+          "source": "actionmailbox",
+          "target": "tools",
+          "kind": "dependency",
+          "weight": 2
+        },
+        {
+          "id": "dep:actionmailer->tools",
+          "source": "actionmailer",
+          "target": "tools",
+          "kind": "dependency",
+          "weight": 2
+        },
+        {
+          "id": "dep:actionpack->tools",
+          "source": "actionpack",
+          "target": "tools",
+          "kind": "dependency",
+          "weight": 2
+        },
+        {
+          "id": "dep:actiontext->tools",
+          "source": "actiontext",
+          "target": "tools",
+          "kind": "dependency",
+          "weight": 2
+        },
+        {
+          "id": "dep:actionview->tools",
+          "source": "actionview",
+          "target": "tools",
+          "kind": "dependency",
+          "weight": 2
+        },
+        {
+          "id": "dep:activejob->tools",
+          "source": "activejob",
+          "target": "tools",
+          "kind": "dependency",
+          "weight": 2
+        },
+        {
+          "id": "dep:activestorage->tools",
+          "source": "activestorage",
+          "target": "tools",
+          "kind": "dependency",
+          "weight": 2
+        },
+        {
+          "id": "dep:activesupport->tools",
+          "source": "activesupport",
+          "target": "tools",
+          "kind": "dependency",
+          "weight": 2
+        },
+        {
+          "id": "dep:guides->tools",
+          "source": "guides",
+          "target": "tools",
+          "kind": "dependency",
+          "weight": 1
+        },
+        {
+          "id": "dep:railties->tools",
+          "source": "railties",
+          "target": "tools",
+          "kind": "dependency",
+          "weight": 1
+        }
+      ]
+    },
+    "repoStats": {
+      "fileCount": 4952,
+      "languageBreakdown": {
+        "devcontainer/Dockerfile": 1,
+        "sh": 1,
+        "yaml": 4,
+        "json": 9,
+        "git-blame-ignore-revs": 1,
+        "gitattributes": 5,
+        "github/CODEOWNERS": 1,
+        "md": 128,
+        "yml": 205,
+        "rb": 3421,
+        "gitignore": 9,
+        "mdlrc": 1,
+        "yardopts": 1,
+        "yarnrc": 1,
+        "Brewfile": 1,
+        "Gemfile": 1,
+        "lock": 3,
+        "MIT-LICENSE": 1,
+        "RAILS_VERSION": 1,
+        "Rakefile": 1,
+        "babelrc": 2,
+        "actioncable/MIT-LICENSE": 1,
+        "actioncable/Rakefile": 1,
+        "gemspec": 15,
+        "js": 58,
+        "actioncable/bin/test": 1,
+        "actioncable/lib/rails/generators/channel/USAGE": 1,
+        "tt": 165,
+        "actionmailbox/MIT-LICENSE": 1,
+        "actionmailbox/Rakefile": 1,
+        "erb": 513,
+        "actionmailbox/bin/test": 1,
+        "actionmailbox/lib/rails/generators/mailbox/USAGE": 1,
+        "rake": 15,
+        "actionmailbox/test/dummy/Rakefile": 1,
+        "keep": 21,
+        "css": 12,
+        "actionmailbox/test/dummy/bin/rails": 1,
+        "actionmailbox/test/dummy/bin/rake": 1,
+        "actionmailbox/test/dummy/bin/setup": 1,
+        "ru": 3,
+        "html": 45,
+        "png": 39,
+        "ico": 5,
+        "jpeg": 2,
+        "eml": 2,
+        "actionmailer/MIT-LICENSE": 1,
+        "rdoc": 9,
+        "actionmailer/Rakefile": 1,
+        "actionmailer/bin/test": 1,
+        "actionmailer/lib/rails/generators/mailer/USAGE": 1,
+        "actionmailer/test/fixtures/test_helper_mailer/welcome": 1,
+        "actionpack/MIT-LICENSE": 1,
+        "actionpack/Rakefile": 1,
+        "actionpack/bin/test": 1,
+        "builder": 19,
+        "actionpack/test/fixtures/multipart/binary_file": 1,
+        "actionpack/test/fixtures/multipart/boundary_problem_file": 1,
+        "actionpack/test/fixtures/multipart/bracketed_param": 1,
+        "actionpack/test/fixtures/multipart/bracketed_utf8_param": 1,
+        "actionpack/test/fixtures/multipart/empty": 1,
+        "txt": 9,
+        "actionpack/test/fixtures/multipart/large_text_file": 1,
+        "actionpack/test/fixtures/multipart/mixed_files": 1,
+        "actionpack/test/fixtures/multipart/none": 1,
+        "jpg": 16,
+        "actionpack/test/fixtures/multipart/single_parameter": 1,
+        "actionpack/test/fixtures/multipart/single_utf8_param": 1,
+        "actionpack/test/fixtures/multipart/text_file": 1,
+        "actionpack/test/fixtures/multipart/utf8_filename": 1,
+        "gz": 8,
+        "br": 2,
+        "zoo": 2,
+        "svg": 27,
+        "ruby": 3,
+        "actiontext/MIT-LICENSE": 1,
+        "actiontext/Rakefile": 1,
+        "actiontext/bin/test": 1,
+        "actiontext/test/dummy/Rakefile": 1,
+        "actiontext/test/dummy/bin/rails": 1,
+        "actiontext/test/dummy/bin/rake": 1,
+        "actiontext/test/dummy/bin/setup": 1,
+        "actionview/MIT-LICENSE": 1,
+        "actionview/Rakefile": 1,
+        "actionview/bin/test": 1,
+        "mab": 1,
+        "sql": 1,
+        "raw": 2,
+        "erb~": 3,
+        "actionview/test/fixtures/test/malformed/malformed~": 1,
+        "activejob/MIT-LICENSE": 1,
+        "activejob/Rakefile": 1,
+        "activejob/bin/test": 1,
+        "activejob/lib/rails/generators/job/USAGE": 1,
+        "activemodel/MIT-LICENSE": 1,
+        "activemodel/Rakefile": 1,
+        "activemodel/bin/test": 1,
+        "activerecord/MIT-LICENSE": 1,
+        "activerecord/Rakefile": 1,
+        "activerecord/bin/test": 1,
+        "activerecord/lib/rails/generators/active_record/application_record/USAGE": 1,
+        "activerecord/lib/rails/generators/active_record/model/USAGE": 1,
+        "log": 2,
+        "activerecord/test/fixtures/all/admin": 1,
+        "dump": 16,
+        "activestorage/MIT-LICENSE": 1,
+        "activestorage/Rakefile": 1,
+        "activestorage/bin/test": 1,
+        "activestorage/test/dummy/Rakefile": 1,
+        "activestorage/test/dummy/bin/rails": 1,
+        "activestorage/test/dummy/bin/rake": 1,
+        "activestorage/test/dummy/bin/setup": 1,
+        "mp3": 1,
+        "bmp": 1,
+        "pdf": 2,
+        "psd": 1,
+        "gif": 1,
+        "tif": 1,
+        "mov": 1,
+        "mp4": 6,
+        "webp": 1,
+        "webm": 1,
+        "enc": 1,
+        "activesupport/MIT-LICENSE": 1,
+        "activesupport/Rakefile": 1,
+        "activesupport/bin/test": 1,
+        "dtd": 1,
+        "bin/test": 1,
+        "mjs": 1,
+        "document": 1,
+        "guides/Rakefile": 1,
+        "scss": 9,
+        "guides/bin/test": 1,
+        "railties/MIT-LICENSE": 1,
+        "railties/Rakefile": 1,
+        "railties/bin/test": 1,
+        "railties/exe/rails": 1,
+        "railties/lib/rails/commands/credentials/USAGE": 1,
+        "railties/lib/rails/commands/encrypted/USAGE": 1,
+        "railties/lib/rails/commands/gem_help/USAGE": 1,
+        "railties/lib/rails/commands/help/USAGE": 1,
+        "railties/lib/rails/commands/query/USAGE": 1,
+        "railties/lib/rails/commands/runner/USAGE": 1,
+        "railties/lib/rails/commands/test/USAGE": 1,
+        "railties/lib/rails/generators/rails/app/USAGE": 1,
+        "railties/lib/rails/generators/rails/authentication/USAGE": 1,
+        "railties/lib/rails/generators/rails/benchmark/USAGE": 1,
+        "railties/lib/rails/generators/rails/controller/USAGE": 1,
+        "railties/lib/rails/generators/rails/generator/USAGE": 1,
+        "empty_directory": 1,
+        "railties/lib/rails/generators/rails/helper/USAGE": 1,
+        "railties/lib/rails/generators/rails/integration_test/USAGE": 1,
+        "railties/lib/rails/generators/rails/migration/USAGE": 1,
+        "railties/lib/rails/generators/rails/plugin/USAGE": 1,
+        "railties/lib/rails/generators/rails/resource/USAGE": 1,
+        "railties/lib/rails/generators/rails/scaffold/USAGE": 1,
+        "railties/lib/rails/generators/rails/scaffold_controller/USAGE": 1,
+        "railties/lib/rails/generators/rails/script/USAGE": 1,
+        "railties/lib/rails/generators/rails/system_test/USAGE": 1,
+        "railties/lib/rails/generators/rails/task/USAGE": 1,
+        "test": 1,
+        "railties/test/fixtures/Rakefile": 1,
+        "railties/test/fixtures/lib/generators/usage_template/USAGE": 1,
+        "tools/console": 1,
+        "tools/devcontainer": 1,
+        "tools/line_statistics": 1,
+        "tools/rail_inspector/LICENSE": 1,
+        "tools/rail_inspector/Rakefile": 1,
+        "tools/rail_inspector/bin/console": 1,
+        "tools/railspect": 1,
+        "tools/rdoc-to-md": 1,
+        "tools/releaser/Gemfile": 1,
+        "tools/releaser/Rakefile": 1,
+        "tools/releaser/bin/test": 1
+      },
+      "commitCount": 100,
+      "pullRequestCount": 50,
+      "contributorCount": 18,
+      "repoAgeDays": 6637,
+      "commitsPerMonth": 309
+    },
+    "modelVersions": {
+      "architecture": "meta/llama-3.3-70b-instruct",
+      "history": "meta/llama-3.3-70b-instruct",
+      "risk": "meta/llama-3.3-70b-instruct",
+      "synthesis": "meta/llama-3.3-70b-instruct"
+    },
+    "flaggedClaims": [],
+    "slug": "rails",
+    "summary": "Ruby on Rails is a web application framework that includes everything needed to create database-backed web applications according to the…"
+  },
+  {
+    "id": "da0a5d59-7ed4-4eff-bfef-8c3006276331",
+    "analysisId": "1facfe11-a815-46eb-9566-8864e3e802dc",
+    "repoFullName": "go-gorm/gorm",
+    "createdAt": "2026-06-14T00:14:24.538Z",
+    "systemNarrative": {
+      "purpose": {
+        "claim": "GORM is a full-featured, developer-friendly ORM library for Golang.",
+        "sources": [
+          {
+            "type": "readme",
+            "path": "README.md"
+          }
+        ],
+        "confidence": 0.95
+      },
+      "mainWorkflows": [
+        {
+          "claim": "GORM supports various database operations such as create, read, update, and delete.",
+          "sources": [
+            {
+              "type": "readme",
+              "path": "README.md"
+            }
+          ],
+          "confidence": 0.9,
+          "name": "Database Operations"
+        }
+      ],
+      "dataModel": {
+        "claim": "GORM uses a schema-based data model to define the structure of the data.",
+        "sources": [
+          {
+            "type": "file",
+            "path": "schema/schema.go"
+          }
+        ],
+        "confidence": 0.85
+      },
+      "integrations": [
+        {
+          "claim": "GORM supports various databases such as MySQL, PostgreSQL, and SQLite.",
+          "sources": [
+            {
+              "type": "readme",
+              "path": "README.md"
+            }
+          ],
+          "confidence": 0.9,
+          "name": "Database",
+          "kind": "database"
+        }
+      ],
+      "architecturePattern": {
+        "claim": "GORM follows a modular architecture pattern with separate modules for different components.",
+        "sources": [
+          {
+            "type": "inferred",
+            "excerpt": "separate modules for different components"
+          }
+        ],
+        "confidence": 0.7
+      },
+      "claims": [
+        {
+          "claim": "GORM is written in Go.",
+          "sources": [
+            {
+              "type": "dependency",
+              "path": "go.mod"
+            }
+          ],
+          "confidence": 0.95
+        },
+        {
+          "claim": "GORM supports associations between models.",
+          "sources": [
+            {
+              "type": "file",
+              "path": "association.go"
+            }
+          ],
+          "confidence": 0.9
+        },
+        {
+          "claim": "GORM has a built-in logger.",
+          "sources": [
+            {
+              "type": "file",
+              "path": "logger/logger.go"
+            }
+          ],
+          "confidence": 0.85
+        }
+      ],
+      "confidence": 0.88,
+      "flaggedClaims": []
+    },
+    "decisions": [
+      {
+        "title": "Adopting a Modular Architecture Pattern",
+        "description": "GORM follows a modular architecture pattern with separate modules for different components.",
+        "context": "GORM's architecture is designed to be modular and scalable.",
+        "evidence": [
+          {
+            "type": "inferred",
+            "excerpt": "separate modules for different components"
+          }
+        ],
+        "assessment": "Sound: the modular architecture fits the needs of a large and complex ORM library.",
+        "confidence": 0.7
+      },
+      {
+        "title": "Using a Schema-Based Data Model",
+        "description": "GORM uses a schema-based data model to define the structure of the data.",
+        "context": "GORM's data model is designed to be flexible and adaptable to different database schemas.",
+        "evidence": [
+          {
+            "type": "file",
+            "path": "schema/schema.go"
+          }
+        ],
+        "assessment": "Sound: the schema-based data model provides a clear and consistent way of defining data structures.",
+        "confidence": 0.85
+      },
+      {
+        "title": "Supporting Various Database Operations",
+        "description": "GORM supports various database operations such as create, read, update, and delete.",
+        "context": "GORM's database operations are designed to be efficient and reliable.",
+        "evidence": [
+          {
+            "type": "readme",
+            "path": "README.md"
+          }
+        ],
+        "assessment": "Sound: the support for various database operations makes GORM a versatile and useful library.",
+        "confidence": 0.9
+      },
+      {
+        "title": "Improving Concurrency with RWMutex",
+        "description": "GORM uses RWMutex to improve concurrency in its internal LRU cache.",
+        "context": "GORM's internal LRU cache is designed to be thread-safe and efficient.",
+        "evidence": [
+          {
+            "type": "pr",
+            "url": "https://github.com/go-gorm/gorm/pull/7668"
+          }
+        ],
+        "assessment": "Sound: the use of RWMutex improves the performance and reliability of GORM's internal LRU cache.",
+        "confidence": 0.9
+      },
+      {
+        "title": "Fixing Nil Pointer Panic in Serializer",
+        "description": "GORM fixes a nil pointer panic in its serializer to prevent crashes.",
+        "context": "GORM's serializer is designed to be robust and reliable.",
+        "evidence": [
+          {
+            "type": "pr",
+            "url": "https://github.com/go-gorm/gorm/pull/7634"
+          }
+        ],
+        "assessment": "Sound: the fix prevents crashes and improves the overall reliability of GORM.",
+        "confidence": 0.9
+      },
+      {
+        "title": "Adding Unit Test for Chainable Query Methods",
+        "description": "GORM adds a unit test to verify that chainable query methods mutate the statement correctly.",
+        "context": "GORM's query methods are designed to be flexible and reliable.",
+        "evidence": [
+          {
+            "type": "pr",
+            "url": "https://github.com/go-gorm/gorm/pull/7684"
+          }
+        ],
+        "assessment": "Sound: the unit test improves the confidence in GORM's query methods.",
+        "confidence": 0.9
+      },
+      {
+        "title": "Fixing Close Connection After Ping Failure",
+        "description": "GORM fixes a bug where the connection is not closed after a ping failure, preventing goroutine leaks.",
+        "context": "GORM's connection management is designed to be robust and reliable.",
+        "evidence": [
+          {
+            "type": "pr",
+            "url": "https://github.com/go-gorm/gorm/pull/7689"
+          }
+        ],
+        "assessment": "Sound: the fix prevents goroutine leaks and improves the overall reliability of GORM.",
+        "confidence": 0.9
+      },
+      {
+        "title": "Updating Func for Generics",
+        "description": "GORM updates its func for generics to fix a bug where the wrong type is raised at runtime.",
+        "context": "GORM's generics support is designed to be flexible and reliable.",
+        "evidence": [
+          {
+            "type": "issue",
+            "url": "https://github.com/go-gorm/gorm/issues/7766"
+          }
+        ],
+        "assessment": "Sound: the update fixes a bug and improves the overall reliability of GORM's generics support.",
+        "confidence": 0.9
+      },
+      {
+        "title": "Applying QueryFields to RETURNING Clauses",
+        "description": "GORM applies QueryFields to RETURNING clauses to generate explicit column lists from the model schema.",
+        "context": "GORM's QueryFields support is designed to be flexible and reliable.",
+        "evidence": [
+          {
+            "type": "issue",
+            "url": "https://github.com/go-gorm/gorm/issues/7804"
+          }
+        ],
+        "assessment": "Sound: the application of QueryFields to RETURNING clauses improves the overall reliability and flexibility of GORM.",
+        "confidence": 0.9
+      },
+      {
+        "title": "Using Pgroll for Automigration",
+        "description": "GORM considers using pgroll for automigration to reduce possible downtimes or conflicts.",
+        "context": "GORM's automigration support is designed to be robust and reliable.",
+        "evidence": [
+          {
+            "type": "issue",
+            "url": "https://github.com/go-gorm/gorm/issues/7103"
+          }
+        ],
+        "assessment": "Sound: the use of pgroll for automigration improves the overall reliability and flexibility of GORM.",
+        "confidence": 0.8
+      }
+    ],
+    "landmines": [
+      {
+        "location": "schema/field.go",
+        "category": "complexity-bomb",
+        "severity": "high",
+        "evidence": [
+          {
+            "type": "file",
+            "path": "schema/field.go"
+          },
+          {
+            "type": "metric",
+            "excerpt": "complexity=342, churnCount=8"
+          }
+        ],
+        "explanation": "field.go has high complexity and churn, making it a potential maintenance risk.",
+        "remediation": "Refactor field.go to reduce complexity and improve maintainability.",
+        "remediationEstimate": "2-4 weeks",
+        "priority": 1,
+        "confidence": 0.8
+      },
+      {
+        "location": "tests/migrate_test.go",
+        "category": "complexity-bomb",
+        "severity": "high",
+        "evidence": [
+          {
+            "type": "file",
+            "path": "tests/migrate_test.go"
+          },
+          {
+            "type": "metric",
+            "excerpt": "complexity=408, churnCount=6"
+          }
+        ],
+        "explanation": "migrate_test.go has high complexity and churn, making it a potential maintenance risk.",
+        "remediation": "Refactor migrate_test.go to reduce complexity and improve maintainability.",
+        "remediationEstimate": "2-4 weeks",
+        "priority": 2,
+        "confidence": 0.8
+      },
+      {
+        "location": "clause/association.go",
+        "category": "knowledge-silo",
+        "severity": "critical",
+        "evidence": [
+          {
+            "type": "file",
+            "path": "clause/association.go"
+          },
+          {
+            "type": "inferred",
+            "excerpt": "author Jinzhu is inactive, and the file has not been modified recently"
+          }
+        ],
+        "explanation": "association.go is a knowledge silo with an inactive author, posing a significant risk to the project's maintainability.",
+        "remediation": "Assign a new maintainer to association.go and review its content to ensure it is up-to-date and accurate.",
+        "remediationEstimate": "1-2 weeks",
+        "priority": 3,
+        "confidence": 0.7
+      },
+      {
+        "location": "golang.org/x/crypto",
+        "category": "dependency-debt",
+        "severity": "high",
+        "evidence": [
+          {
+            "type": "dependency",
+            "path": "tests/go.mod",
+            "excerpt": "vulnerable: GHSA-f6x5-jh6r-wrfv"
+          },
+          {
+            "type": "file",
+            "path": "tests/go.mod"
+          }
+        ],
+        "explanation": "The project depends on golang.org/x/crypto, which has known vulnerabilities.",
+        "remediation": "Update golang.org/x/crypto to a version that fixes the known vulnerabilities.",
+        "remediationEstimate": "1-2 days",
+        "priority": 4,
+        "confidence": 0.9
+      },
+      {
+        "location": "github.com/jinzhu/inflection",
+        "category": "dependency-debt",
+        "severity": "medium",
+        "evidence": [
+          {
+            "type": "dependency",
+            "path": "go.mod",
+            "excerpt": "abandoned: 32 months since last commit"
+          },
+          {
+            "type": "file",
+            "path": "go.mod"
+          }
+        ],
+        "explanation": "The project depends on github.com/jinzhu/inflection, which is an abandoned package.",
+        "remediation": "Replace github.com/jinzhu/inflection with an actively maintained alternative.",
+        "remediationEstimate": "2-4 weeks",
+        "priority": 5,
+        "confidence": 0.8
+      }
+    ],
+    "assessment": {
+      "verdict": "build-on",
+      "reasons": [
+        {
+          "claim": "GORM follows a modular architecture pattern with separate modules for different components.",
+          "sources": [
+            {
+              "type": "inferred",
+              "excerpt": "separate modules for different components"
+            }
+          ],
+          "confidence": 0.7
+        },
+        {
+          "claim": "The library supports various database operations such as create, read, update, and delete.",
+          "sources": [
+            {
+              "type": "readme",
+              "path": "README.md"
+            }
+          ],
+          "confidence": 0.9
+        },
+        {
+          "claim": "The library uses a schema-based data model to define the structure of the data.",
+          "sources": [
+            {
+              "type": "file",
+              "path": "schema/schema.go"
+            }
+          ],
+          "confidence": 0.85
+        }
+      ],
+      "risks": [
+        {
+          "claim": "The library has dependencies with known vulnerabilities.",
+          "sources": [
+            {
+              "type": "dependency",
+              "path": "tests/go.mod",
+              "excerpt": "vulnerable: GHSA-f6x5-jh6r-wrfv"
+            }
+          ],
+          "confidence": 0.9
+        }
+      ],
+      "confidence": 0.8,
+      "uncertainty": "Limited information is available about the library's future development plans."
+    },
+    "topFindings": [
+      {
+        "claim": "Certain files, such as field.go and migrate_test.go, have high complexity and churn, making them potential maintenance risks.",
+        "sources": [
+          {
+            "type": "file",
+            "path": "schema/field.go"
+          },
+          {
+            "type": "metric",
+            "excerpt": "complexity=342, churnCount=8"
+          }
+        ],
+        "confidence": 0.8,
+        "title": "High Complexity and Churn in Certain Files",
+        "severity": "high"
+      }
+    ],
+    "architectureDiagram": {
+      "nodes": [
+        {
+          "id": "association.go",
+          "label": "association.go",
+          "path": "association.go",
+          "landmineCount": 0
+        },
+        {
+          "id": "callbacks.go",
+          "label": "callbacks.go",
+          "path": "callbacks.go",
+          "landmineCount": 0
+        },
+        {
+          "id": "chainable_api.go",
+          "label": "chainable_api.go",
+          "path": "chainable_api.go",
+          "landmineCount": 0
+        },
+        {
+          "id": "errors.go",
+          "label": "errors.go",
+          "path": "errors.go",
+          "landmineCount": 0
+        },
+        {
+          "id": "finisher_api.go",
+          "label": "finisher_api.go",
+          "path": "finisher_api.go",
+          "landmineCount": 0
+        },
+        {
+          "id": "generics.go",
+          "label": "generics.go",
+          "path": "generics.go",
+          "landmineCount": 0
+        },
+        {
+          "id": "generics_withresult_test.go",
+          "label": "generics_withresult_test.go",
+          "path": "generics_withresult_test.go",
+          "landmineCount": 0
+        },
+        {
+          "id": "gorm.go",
+          "label": "gorm.go",
+          "path": "gorm.go",
+          "landmineCount": 0
+        },
+        {
+          "id": "interfaces.go",
+          "label": "interfaces.go",
+          "path": "interfaces.go",
+          "landmineCount": 0
+        },
+        {
+          "id": "migrator.go",
+          "label": "migrator.go",
+          "path": "migrator.go",
+          "landmineCount": 0
+        },
+        {
+          "id": "model.go",
+          "label": "model.go",
+          "path": "model.go",
+          "landmineCount": 0
+        },
+        {
+          "id": "prepare_stmt.go",
+          "label": "prepare_stmt.go",
+          "path": "prepare_stmt.go",
+          "landmineCount": 0
+        },
+        {
+          "id": "scan.go",
+          "label": "scan.go",
+          "path": "scan.go",
+          "landmineCount": 0
+        },
+        {
+          "id": "soft_delete.go",
+          "label": "soft_delete.go",
+          "path": "soft_delete.go",
+          "landmineCount": 0
+        },
+        {
+          "id": "statement.go",
+          "label": "statement.go",
+          "path": "statement.go",
+          "landmineCount": 0
+        },
+        {
+          "id": "statement_test.go",
+          "label": "statement_test.go",
+          "path": "statement_test.go",
+          "landmineCount": 0
+        },
+        {
+          "id": "callbacks",
+          "label": "callbacks",
+          "path": "callbacks",
+          "landmineCount": 0
+        },
+        {
+          "id": "clause",
+          "label": "clause",
+          "path": "clause",
+          "severity": "critical",
+          "landmineCount": 1
+        },
+        {
+          "id": "logger",
+          "label": "logger",
+          "path": "logger",
+          "landmineCount": 0
+        },
+        {
+          "id": "migrator",
+          "label": "migrator",
+          "path": "migrator",
+          "landmineCount": 0
+        },
+        {
+          "id": "schema",
+          "label": "schema",
+          "path": "schema",
+          "severity": "high",
+          "landmineCount": 1
+        },
+        {
+          "id": "tests",
+          "label": "tests",
+          "path": "tests",
+          "severity": "high",
+          "landmineCount": 1
+        },
+        {
+          "id": "utils",
+          "label": "utils",
+          "path": "utils",
+          "landmineCount": 0
+        },
+        {
+          "id": "internal",
+          "label": "internal",
+          "path": "internal",
+          "landmineCount": 0
+        }
+      ],
+      "edges": [
+        {
+          "id": "coupling:generics.go--tests",
+          "source": "generics.go",
+          "target": "tests",
+          "kind": "coupling",
+          "weight": 10
+        }
+      ]
+    },
+    "repoStats": {
+      "fileCount": 185,
+      "languageBreakdown": {
+        "yml": 12,
+        "json": 1,
+        "gitignore": 2,
+        "md": 3,
+        "LICENSE": 1,
+        "go": 162,
+        "mod": 2,
+        "sum": 1,
+        "sh": 1
+      },
+      "commitCount": 100,
+      "pullRequestCount": 50,
+      "contributorCount": 57,
+      "repoAgeDays": 4614,
+      "commitsPerMonth": 4.4
+    },
+    "modelVersions": {
+      "architecture": "meta/llama-3.3-70b-instruct",
+      "history": "meta/llama-3.3-70b-instruct",
+      "risk": "meta/llama-3.3-70b-instruct",
+      "synthesis": "meta/llama-3.3-70b-instruct"
+    },
+    "flaggedClaims": [],
+    "slug": "gorm",
+    "summary": "GORM is a full-featured, developer-friendly ORM library for Golang."
+  }
+]
