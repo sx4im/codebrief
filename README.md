@@ -1,6 +1,9 @@
 <div align="center">
 
-<img src="assets/codebrief-wordmark.svg" alt="Codebrief" width="320" />
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="assets/codebrief-wordmark-dark.svg" />
+  <img src="assets/codebrief-wordmark.svg" alt="Codebrief" width="320" />
+</picture>
 
 ### Know what you inherited before you touch it.
 
