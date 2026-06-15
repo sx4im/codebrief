@@ -98,25 +98,25 @@ export function QAChat({ analysisId }: { analysisId: string }) {
 
   return (
     <section id="q-a" className="space-y-4">
-      <h2 className="font-mono text-xl font-semibold">Q&A</h2>
-      <div className="min-h-52 rounded border border-border bg-panel p-4">
-        {historyLoading ? <p className="text-sm text-muted">Loading Q&A history...</p> : null}
-        {!historyLoading && messages.length === 0 ? <p className="text-sm text-muted">Ask a repo-specific question after analysis completes.</p> : null}
+      <h2 className="font-display text-2xl font-bold tracking-tight text-ink">Q&amp;A</h2>
+      <div className="min-h-52 rounded-lg border border-border bg-card p-4 shadow-card">
+        {historyLoading ? <p className="text-sm text-mute">Loading Q&amp;A history...</p> : null}
+        {!historyLoading && messages.length === 0 ? <p className="text-sm text-mute">Ask a repo-specific question after analysis completes.</p> : null}
         <div className="space-y-3">
           {messages.map((message, index) => (
-            <div key={`${message.timestamp}-${index}`} className={message.error ? "rounded border border-danger/50 bg-danger/10 p-3" : "rounded border border-border bg-background p-3"}>
-              <div className="font-mono text-xs text-muted">{message.role}</div>
-              <p className="mt-1 text-sm leading-6">{message.content}</p>
+            <div key={`${message.timestamp}-${index}`} className={message.error ? "rounded-md border border-severity-critical/40 bg-severity-critical/5 p-3" : "rounded-md border border-border bg-bone/60 p-3"}>
+              <div className="font-mono text-xs uppercase tracking-wide text-mute">{message.role}</div>
+              <p className="mt-1 text-sm leading-6 text-body">{message.content}</p>
               {message.role === "assistant" && message.sources ? (
                 <>
-                  <div className="mt-2 font-mono text-xs uppercase text-muted">confidence {message.confidence}</div>
+                  <div className="mt-2 font-mono text-xs uppercase text-mute">confidence {message.confidence}</div>
                   {message.confidence === "low" ? (
-                    <div className="mt-2 rounded border border-amber/50 bg-amber/10 px-3 py-2 text-xs leading-5 text-amber">
+                    <div className="mt-2 rounded-md border border-severity-medium/30 bg-severity-medium/10 px-3 py-2 text-xs leading-5 text-severity-medium">
                       This answer is uncertain. Review the cited evidence before acting on it.
                     </div>
                   ) : null}
                   <SourceList sources={message.sources} />
-                  {message.caveat ? <p className="mt-2 text-xs leading-5 text-muted">{message.caveat}</p> : null}
+                  {message.caveat ? <p className="mt-2 text-xs leading-5 text-mute">{message.caveat}</p> : null}
                 </>
               ) : null}
             </div>
@@ -130,7 +130,7 @@ export function QAChat({ analysisId }: { analysisId: string }) {
           onKeyDown={(event) => {
             if (event.key === "Enter") void ask();
           }}
-          className="focus-ring min-w-0 flex-1 rounded border border-border bg-panel px-3 py-2 text-sm"
+          className="focus-ring min-w-0 flex-1 rounded-full border border-ink/20 bg-card px-4 py-2 text-sm text-ink placeholder:text-ash"
           placeholder="What would break if I removed the jobs module?"
         />
         <Button onClick={() => void ask()} disabled={loading}>

@@ -89,8 +89,12 @@ async function applyDatabaseCheck(items: HealthItem[]) {
     await getDb().execute(sql`select 1`);
     item.detail = "Configured and reachable";
   } catch (error) {
+    // /api/health is unauthenticated. Raw driver errors can include the database
+    // host/port (and occasionally the connection string), so report only that the
+    // probe failed and keep the detail in server logs.
+    process.stderr.write(`[health] Postgres check failed: ${error instanceof Error ? error.message : String(error)}\n`);
     item.state = "error";
-    item.detail = error instanceof Error ? error.message : "Postgres check failed";
+    item.detail = "Configured but not reachable";
   }
 }
 
@@ -103,8 +107,11 @@ async function applyRedisCheck(items: HealthItem[]) {
     await redis.ping();
     item.detail = "Configured and reachable";
   } catch (error) {
+    // See the Postgres note above: avoid leaking the Redis host/port on the
+    // unauthenticated health endpoint; the full error goes to server logs.
+    process.stderr.write(`[health] Redis check failed: ${error instanceof Error ? error.message : String(error)}\n`);
     item.state = "error";
-    item.detail = error instanceof Error ? error.message : "Redis check failed";
+    item.detail = "Configured but not reachable";
   } finally {
     redis.disconnect();
   }

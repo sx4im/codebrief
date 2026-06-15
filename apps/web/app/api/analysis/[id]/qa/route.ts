@@ -9,7 +9,7 @@ import {
   ServiceConfigurationError,
 } from "@/lib/analysis/repository";
 import { answerQuestion } from "@/lib/ai/qa";
-import { checkRateLimit, clientIp } from "@/lib/rate-limit";
+import { checkRateLimit } from "@/lib/rate-limit";
 
 export async function GET(_: Request, { params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;
@@ -29,7 +29,7 @@ export async function POST(request: Request, { params }: { params: Promise<{ id:
   const { id } = await params;
   const { userId } = await auth();
   if (!userId) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
-  const rateLimit = await checkRateLimit({ key: `qa:${userId}:${id}:${clientIp(request)}`, limit: 30, windowMs: 60 * 60 * 1000 });
+  const rateLimit = await checkRateLimit({ key: `qa:${userId}:${id}`, limit: 30, windowMs: 60 * 60 * 1000 });
   if (!rateLimit.ok) {
     return NextResponse.json(
       { error: "Q&A rate limit exceeded", retryAfterSeconds: rateLimit.retryAfterSeconds },

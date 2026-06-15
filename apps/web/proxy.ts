@@ -1,6 +1,14 @@
 import { clerkMiddleware, createRouteMatcher } from "@clerk/nextjs/server";
 
-const isProtectedRoute = createRouteMatcher(["/dashboard(.*)", "/projects(.*)", "/settings(.*)", "/api/analysis(.*)"]);
+// NB: /api/billing/webhook is intentionally NOT protected — Stripe calls it
+// server-to-server with no Clerk session. Only the user-initiated checkout is gated.
+const isProtectedRoute = createRouteMatcher([
+  "/dashboard(.*)",
+  "/projects(.*)",
+  "/settings(.*)",
+  "/api/analysis(.*)",
+  "/api/billing/checkout(.*)",
+]);
 
 export default clerkMiddleware(async (auth, request) => {
   if (isProtectedRoute(request)) {

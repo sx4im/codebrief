@@ -3,7 +3,7 @@
 @tailwind utilities;
 
 :root {
-  color-scheme: dark;
+  color-scheme: light;
 }
 
 * {
@@ -13,8 +13,11 @@
 html,
 body {
   min-height: 100%;
-  background: #0d0d0d;
-  color: #f4f4f5;
+  background: #f9f7f3;
+  color: #202020;
+  font-family: var(--font-sans), system-ui, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
 }
 
 a {
@@ -30,10 +33,15 @@ textarea {
 }
 
 ::selection {
-  background: rgba(59, 130, 246, 0.35);
+  background: rgba(234, 40, 4, 0.18);
+}
+
+/* Display headlines: Bricolage Grotesque, tight stacking per DESIGN.md. */
+.font-display {
+  font-family: var(--font-display), "Bricolage Grotesque", system-ui, sans-serif;
+  letter-spacing: -0.02em;
 }
 
 .focus-ring {
-  @apply focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue focus-visible:ring-offset-2 focus-visible:ring-offset-background;
+  @apply focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-focus/60 focus-visible:ring-offset-2 focus-visible:ring-offset-canvas;
 }
-

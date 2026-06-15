@@ -7,8 +7,8 @@ export default async function ProgressPage({ params }: { params: Promise<{ analy
     <main className="flex min-h-screen">
       <Sidebar />
       <section className="min-w-0 flex-1 px-4 py-8 lg:px-8">
-        <h1 className="font-mono text-2xl font-semibold">Analysis Progress</h1>
-        <p className="mt-2 text-sm text-muted">Analysis ID: {analysisId}</p>
+        <h1 className="font-display text-3xl font-bold tracking-tight text-ink">Analysis progress</h1>
+        <p className="mt-2 text-sm text-charcoal">Analysis ID: {analysisId}</p>
         <div className="mt-8 max-w-3xl">
           <ProgressTracker analysisId={analysisId} />
         </div>

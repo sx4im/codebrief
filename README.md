@@ -1,40 +1,177 @@
-# Codebrief
+<div align="center">
 
-Codebrief ingests a GitHub repository and produces an AI technical brief for codebase handoff, audit, and due diligence. The brief has four core sections: system narrative, decision archaeology, landmine map, and rewrite assessment.
+<img src="assets/codebrief-wordmark.svg" alt="Codebrief" width="320" />
 
-## Workspace
+### Know what you inherited before you touch it.
 
-- `apps/web` - Next.js App Router web app with Clerk auth, dashboard, analysis trigger APIs, brief viewer, exports, billing routes, and public demo briefs.
-- `packages/pipeline` - BullMQ worker, GitHub ingestion, tree-sitter AST extraction, analysis stages, NVIDIA NIM agents, source validation, artifact storage, and Socket.io progress emitters.
-- `shared/types` - Shared Zod schemas and TypeScript types for briefs, pipeline events, GitHub records, and billing plans.
-- `src/m0` - M0 spike and local tests for source validation, AST parsing, risk scoring, and architecture-agent retry behavior.
+**Codebrief** turns a GitHub repository into an evidence-backed technical brief — system narrative, decision archaeology, a landmine map, and a rewrite assessment — so you can take over an unfamiliar codebase with confidence.
 
-## Setup
+[![License: MIT](https://img.shields.io/badge/License-MIT-0A0A0A.svg?style=flat-square)](LICENSE)
+[![Next.js](https://img.shields.io/badge/Next.js-16-0A0A0A?style=flat-square&logo=nextdotjs&logoColor=white)](https://nextjs.org/)
+[![TypeScript](https://img.shields.io/badge/TypeScript-5-3178C6?style=flat-square&logo=typescript&logoColor=white)](https://www.typescriptlang.org/)
+[![PostgreSQL](https://img.shields.io/badge/PostgreSQL-Drizzle-4169E1?style=flat-square&logo=postgresql&logoColor=white)](https://orm.drizzle.team/)
+[![Redis](https://img.shields.io/badge/Queue-BullMQ%20%2F%20Redis-DC382D?style=flat-square&logo=redis&logoColor=white)](https://docs.bullmq.io/)
+[![Powered by NVIDIA NIM](https://img.shields.io/badge/AI-NVIDIA%20NIM-76B900?style=flat-square&logo=nvidia&logoColor=white)](https://build.nvidia.com/)
+
+[Live demo](#-live-demo) · [How it works](#-how-it-works) · [Quick start](#-quick-start) · [Tech stack](#-tech-stack)
+
+</div>
+
+<br />
+
+<div align="center">
+  <img src="assets/screenshot-landing.png" alt="Codebrief landing page" width="100%" />
+</div>
+
+<br />
+
+## Overview
+
+Inheriting a codebase is one of the riskiest moments in software: the original authors are gone, the context lives in scattered commits and closed PRs, and the README rarely tells you where the bodies are buried. **Codebrief reconstructs that missing context automatically.**
+
+Point it at a repository and a multi-agent pipeline ingests the Git history, parses the source with tree-sitter, scores risk, and synthesizes a structured brief where **every claim cites the commit, PR, file, or metric it came from**. No hand-wavy summaries — just sourced, auditable findings.
+
+> [!NOTE]
+> Codebrief is **free and open source**. Public demo briefs require no account.
+
+## Table of contents
+
+- [What you get](#-what-you-get)
+- [Live demo](#-live-demo)
+- [How it works](#-how-it-works)
+- [Tech stack](#-tech-stack)
+- [Project structure](#-project-structure)
+- [Quick start](#-quick-start)
+- [Verification](#-verification)
+- [Scripts reference](#-scripts-reference)
+- [License](#-license)
+
+## ✦ What you get
+
+Every analysis produces a single, scrollable brief with sourced sections:
+
+| Section | What it answers |
+| --- | --- |
+| **System narrative** | A business-level explanation of what the system does, its data model, and architecture pattern — with citations. |
+| **Decision archaeology** | Why the codebase looks the way it does, reconstructed from commits, PRs, and discussion threads. |
+| **Landmine map** | The risky files and patterns — severity, why they matter, remediation, and effort estimates. |
+| **Rewrite assessment** | A grounded *build-on vs. rewrite* verdict with reasons, risks, and an explicit uncertainty statement. |
+| **Architecture diagram** | An interactive dependency graph; select any module to inspect its coupling and landmines. |
+| **Grounded Q&A** | Ask follow-up questions answered only from the analyzed evidence. |
+| **Exports** | One-click **PDF** and **Markdown** for sharing with stakeholders. |
+
+<div align="center">
+  <img src="assets/screenshot-brief.png" alt="Codebrief technical brief" width="49%" />
+  <img src="assets/screenshot-diagram.png" alt="Interactive architecture diagram" width="49%" />
+</div>
+
+<div align="center">
+  <em>Scroll-driven storytelling brief (left) · interactive architecture diagram (right)</em>
+</div>
+
+## ✦ Live demo
+
+Pre-generated briefs for well-known open-source projects are publicly viewable — no sign-in required:
+
+```
+/demo           → gallery of demo briefs
+/demo/[slug]    → a full brief (e.g. /demo/gorm, /demo/supabase, /demo/django)
+```
+
+Run the app locally (see [Quick start](#-quick-start)) and open <http://localhost:3000/demo>.
+
+## ✦ How it works
+
+Codebrief runs a sequential, durable pipeline. Each stage persists its output before the next begins, so a failed run can be retried with clean inputs and live progress streams to the UI over websockets.
+
+```mermaid
+flowchart LR
+    A[GitHub repo] --> B[Ingestion<br/>commits · PRs · files]
+    B --> C[Static analysis<br/>tree-sitter AST · risk scoring]
+    C --> D{Multi-agent<br/>synthesis}
+    D --> E[Architecture]
+    D --> F[History]
+    D --> G[Risk]
+    D --> H[Synthesis]
+    E & F & G & H --> I[Source validation<br/>every claim must cite evidence]
+    I --> J[(Postgres + R2<br/>artifacts)]
+    J --> K[Technical brief<br/>web · PDF · Markdown]
+```
+
+**Grounding is enforced, not hoped for.** After every agent call, outputs are validated against their citations. Invalid citations trigger one correction retry; claim-like output that still can't be sourced is downgraded to `confidence: 0` rather than shipped as fact. Unrecoverable output fails the analysis instead of polluting the brief.
+
+## ✦ Tech stack
+
+| Layer | Technology |
+| --- | --- |
+| **Web** | Next.js (App Router), React, Tailwind CSS, Framer Motion |
+| **Auth** | Clerk |
+| **AI** | NVIDIA NIM (OpenAI-compatible SDK) — multi-agent, serialized with backoff |
+| **Pipeline** | Node worker, BullMQ on Redis |
+| **Code analysis** | tree-sitter (TS/TSX, Python, Go, Ruby, …) |
+| **Data** | PostgreSQL via Drizzle ORM |
+| **Artifact storage** | Cloudflare R2 (S3-compatible) |
+| **Realtime** | Socket.io progress streaming |
+| **Exports** | Puppeteer (PDF), Markdown serializer |
+| **Observability** | Sentry (browser · server · edge) |
+| **Validation** | Zod schemas shared across web + pipeline |
+
+## ✦ Project structure
+
+This is an npm-workspaces monorepo.
+
+```
+codebrief/
+├── apps/web/            # Next.js app: dashboard, analysis APIs, brief viewer, exports, demos
+├── packages/pipeline/   # BullMQ worker: ingestion, AST, agents, validation, storage, websockets
+├── shared/types/        # Zod schemas & TypeScript types (briefs, events, GitHub records)
+├── src/m0/              # M0 spike: source validation, AST, risk scoring, agent-retry tests
+├── drizzle/             # SQL migrations
+└── assets/              # Brand assets & documentation screenshots
+```
+
+## ✦ Quick start
+
+### Prerequisites
+
+- **Node.js 20+** and npm
+- A **PostgreSQL** database and a **Redis** instance
+- API credentials: **Clerk** (auth), **GitHub** (OAuth + token), **NVIDIA NIM** (AI), **Cloudflare R2** (storage)
+- *Optional:* a Chrome/Chromium binary for PDF export (`PUPPETEER_EXECUTABLE_PATH`)
+
+### 1. Install
 
 ```bash
+git clone https://github.com/sx4im/codebrief.git
+cd codebrief
 npm install
+```
+
+### 2. Configure
+
+```bash
 cp .env.example .env
 ```
 
-Fill `.env` with Clerk, GitHub, Postgres, Redis, NVIDIA NIM, R2, Lemon Squeezy, and optional Puppeteer Chrome values. Secrets are not hardcoded.
+Fill in `.env` with your Clerk, GitHub, Postgres, Redis, NVIDIA NIM, and R2 values. No secrets are hardcoded — the app surfaces explicit configuration errors instead of faking output when credentials are missing.
 
-Apply the database schema after `DATABASE_URL` is set:
+### 3. Migrate the database
 
 ```bash
 npm run db:migrate
 ```
 
-## Development
+### 4. Run
 
-Run the web app, worker, and Socket.io progress server in separate shells:
+Start the web app, the pipeline worker, and the websocket progress server in separate shells:
 
 ```bash
-npm run dev:web
-npm run dev:worker
-npm run dev:ws
+npm run dev:web      # http://localhost:3000
+npm run dev:worker   # BullMQ analysis worker
+npm run dev:ws       # Socket.io progress server
 ```
 
-Start a live analysis from `/projects/new`. The start route creates durable project, analysis, and stage records before enqueueing the BullMQ job. Without credentials, the app shows explicit configuration or queue failures instead of fake live output.
+Open <http://localhost:3000>, browse the demos, or start a live analysis from `/projects/new`.
 
 Check deployment readiness without exposing secrets:
 
@@ -43,58 +180,37 @@ curl http://localhost:3000/api/health
 curl http://localhost:3000/api/health?deep=1
 ```
 
-Failed stages expose retry controls in the progress UI. Retrying creates a new analysis with the original config plus retry metadata so the sequential pipeline is replayed with clean inputs.
+## ✦ Verification
 
-## Corpus Gates
-
-Prepare the five-repo corpus manifest without credentials:
+All gates pass on a clean checkout:
 
 ```bash
-npm run pipeline:corpus -- --mode=dry-run --scope=quick
+npm run typecheck          # tsc across every workspace
+npm test                   # pipeline + web unit/integration suites
+npm run build -w apps/web  # production Next.js build
+npm audit                  # dependency audit
 ```
 
-Run the corpus directly through the pipeline after credentials are set:
+PDF export is exercised end-to-end through the real route (`briefToHtml → puppeteer-core → Chrome`) when `PUPPETEER_EXECUTABLE_PATH` is set; otherwise the route cleanly falls back to HTML.
 
-```bash
-npm run pipeline:corpus -- --mode=direct --scope=full
-```
+## ✦ Scripts reference
 
-Enqueue the corpus through BullMQ instead:
+| Command | Description |
+| --- | --- |
+| `npm run dev:web` | Run the Next.js web app |
+| `npm run dev:worker` | Run the BullMQ analysis worker |
+| `npm run dev:ws` | Run the Socket.io progress server |
+| `npm run db:migrate` | Apply database migrations |
+| `npm run db:studio` | Open Drizzle Studio |
+| `npm run pipeline:corpus -- --mode=dry-run --scope=quick` | Prepare the multi-language corpus manifest |
+| `npm run pipeline:build-demo-briefs` | Regenerate the public demo briefs |
+| `npm run typecheck` · `npm test` | Full verification |
 
-```bash
-npm run pipeline:corpus -- --mode=queue --scope=full
-```
+## ✦ License
 
-Verify generated brief artifacts:
+[MIT](LICENSE) © 2026 Saim Shafique
 
-```bash
-npm run pipeline:verify-briefs -- artifacts/corpus/<run-id>/pipeline
-```
-
-The default corpus covers one repo per language family required by the M1 gate: `shadcn-ui/ui` (TypeScript), `django/django` (Python), `go-gorm/gorm` (Go), `rails/rails` (Ruby), and `supabase/supabase` (mixed).
-
-## Verification
-
-```bash
-npm run typecheck
-npm test
-npm run build -w apps/web
-npm audit
-```
-
-The M0 runner still requires real credentials:
-
-```bash
-npm run m0
-```
-
-M0 passes only when `supabase/supabase` is ingested through the authenticated GitHub API, tree-sitter parses TS/TSX files, risk scores are computed, the Architecture Agent identifies Supabase as a Firebase alternative built on Postgres, at least three claims have specific file or PR sources, and source validation passes.
-
-## Production Notes
-
-- NVIDIA NIM calls use the OpenAI SDK with `baseURL=https://integrate.api.nvidia.com/v1`.
-- Agent calls are serialized and retry 429s with exponential backoff.
-- Agent outputs are validated after every call. Invalid citations trigger one correction retry; still-invalid claim-like output is downgraded to `confidence: 0` with inferred validation-failure sources where the schema can represent that repair. Invalid unrecoverable output fails the analysis rather than entering a brief.
-- Large raw pipeline artifacts are written through the artifact store and indexed in Postgres.
-- Sentry is initialized for browser, server, and edge runtimes when `SENTRY_DSN` or `NEXT_PUBLIC_SENTRY_DSN` is configured. Source-map upload is enabled only when `SENTRY_AUTH_TOKEN`, `SENTRY_ORG`, and `SENTRY_PROJECT` are set.
-- Public demo briefs live at `/demo` and `/demo/[slug]`. They are static demos, not substitutes for credentialed M0-M5 gate evidence.
+<div align="center">
+<br />
+<sub>Built with care for the engineers who inherit what others left behind.</sub>
+</div>

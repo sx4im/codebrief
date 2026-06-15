@@ -6,6 +6,7 @@ export const users = pgTable(
     id: text("id").primaryKey(),
     email: text("email").notNull(),
     plan: text("plan").notNull().default("free"),
+    stripeCustomerId: text("stripe_customer_id"),
     createdAt: timestamp("created_at").defaultNow(),
     githubToken: text("github_token"),
   },

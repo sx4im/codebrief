@@ -1,88 +1,221 @@
-import { ArrowRight, FileSearch, ShieldCheck, TerminalSquare } from "lucide-react";
+import {
+  AlertTriangle,
+  ArrowRight,
+  Cpu,
+  FileCheck2,
+  FileText,
+  Gauge,
+  GitBranch,
+  Github,
+  MessageSquare,
+  Network,
+  ScanSearch,
+  ShieldCheck,
+} from "lucide-react";
 import { ButtonLink } from "@/components/ui/Button";
+import { MarketingNav } from "@/components/layout/MarketingNav";
+import { Footer } from "@/components/layout/Footer";
 import { demoBriefs, sampleBrief } from "@/lib/sample-data";
+
+const severityTone: Record<string, string> = {
+  critical: "text-severity-critical",
+  high: "text-severity-high",
+  medium: "text-severity-medium",
+  low: "text-severity-low",
+};
 
 export default function LandingPage() {
   return (
-    <main className="min-h-screen bg-background">
-      <header className="border-b border-border bg-panel/80">
-        <div className="mx-auto flex max-w-7xl items-center justify-between px-4 py-4">
-          <div className="font-mono text-lg font-semibold">Codebrief</div>
-          <div className="flex gap-2">
-            <ButtonLink href="/demo" variant="secondary">Demo</ButtonLink>
-            <ButtonLink href="/dashboard">Analyze repo</ButtonLink>
-          </div>
-        </div>
-      </header>
-      <section className="mx-auto grid max-w-7xl gap-10 px-4 py-16 lg:grid-cols-[1fr_520px] lg:py-24">
+    <div className="min-h-screen bg-canvas">
+      <MarketingNav />
+
+      {/* Hero */}
+      <section className="mx-auto grid max-w-content gap-12 px-4 py-16 sm:px-6 lg:grid-cols-[1fr_480px] lg:items-center lg:py-24">
         <div>
-          <div className="inline-flex rounded border border-border bg-panel px-3 py-2 font-mono text-xs text-muted">
+          <span className="inline-flex items-center gap-2 rounded-full border border-border bg-card px-3 py-1.5 text-xs font-medium text-charcoal">
+            <span className="h-1.5 w-1.5 rounded-full bg-primary" />
             AI technical due diligence for inherited codebases
-          </div>
-          <h1 className="mt-6 max-w-4xl font-mono text-4xl font-semibold leading-tight md:text-6xl">
+          </span>
+          <h1 className="font-display mt-6 max-w-[14ch] text-5xl font-bold leading-[1.02] tracking-tightest text-ink sm:text-6xl lg:text-[68px]">
             Know what you inherited before you touch it.
           </h1>
-          <p className="mt-6 max-w-2xl text-lg leading-8 text-muted">
-            Codebrief ingests GitHub history, PRs, docs, AST structure, dependencies, and risk signals to produce a sourced technical brief: narrative, decisions, landmines, and rewrite assessment.
+          <p className="mt-6 max-w-xl text-lg leading-relaxed text-charcoal">
+            Codebrief ingests GitHub history, PRs, docs, AST structure, dependencies, and risk signals to produce a
+            sourced technical brief: narrative, decisions, landmines, and a rewrite assessment.
           </p>
-          <div className="mt-8 flex flex-wrap gap-3">
+          <div className="mt-8 flex flex-wrap items-center gap-3">
             <ButtonLink href="/projects/new">
               Analyze your first repo free
               <ArrowRight className="h-4 w-4" />
             </ButtonLink>
-            <ButtonLink href="/demo" variant="secondary">View public demo</ButtonLink>
+            <ButtonLink href="/demo" variant="secondary">
+              View public demo
+            </ButtonLink>
           </div>
-          <a href="/demo" className="mt-6 inline-flex items-center gap-2 text-sm text-muted hover:text-text">
-            <ShieldCheck className="h-4 w-4 text-blue" />
+          <a
+            href="/demo"
+            className="mt-7 inline-flex items-center gap-2 text-sm text-mute transition-colors hover:text-ink"
+          >
+            <ShieldCheck className="h-4 w-4 text-primary" />
             {demoBriefs.length} open-source repos analyzed, publicly viewable
           </a>
         </div>
-        <div className="rounded border border-border bg-panel p-5">
-          <div className="font-mono text-xs uppercase text-muted">demo brief</div>
-          <h2 className="mt-2 text-xl font-semibold">{sampleBrief.repoFullName}</h2>
+
+        {/* Demo brief preview card */}
+        <div className="rounded-lg border border-border bg-card p-6 shadow-soft">
+          <div className="flex items-center justify-between">
+            <span className="text-xs font-semibold uppercase tracking-wide text-mute">Demo brief</span>
+            <span className="rounded-full bg-success/10 px-2.5 py-1 text-xs font-medium text-success">complete</span>
+          </div>
+          <h2 className="mt-3 font-mono text-lg font-semibold text-ink">{sampleBrief.repoFullName}</h2>
           <div className="mt-5 space-y-3">
-            {sampleBrief.topFindings.map((finding) => (
-              <div key={finding.title} className="rounded border border-border bg-background p-4">
-                <div className="text-xs uppercase text-amber">{finding.severity}</div>
-                <div className="mt-1 font-semibold">{finding.title}</div>
-                <p className="mt-2 text-sm leading-6 text-muted">{finding.claim}</p>
+            {sampleBrief.topFindings.slice(0, 3).map((finding) => (
+              <div key={finding.title} className="rounded-md border border-border bg-bone/60 p-4">
+                <div className={`text-[11px] font-semibold uppercase tracking-wide ${severityTone[finding.severity] ?? "text-charcoal"}`}>
+                  {finding.severity}
+                </div>
+                <div className="mt-1 font-semibold text-ink">{finding.title}</div>
+                <p className="mt-1.5 text-sm leading-6 text-charcoal">{finding.claim}</p>
               </div>
             ))}
           </div>
         </div>
       </section>
-      <section className="border-y border-border bg-panel">
-        <div className="mx-auto grid max-w-7xl gap-4 px-4 py-12 md:grid-cols-3">
+
+      {/* What is Codebrief */}
+      <section className="mx-auto max-w-content px-4 pb-4 sm:px-6">
+        <div className="rounded-lg border border-border bg-card p-8 sm:p-10">
+          <span className="text-xs font-semibold uppercase tracking-[0.18em] text-primary">What is Codebrief</span>
+          <p className="font-display mt-4 max-w-4xl text-2xl font-semibold leading-snug tracking-tight text-ink sm:text-[28px]">
+            Inheriting a codebase means the authors are gone and the context lives in scattered commits and closed PRs.
+            Codebrief reconstructs that missing context automatically — and shows its work.
+          </p>
+          <p className="mt-4 max-w-3xl text-base leading-relaxed text-charcoal">
+            Point it at any repository and it reads the Git history, the pull requests, the docs, and the source itself,
+            then writes a structured technical brief where <span className="font-semibold text-ink">every claim cites the
+            evidence it came from</span>. No vague summaries — auditable findings you can act on.
+          </p>
+        </div>
+      </section>
+
+      {/* How it works */}
+      <section className="mx-auto max-w-content px-4 py-16 sm:px-6">
+        <div className="max-w-2xl">
+          <span className="text-xs font-semibold uppercase tracking-[0.18em] text-primary">How it works</span>
+          <h2 className="font-display mt-3 text-3xl font-bold tracking-tight text-ink sm:text-4xl">
+            From repository to sourced brief in four steps
+          </h2>
+          <p className="mt-3 text-base leading-relaxed text-charcoal">
+            No setup and no instrumentation. A sequential, multi-agent pipeline does the reading for you and streams its
+            progress live.
+          </p>
+        </div>
+        <div className="mt-12 grid gap-6 md:grid-cols-2 lg:grid-cols-4">
           {[
-            { icon: FileSearch, title: "Narrative", text: "Business-level system explanation with citations." },
-            { icon: TerminalSquare, title: "Archaeology", text: "Architectural decisions reconstructed from history." },
-            { icon: ShieldCheck, title: "Landmines", text: "Risk-ranked files and remediation plans." },
-          ].map((item) => (
-            <div key={item.title} className="rounded border border-border bg-background p-5">
-              <item.icon className="h-5 w-5 text-blue" />
-              <h3 className="mt-4 font-semibold">{item.title}</h3>
-              <p className="mt-2 text-sm leading-6 text-muted">{item.text}</p>
+            { icon: Github, title: "Connect a repo", text: "Paste a GitHub URL or pick a repository from your connected account." },
+            { icon: ScanSearch, title: "Ingest & analyze", text: "Codebrief reads commit history, PRs, and docs, then parses the source with tree-sitter and scores risk." },
+            { icon: Cpu, title: "Multi-agent synthesis", text: "Specialized agents reconstruct the narrative, decisions, and risks, then weigh a build-on vs. rewrite verdict." },
+            { icon: FileCheck2, title: "Get a sourced brief", text: "Every claim is validated against its citations. Read it on the web, export to PDF/Markdown, or ask follow-ups." },
+          ].map((step, i) => (
+            <div key={step.title} className="relative rounded-lg border border-border bg-card p-6">
+              <div className="flex items-center justify-between">
+                <span className="inline-flex h-10 w-10 items-center justify-center rounded-full bg-bone">
+                  <step.icon className="h-5 w-5 text-ink" />
+                </span>
+                <span className="font-mono text-xs font-semibold tabular-nums text-stone">0{i + 1}</span>
+              </div>
+              <h3 className="mt-5 text-base font-semibold text-ink">{step.title}</h3>
+              <p className="mt-2 text-sm leading-6 text-charcoal">{step.text}</p>
             </div>
           ))}
         </div>
       </section>
-      <section className="mx-auto max-w-7xl px-4 py-16">
-        <div className="rounded border border-border bg-panel p-8 text-center">
-          <h2 className="font-mono text-2xl font-semibold">Free and open</h2>
-          <p className="mx-auto mt-3 max-w-2xl text-sm leading-6 text-muted">
-            Every feature is free: unlimited analyses, public and private repositories, source-grounded Q&amp;A, and Markdown
-            and PDF exports. No plans, no usage caps, no card required.
+
+      {/* What's in a brief */}
+      <section className="border-y border-border bg-bone">
+        <div className="mx-auto max-w-content px-4 py-16 sm:px-6">
+          <span className="text-xs font-semibold uppercase tracking-[0.18em] text-primary">What&apos;s in a brief</span>
+          <h2 className="font-display mt-3 text-3xl font-bold tracking-tight text-ink sm:text-4xl">
+            Everything you need to take over with confidence
+          </h2>
+          <p className="mt-3 max-w-2xl text-base leading-relaxed text-charcoal">
+            Each brief bundles seven evidence-backed sections — every claim cites the commit, PR, file, or metric it came from.
           </p>
-          <div className="mt-6 flex flex-wrap justify-center gap-3">
+          <div className="mt-10 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
+            {[
+              { icon: FileText, title: "System narrative", text: "A business-level explanation of what the system does, its data model, and its architecture pattern." },
+              { icon: GitBranch, title: "Decision archaeology", text: "Why the code looks the way it does, reconstructed from commits, PRs, and discussion threads." },
+              { icon: AlertTriangle, title: "Landmine map", text: "Risk-ranked files and coupling traps with severity, why they matter, and remediation estimates." },
+              { icon: Gauge, title: "Rewrite assessment", text: "A grounded build-on vs. rewrite verdict — with reasons, risks, and an explicit uncertainty statement." },
+              { icon: Network, title: "Architecture diagram", text: "An interactive dependency graph; select any module to inspect its coupling and landmines." },
+              { icon: MessageSquare, title: "Grounded Q&A + exports", text: "Ask follow-up questions answered only from the evidence, then export to PDF or Markdown." },
+            ].map((item) => (
+              <div key={item.title} className="rounded-lg border border-border bg-card p-6">
+                <span className="inline-flex h-10 w-10 items-center justify-center rounded-full bg-bone">
+                  <item.icon className="h-5 w-5 text-ink" />
+                </span>
+                <h3 className="mt-5 text-lg font-semibold text-ink">{item.title}</h3>
+                <p className="mt-2 text-sm leading-6 text-charcoal">{item.text}</p>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Grounded guarantee strip */}
+      <section className="mx-auto max-w-content px-4 py-16 sm:px-6">
+        <div className="grid gap-8 rounded-lg border border-border bg-card p-8 sm:p-10 md:grid-cols-[1.2fr_1fr] md:items-center">
+          <div>
+            <span className="text-xs font-semibold uppercase tracking-[0.18em] text-primary">Grounded, not guessed</span>
+            <h2 className="font-display mt-3 text-2xl font-bold tracking-tight text-ink sm:text-3xl">
+              If a claim can&apos;t be sourced, it doesn&apos;t ship as fact
+            </h2>
+            <p className="mt-4 text-base leading-relaxed text-charcoal">
+              After every agent step, outputs are validated against their citations. Invalid citations trigger a
+              correction retry; claim-like output that still can&apos;t be sourced is downgraded rather than presented as
+              truth. You can trust the brief because you can check it.
+            </p>
+          </div>
+          <div className="space-y-3">
+            {[
+              "Every finding links to a commit, PR, file, or metric",
+              "Confidence scores on each claim",
+              "Source-grounded Q&A over the analyzed repo",
+              "3 analyses free, then $50 once for lifetime access",
+            ].map((point) => (
+              <div key={point} className="flex items-start gap-3 rounded-md border border-border bg-bone/50 px-4 py-3">
+                <ShieldCheck className="mt-0.5 h-4 w-4 shrink-0 text-primary" />
+                <span className="text-sm leading-6 text-charcoal">{point}</span>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Closing CTA — dark band */}
+      <section className="mx-auto max-w-content px-4 py-16 sm:px-6">
+        <div className="rounded-lg bg-surface-dark px-8 py-14 text-center">
+          <h2 className="font-display text-3xl font-bold tracking-tight text-on-dark sm:text-4xl">Start free, pay once</h2>
+          <p className="mx-auto mt-4 max-w-2xl text-base leading-relaxed text-on-dark-mute">
+            Run your first 3 repository analyses free. Unlock unlimited analyses forever with a one-time $50 payment —
+            every feature included, no subscription.
+          </p>
+          <div className="mt-8 flex flex-wrap justify-center gap-3">
             <ButtonLink href="/projects/new">
               Analyze a repo
               <ArrowRight className="h-4 w-4" />
             </ButtonLink>
-            <ButtonLink href="/demo" variant="secondary">Browse demo briefs</ButtonLink>
+            <ButtonLink
+              href="/demo"
+              className="h-11 border border-white/25 bg-transparent px-6 text-on-dark hover:bg-white/10"
+            >
+              Browse demo briefs
+            </ButtonLink>
           </div>
         </div>
       </section>
-    </main>
+
+      <Footer />
+    </div>
   );
 }
-

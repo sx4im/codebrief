@@ -11,6 +11,7 @@ import { QAChat } from "@/components/brief/QAChat";
 import { ArchitectureDiagram } from "@/components/diagram/ArchitectureDiagram";
 import { ButtonLink } from "@/components/ui/Button";
 import { FlaggedClaims } from "@/components/brief/FlaggedClaims";
+import { ScrollProgress, StoryHero, Chapter, MotionProvider } from "@/components/brief/StoryScroll";
 import { getBriefForUser, ServiceConfigurationError } from "@/lib/analysis/repository";
 
 export default async function BriefPage({ params }: { params: Promise<{ projectId: string; analysisId: string }> }) {
@@ -47,29 +48,7 @@ export default async function BriefPage({ params }: { params: Promise<{ projectI
               actionHref={`/projects/${projectId}/${analysisId}/progress`}
             />
           ) : (
-            <>
-              <div className="flex flex-wrap items-start justify-between gap-4">
-                <div>
-                  <div className="font-mono text-xs uppercase text-muted">technical brief</div>
-                  <h1 className="mt-2 font-mono text-3xl font-semibold">{brief.repoFullName}</h1>
-                  <p className="mt-2 text-sm text-muted">Models: {Object.values(brief.modelVersions).join(", ")}</p>
-                </div>
-                <div className="flex gap-2">
-                  <ButtonLink href={`/api/analysis/${analysisId}/export/md`} variant="secondary">Markdown</ButtonLink>
-                  <ButtonLink href={`/api/analysis/${analysisId}/export/pdf`} variant="secondary">PDF</ButtonLink>
-                </div>
-              </div>
-              <div className="mt-10 space-y-12">
-                <TopFindings findings={brief.topFindings} />
-                <FlaggedClaims claims={brief.flaggedClaims} />
-                <SystemNarrative narrative={brief.systemNarrative} />
-                <DecisionArchaeology decisions={brief.decisions} />
-                <LandmineMap landmines={brief.landmines} />
-                <RewriteAssessment assessment={brief.assessment} />
-                <QAChat analysisId={analysisId} />
-                <ArchitectureDiagram diagram={brief.architectureDiagram} landmines={brief.landmines} />
-              </div>
-            </>
+            <BriefStory analysisId={analysisId} brief={brief} />
           )}
         </div>
       </section>
@@ -77,14 +56,53 @@ export default async function BriefPage({ params }: { params: Promise<{ projectI
   );
 }
 
+type Brief = NonNullable<Awaited<ReturnType<typeof getBriefForUser>>>;
+
+function BriefStory({ analysisId, brief }: { analysisId: string; brief: Brief }) {
+  const chapters = [
+    <TopFindings key="findings" findings={brief.topFindings} />,
+    <FlaggedClaims key="claims" claims={brief.flaggedClaims} />,
+    <SystemNarrative key="narrative" narrative={brief.systemNarrative} />,
+    <DecisionArchaeology key="decisions" decisions={brief.decisions} />,
+    <LandmineMap key="landmines" landmines={brief.landmines} />,
+    <RewriteAssessment key="assessment" assessment={brief.assessment} />,
+    <QAChat key="qa" analysisId={analysisId} />,
+    <ArchitectureDiagram key="diagram" diagram={brief.architectureDiagram} landmines={brief.landmines} />,
+  ];
+
+  return (
+    <MotionProvider>
+      <ScrollProgress />
+      <StoryHero
+        eyebrow="Technical brief"
+        title={brief.repoFullName}
+        subtitle={brief.assessment.uncertainty}
+        action={
+          <div className="flex gap-2">
+            <ButtonLink href={`/api/analysis/${analysisId}/export/md`} variant="secondary">Markdown</ButtonLink>
+            <ButtonLink href={`/api/analysis/${analysisId}/export/pdf`} variant="secondary">PDF</ButtonLink>
+          </div>
+        }
+      />
+      <div className="mt-20 space-y-24">
+        {chapters.map((section, i) => (
+          <Chapter key={i} index={i + 1} total={chapters.length}>
+            {section}
+          </Chapter>
+        ))}
+      </div>
+    </MotionProvider>
+  );
+}
+
 function StatePanel({ icon, title, body, actionHref }: { icon: "pending" | "error"; title: string; body: string; actionHref: string }) {
   const Icon = icon === "error" ? AlertTriangle : Clock;
   return (
-    <div className="flex max-w-2xl gap-3 rounded border border-border bg-panel p-5">
-      <Icon className={icon === "error" ? "mt-0.5 h-5 w-5 text-danger" : "mt-0.5 h-5 w-5 text-blue"} />
+    <div className="flex max-w-2xl gap-3 rounded-lg border border-border bg-card p-5 shadow-card">
+      <Icon className={icon === "error" ? "mt-0.5 h-5 w-5 text-severity-critical" : "mt-0.5 h-5 w-5 text-primary"} />
       <div>
-        <div className="font-semibold">{title}</div>
-        <p className="mt-2 text-sm leading-6 text-muted">{body}</p>
+        <div className="font-semibold text-ink">{title}</div>
+        <p className="mt-2 text-sm leading-6 text-charcoal">{body}</p>
         <ButtonLink href={actionHref} variant="secondary" className="mt-4">View progress</ButtonLink>
       </div>
     </div>

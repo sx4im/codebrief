@@ -7,6 +7,14 @@ import { SystemNarrative } from "@/components/brief/SystemNarrative";
 import { TopFindings } from "@/components/brief/TopFindings";
 import { FlaggedClaims } from "@/components/brief/FlaggedClaims";
 import { ButtonLink } from "@/components/ui/Button";
+import { MarketingNav } from "@/components/layout/MarketingNav";
+import { Footer } from "@/components/layout/Footer";
+import {
+  ScrollProgress,
+  StoryHero,
+  Chapter,
+  MotionProvider,
+} from "@/components/brief/StoryScroll";
 import { demoBriefs, getDemoBrief } from "@/lib/sample-data";
 
 export function generateStaticParams() {
@@ -18,27 +26,46 @@ export default async function PublicDemoBriefPage({ params }: { params: Promise<
   const brief = getDemoBrief(slug);
   if (!brief) notFound();
 
+  const chapters = [
+    <TopFindings key="findings" findings={brief.topFindings} />,
+    <FlaggedClaims key="claims" claims={brief.flaggedClaims} />,
+    <SystemNarrative key="narrative" narrative={brief.systemNarrative} />,
+    <DecisionArchaeology key="decisions" decisions={brief.decisions} />,
+    <LandmineMap key="landmines" landmines={brief.landmines} />,
+    <RewriteAssessment key="assessment" assessment={brief.assessment} />,
+    <ArchitectureDiagram
+      key="diagram"
+      diagram={brief.architectureDiagram}
+      landmines={brief.landmines}
+    />,
+  ];
+
   return (
-    <main className="min-h-screen px-4 py-8 lg:px-8">
-      <div className="mx-auto max-w-7xl">
-        <div className="flex flex-wrap items-start justify-between gap-4">
-          <div>
-            <div className="font-mono text-xs uppercase text-muted">public demo brief</div>
-            <h1 className="mt-2 font-mono text-3xl font-semibold">{brief.repoFullName}</h1>
-            <p className="mt-2 max-w-3xl text-sm leading-6 text-muted">{brief.assessment.uncertainty}</p>
+    <div className="min-h-screen bg-canvas">
+      <MotionProvider>
+        <ScrollProgress />
+        <MarketingNav />
+        <main className="mx-auto max-w-content px-4 py-16 sm:px-6 lg:px-8">
+          <StoryHero
+            eyebrow="Public demo brief"
+            title={brief.repoFullName}
+            subtitle={brief.assessment.uncertainty}
+            action={
+              <ButtonLink href="/demo" variant="secondary">
+                All demos
+              </ButtonLink>
+            }
+          />
+          <div className="mt-24 space-y-28">
+            {chapters.map((section, i) => (
+              <Chapter key={i} index={i + 1} total={chapters.length}>
+                {section}
+              </Chapter>
+            ))}
           </div>
-          <ButtonLink href="/demo" variant="secondary">All demos</ButtonLink>
-        </div>
-        <div className="mt-10 space-y-12">
-          <TopFindings findings={brief.topFindings} />
-          <FlaggedClaims claims={brief.flaggedClaims} />
-          <SystemNarrative narrative={brief.systemNarrative} />
-          <DecisionArchaeology decisions={brief.decisions} />
-          <LandmineMap landmines={brief.landmines} />
-          <RewriteAssessment assessment={brief.assessment} />
-          <ArchitectureDiagram diagram={brief.architectureDiagram} landmines={brief.landmines} />
-        </div>
-      </div>
-    </main>
+        </main>
+        <Footer />
+      </MotionProvider>
+    </div>
   );
 }

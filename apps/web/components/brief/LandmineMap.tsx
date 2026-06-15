@@ -6,6 +6,7 @@ import type { Landmine, LandmineCategory, Severity, SourceCitation } from "@code
 import { Button } from "@/components/ui/Button";
 import { ConfidenceBadge } from "./ConfidenceBadge";
 import { SourceList } from "./SourceList";
+import { severityBadgeClass } from "@/lib/severity";
 
 const severityOrder: Record<Severity, number> = { critical: 0, high: 1, medium: 2, low: 3 };
 const severityOptions: Array<Severity | "all"> = ["all", "critical", "high", "medium", "low"];
@@ -57,8 +58,8 @@ export function LandmineMap({ landmines }: { landmines: Landmine[] }) {
     <section id="landmine-map" className="space-y-4">
       <div className="flex flex-wrap items-start justify-between gap-3">
         <div>
-          <h2 className="font-mono text-xl font-semibold">Landmine Map</h2>
-          <p className="mt-2 text-sm leading-6 text-muted">
+          <h2 className="font-display text-2xl font-bold tracking-tight text-ink">Landmine map</h2>
+          <p className="mt-2 text-sm leading-6 text-charcoal">
             Filter, sort, expand, and export evidenced risks before planning a handoff or refactor.
           </p>
         </div>
@@ -68,7 +69,7 @@ export function LandmineMap({ landmines }: { landmines: Landmine[] }) {
             <select
               value={severity}
               onChange={(event) => setSeverity(event.target.value as Severity | "all")}
-              className="focus-ring h-10 rounded border border-border bg-panel px-3 text-sm text-text"
+              className="focus-ring h-10 rounded-md border border-border bg-card px-3 text-sm text-ink"
             >
               {severityOptions.map((option) => (
                 <option key={option} value={option}>{option === "all" ? "All severities" : option}</option>
@@ -80,7 +81,7 @@ export function LandmineMap({ landmines }: { landmines: Landmine[] }) {
             <select
               value={category}
               onChange={(event) => setCategory(event.target.value as LandmineCategory | "all")}
-              className="focus-ring h-10 rounded border border-border bg-panel px-3 text-sm text-text"
+              className="focus-ring h-10 rounded-md border border-border bg-card px-3 text-sm text-ink"
             >
               <option value="all">All categories</option>
               {categories.map((item) => (
@@ -127,35 +128,35 @@ export function LandmineMap({ landmines }: { landmines: Landmine[] }) {
                   >
                     <td className="min-w-56 px-4 py-4">
                       <div className="flex items-start gap-2">
-                        {isExpanded ? <ChevronUp className="mt-0.5 h-4 w-4 shrink-0 text-muted" /> : <ChevronDown className="mt-0.5 h-4 w-4 shrink-0 text-muted" />}
-                        <span className="font-mono text-xs text-blue">{landmine.location}</span>
+                        {isExpanded ? <ChevronUp className="mt-0.5 h-4 w-4 shrink-0 text-mute" /> : <ChevronDown className="mt-0.5 h-4 w-4 shrink-0 text-mute" />}
+                        <span className="font-mono text-xs text-ink">{landmine.location}</span>
                       </div>
                     </td>
                     <td className="min-w-40 px-4 py-4">{landmine.category}</td>
                     <td className="px-4 py-4">
-                      <span className={`rounded border px-2 py-1 text-xs ${severityClass(landmine.severity)}`}>{landmine.severity}</span>
+                      <span className={`rounded-full border px-2.5 py-1 text-xs font-medium ${severityBadgeClass[landmine.severity]}`}>{landmine.severity}</span>
                     </td>
                     <td className="px-4 py-4">
                       <ConfidenceBadge confidence={landmine.confidence} />
                     </td>
                     <td className="min-w-80 px-4 py-4">
-                      <div className="text-zinc-300">{landmine.remediation}</div>
+                      <div className="text-charcoal">{landmine.remediation}</div>
                     </td>
-                    <td className="px-4 py-4 font-mono text-xs text-muted">{landmine.priority}</td>
+                    <td className="px-4 py-4 font-mono text-xs text-mute">{landmine.priority}</td>
                   </tr>
                   {isExpanded ? (
-                    <tr className="border-t border-border bg-background">
+                    <tr className="border-t border-border bg-bone/50">
                       <td colSpan={6} className="px-4 py-4">
                         <div className="grid gap-4 lg:grid-cols-[1fr_1fr]">
                           <div>
-                            <div className="font-mono text-xs uppercase text-muted">Evidence and explanation</div>
-                            <p className="mt-2 text-sm leading-6 text-zinc-300">{landmine.explanation}</p>
+                            <div className="font-mono text-xs uppercase text-mute">Evidence and explanation</div>
+                            <p className="mt-2 text-sm leading-6 text-body">{landmine.explanation}</p>
                             <SourceList sources={landmine.evidence} />
                           </div>
                           <div>
-                            <div className="font-mono text-xs uppercase text-muted">Remediation plan</div>
-                            <p className="mt-2 text-sm leading-6 text-zinc-300">{landmine.remediation}</p>
-                            <div className="mt-3 rounded border border-border bg-panel px-3 py-2 font-mono text-xs text-muted">
+                            <div className="font-mono text-xs uppercase text-mute">Remediation plan</div>
+                            <p className="mt-2 text-sm leading-6 text-body">{landmine.remediation}</p>
+                            <div className="mt-3 rounded-md border border-border bg-card px-3 py-2 font-mono text-xs text-charcoal">
                               Estimate: {landmine.remediationEstimate}
                             </div>
                           </div>
@@ -193,9 +194,9 @@ function SortableHeader({
 }) {
   return (
     <th className="px-4 py-3">
-      <button type="button" onClick={onClick} className="focus-ring inline-flex cursor-pointer items-center gap-1 rounded text-left transition-colors hover:text-text">
+      <button type="button" onClick={onClick} className="focus-ring inline-flex cursor-pointer items-center gap-1 rounded text-left transition-colors hover:text-ink">
         {label}
-        <ArrowUpDown className={active ? "h-3.5 w-3.5 text-blue" : "h-3.5 w-3.5"} />
+        <ArrowUpDown className={active ? "h-3.5 w-3.5 text-ink" : "h-3.5 w-3.5"} />
         <span className="sr-only">{active ? `sorted ${direction}` : "sort"}</span>
       </button>
     </th>
@@ -212,13 +213,6 @@ function compareLandmines(a: Landmine, b: Landmine, key: SortKey, direction: Sor
 
 function landmineId(landmine: Landmine): string {
   return `${landmine.location}-${landmine.category}-${landmine.priority}`;
-}
-
-function severityClass(severity: Severity): string {
-  if (severity === "critical") return "border-danger/70 bg-danger/15 text-red-200";
-  if (severity === "high") return "border-orange-500/70 bg-orange-500/15 text-orange-200";
-  if (severity === "medium") return "border-amber/70 bg-amber/15 text-amber";
-  return "border-border bg-panel2 text-muted";
 }
 
 function toLandmineCsv(landmines: Landmine[]): string {

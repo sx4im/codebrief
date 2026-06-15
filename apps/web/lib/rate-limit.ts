@@ -47,8 +47,3 @@ function localRateLimit({ key, limit, windowMs }: RateLimitOptions): RateLimitRe
     retryAfterSeconds: Math.max(1, Math.ceil((bucket.resetAt - now) / 1000)),
   };
 }
-
-export function clientIp(request: Request): string {
-  const forwarded = request.headers.get("x-forwarded-for")?.split(",")[0]?.trim();
-  return forwarded || request.headers.get("x-real-ip") || "unknown";
-}

@@ -2,7 +2,7 @@ import assert from "node:assert/strict";
 import { mkdtemp, readFile, rm } from "node:fs/promises";
 import os from "node:os";
 import path from "node:path";
-import { storeAnalysisUpload, validateUpload } from "./analysis-artifacts";
+import { isOwnedUploadKey, storeAnalysisUpload, validateUpload } from "./analysis-artifacts";
 
 const artifactDir = await mkdtemp(path.join(os.tmpdir(), "codebrief-upload-artifacts-"));
 const originalDriver = process.env.ARTIFACT_STORAGE_DRIVER;
@@ -43,6 +43,21 @@ try {
   assert.throws(() => validateUpload("issues", "issues.json", 10), /Issue uploads must be CSV/);
   assert.throws(() => validateUpload("docs", "notes.md", 0), /empty/);
   assert.throws(() => validateUpload("issues", "issues.csv", 21 * 1024 * 1024), /20 MB/);
+
+  // Artifact-key ownership guard (IDOR protection on the analysis-start route).
+  // A user may only reference an upload key produced under their own prefix.
+  assert.equal(isOwnedUploadKey("user:test@example.com", docs.key), true);
+  assert.equal(isOwnedUploadKey("user_123", issues.key), true);
+  // Same key, different user -> rejected (cross-account reference).
+  assert.equal(isOwnedUploadKey("user_123", docs.key), false);
+  assert.equal(isOwnedUploadKey("user:test@example.com", issues.key), false);
+  // Internal pipeline artifacts (`<analysisId>/...`, no uploads/ prefix) -> rejected.
+  assert.equal(isOwnedUploadKey("user_123", "analysis-42/architecture.json"), false);
+  // Path traversal and empty/leading-slash edge cases -> rejected.
+  assert.equal(isOwnedUploadKey("user_123", "uploads/user_123/../user_456/docs/x"), false);
+  assert.equal(isOwnedUploadKey("user_123", ""), false);
+  // A leading slash is normalized away before the prefix check.
+  assert.equal(isOwnedUploadKey("user_123", `/${issues.key}`), true);
 } finally {
   if (originalDriver === undefined) {
     delete process.env.ARTIFACT_STORAGE_DRIVER;

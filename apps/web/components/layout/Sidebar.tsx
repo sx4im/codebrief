@@ -14,10 +14,14 @@ export function Sidebar() {
   const clerkConfigured = isClerkConfigured();
 
   return (
-    <aside className="hidden min-h-screen w-64 flex-col border-r border-border bg-panel lg:flex">
+    <aside className="hidden min-h-screen w-64 flex-col border-r border-border bg-card lg:flex">
       <div className="border-b border-border px-5 py-5">
-        <div className="font-mono text-lg font-semibold text-text">Codebrief</div>
-        <div className="mt-1 text-xs text-muted">technical handoff briefs</div>
+        <div className="flex items-center gap-2.5">
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img src="/logo-mark.svg" alt="" width={28} height={28} className="rounded-[8px]" />
+          <span className="font-display text-xl font-bold tracking-tightest text-ink">Codebrief</span>
+        </div>
+        <div className="mt-1.5 text-xs text-mute">technical handoff briefs</div>
       </div>
       <nav className="flex-1 space-y-1 p-3">
         {nav.map((item) => (
@@ -47,8 +51,8 @@ export function Sidebar() {
         </SignedIn>
       ) : (
         <div className="border-t border-border p-4">
-          <div className="font-mono text-xs uppercase text-amber">Auth not configured</div>
-          <p className="mt-1 text-xs leading-5 text-muted">Add Clerk keys to enable protected workspace sessions.</p>
+          <div className="font-mono text-xs uppercase text-severity-medium">Auth not configured</div>
+          <p className="mt-1 text-xs leading-5 text-mute">Add Clerk keys to enable protected workspace sessions.</p>
         </div>
       )}
     </aside>

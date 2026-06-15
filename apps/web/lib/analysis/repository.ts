@@ -6,6 +6,7 @@ import {
   AnalysisJobPayloadSchema,
   AnalysisStatusSchema,
   BriefOutputSchema,
+  FREE_ANALYSIS_LIMIT,
   PIPELINE_STAGES,
   PipelineStageStatusSchema,
   PlanSchema,
@@ -204,6 +205,12 @@ export function parseGitHubRepoUrl(repoUrl: string): { owner: string; name: stri
   if (!match?.[1] || !match[2]) return null;
   const owner = match[1];
   const name = match[2].replace(/\.git$/, "");
+  // owner/name are interpolated into GitHub API paths (`/repos/${owner}/${repo}`)
+  // without encoding. Restrict them to GitHub's actual identifier charset so a
+  // crafted value (e.g. "..", "%2f", "?") cannot traverse or inject into the API
+  // URL and redirect the server's token to a different endpoint.
+  if (!/^[A-Za-z0-9-]+$/.test(owner)) return null;
+  if (!/^[A-Za-z0-9._-]+$/.test(name) || name === "." || name === "..") return null;
   return { owner, name, normalizedUrl: `https://github.com/${owner}/${name}` };
 }
 
@@ -514,6 +521,56 @@ export async function getUsageForUser(userId: string, fallbackEmail = `${userId}
   };
 }
 
+export interface AnalysisEntitlement {
+  plan: Plan;
+  /** True once the user has paid for lifetime access. */
+  lifetime: boolean;
+  /** Lifetime count of analyses this user has started. */
+  used: number;
+  /** Free-tier ceiling; null when unlimited (lifetime). */
+  limit: number | null;
+  /** Free analyses left; null when unlimited. */
+  remaining: number | null;
+  /** Whether the user may start another analysis right now. */
+  canAnalyze: boolean;
+}
+
+/**
+ * Resolves whether a user may start a new analysis. Free accounts get
+ * FREE_ANALYSIS_LIMIT lifetime analyses; a one-time purchase sets
+ * plan="lifetime" for unlimited access. Counting is lifetime (all analyses ever
+ * started under the user's projects), not monthly.
+ */
+export async function getAnalysisEntitlement(userId: string, fallbackEmail?: string): Promise<AnalysisEntitlement> {
+  const db = getConfiguredDb();
+  const user = await getOrCreateUser(userId, fallbackEmail ?? `${userId}@codebrief.local`);
+  const plan = parsePlan(user.plan);
+  const lifetime = plan === "lifetime";
+
+  const [row] = await db
+    .select({ used: sql<number>`count(${analyses.id})::int` })
+    .from(analyses)
+    .innerJoin(projects, eq(projects.id, analyses.projectId))
+    .where(eq(projects.userId, userId));
+  const used = row?.used ?? 0;
+
+  if (lifetime) {
+    return { plan, lifetime: true, used, limit: null, remaining: null, canAnalyze: true };
+  }
+  const remaining = Math.max(0, FREE_ANALYSIS_LIMIT - used);
+  return { plan, lifetime: false, used, limit: FREE_ANALYSIS_LIMIT, remaining, canAnalyze: used < FREE_ANALYSIS_LIMIT };
+}
+
+/** Grant lifetime access after a successful Stripe payment (idempotent). */
+export async function markUserLifetime(input: { userId: string; email?: string; stripeCustomerId?: string }): Promise<void> {
+  const db = getConfiguredDb();
+  await getOrCreateUser(input.userId, input.email ?? `${input.userId}@codebrief.local`);
+  await db
+    .update(users)
+    .set({ plan: "lifetime", ...(input.stripeCustomerId ? { stripeCustomerId: input.stripeCustomerId } : {}) })
+    .where(eq(users.id, input.userId));
+}
+
 export async function getAccountExportForUser(userId: string, fallbackEmail?: string): Promise<AccountExport> {
   const db = getConfiguredDb();
   const [user] = await db.select().from(users).where(eq(users.id, userId)).limit(1);
@@ -747,8 +804,16 @@ export function briefToMarkdown(brief: BriefOutput): string {
   const lines = [
     `# Codebrief: ${brief.repoFullName}`,
     "",
-    `Generated: ${formatExportDate(brief.createdAt)}`,
-    `Analysis ID: ${brief.analysisId}`,
+    `> ${brief.systemNarrative.purpose.claim}`,
+    "",
+    "| Field | Value |",
+    "| --- | --- |",
+    `| Generated | ${formatExportDate(brief.createdAt)} |`,
+    `| Analysis ID | \`${brief.analysisId}\` |`,
+    `| Verdict | ${brief.assessment.verdict} |`,
+    `| Confidence | ${formatConfidence(brief.assessment.confidence)} |`,
+    "",
+    "---",
     "",
     "## Repository Snapshot",
     `- Files analyzed: ${brief.repoStats.fileCount}`,
@@ -758,7 +823,6 @@ export function briefToMarkdown(brief: BriefOutput): string {
     ...(brief.repoStats.repoAgeDays !== undefined ? [`- Repository age: ${brief.repoStats.repoAgeDays} days`] : []),
     ...(brief.repoStats.commitsPerMonth !== undefined ? [`- Commit frequency: ${brief.repoStats.commitsPerMonth} commits/month (sampled window)`] : []),
     ...formatLanguageBreakdownMarkdown(brief.repoStats.languageBreakdown),
-    ...formatModelVersionsMarkdown(brief.modelVersions),
     "",
     "## System Narrative",
     ...formatSourcedClaimMarkdown("Purpose", brief.systemNarrative.purpose),
@@ -851,15 +915,19 @@ export function briefToMarkdown(brief: BriefOutput): string {
   return normalizeExportText(lines.join("\n"));
 }
 
+const LANGUAGE_BREAKDOWN_LIMIT = 12;
+
 export function briefToHtml(brief: BriefOutput): string {
-  const languageRows = Object.entries(brief.repoStats.languageBreakdown)
-    .sort((a, b) => b[1] - a[1])
+  const languageEntries = Object.entries(brief.repoStats.languageBreakdown).sort((a, b) => b[1] - a[1]);
+  const languageShown = languageEntries.slice(0, LANGUAGE_BREAKDOWN_LIMIT);
+  const languageRemainder = languageEntries.slice(LANGUAGE_BREAKDOWN_LIMIT);
+  const languageRows = languageShown
     .map(([language, count]) => `<tr><th>${escapeHtml(language)}</th><td>${count}</td></tr>`)
     .join("");
-  const modelRows = Object.entries(brief.modelVersions)
-    .sort(([a], [b]) => a.localeCompare(b))
-    .map(([agent, model]) => `<tr><th>${escapeHtml(agent)}</th><td>${escapeHtml(model)}</td></tr>`)
-    .join("");
+  const languageMoreRow =
+    languageRemainder.length > 0
+      ? `<tr><th>+${languageRemainder.length} more</th><td>${languageRemainder.reduce((sum, [, count]) => sum + count, 0)}</td></tr>`
+      : "";
   const findings = brief.topFindings.map((finding) => renderFindingHtml(finding)).join("");
   const decisions = brief.decisions
     .map(
@@ -919,8 +987,7 @@ export function briefToHtml(brief: BriefOutput): string {
         ${brief.repoStats.repoAgeDays !== undefined ? `<div><span>${brief.repoStats.repoAgeDays}</span><small>days old</small></div>` : ""}
         ${brief.repoStats.commitsPerMonth !== undefined ? `<div><span>${brief.repoStats.commitsPerMonth}</span><small>commits/month</small></div>` : ""}
       </div>
-      ${languageRows ? `<h3>Language Breakdown</h3><table>${languageRows}</table>` : ""}
-      ${modelRows ? `<h3>Model Versions</h3><table>${modelRows}</table>` : ""}
+      ${languageRows ? `<h3>Language Breakdown</h3><table class="kv">${languageRows}${languageMoreRow}</table>` : ""}
     </section>`,
     `<section><h2>System Narrative</h2>
       ${renderClaimHtml("Purpose", brief.systemNarrative.purpose)}
@@ -991,13 +1058,13 @@ function formatCitationMarkdown(source: SourceCitation): string {
 function formatLanguageBreakdownMarkdown(languageBreakdown: Record<string, number>): string[] {
   const entries = Object.entries(languageBreakdown).sort((a, b) => b[1] - a[1]);
   if (entries.length === 0) return [];
-  return ["- Language breakdown:", ...entries.map(([language, count]) => `  - ${language}: ${count}`)];
-}
-
-function formatModelVersionsMarkdown(modelVersions: Record<string, string>): string[] {
-  const entries = Object.entries(modelVersions).sort(([a], [b]) => a.localeCompare(b));
-  if (entries.length === 0) return [];
-  return ["- Model versions:", ...entries.map(([agent, model]) => `  - ${agent}: ${model}`)];
+  const shown = entries.slice(0, LANGUAGE_BREAKDOWN_LIMIT);
+  const remainder = entries.slice(LANGUAGE_BREAKDOWN_LIMIT);
+  const lines = ["- Language breakdown:", ...shown.map(([language, count]) => `  - ${language}: ${count}`)];
+  if (remainder.length > 0) {
+    lines.push(`  - +${remainder.length} more: ${remainder.reduce((sum, [, count]) => sum + count, 0)}`);
+  }
+  return lines;
 }
 
 function renderFindingHtml(finding: BriefOutput["topFindings"][number]): string {
@@ -1071,9 +1138,9 @@ function renderArchitectureDiagramSvg(diagram: BriefOutput["architectureDiagram"
       const sourceY = source.y + source.height / 2;
       const targetX = target.x + target.width / 2;
       const targetY = target.y + target.height / 2;
-      const stroke = edge.kind === "coupling" ? "#f59e0b" : "#64748b";
+      const stroke = edge.kind === "coupling" ? "#9a9a9a" : "#bdbdbd";
       const dash = edge.kind === "coupling" ? ` stroke-dasharray="4 3"` : "";
-      return `<line x1="${sourceX}" y1="${sourceY}" x2="${targetX}" y2="${targetY}" stroke="${stroke}" stroke-width="1.4" stroke-opacity="0.55"${dash} marker-end="url(#arrow)" />`;
+      return `<line x1="${sourceX}" y1="${sourceY}" x2="${targetX}" y2="${targetY}" stroke="${stroke}" stroke-width="1.2" stroke-opacity="0.85"${dash} marker-end="url(#arrow)" />`;
     })
     .join("");
   const nodeMarkup = nodes
@@ -1082,11 +1149,11 @@ function renderArchitectureDiagramSvg(diagram: BriefOutput["architectureDiagram"
       const severity = node.severity || "none";
       const stroke = severityColor(severity);
       return `<g>
-        <rect x="${box.x}" y="${box.y}" width="${box.width}" height="${box.height}" rx="6" fill="#111827" stroke="${stroke}" stroke-width="${severity === "none" ? 1 : 2}" />
-        <text x="${box.x + 12}" y="${box.y + 24}" fill="#f8fafc" font-size="13" font-weight="700">${escapeSvgText(truncateText(node.label, 24))}</text>
-        <text x="${box.x + 12}" y="${box.y + 44}" fill="#cbd5e1" font-size="10">${escapeSvgText(truncateText(node.path, 32))}</text>
-        <text x="${box.x + 12}" y="${box.y + 61}" fill="${stroke}" font-size="10" font-weight="700">${escapeSvgText(
-          `${severity}${node.landmineCount ? ` / ${node.landmineCount} landmine(s)` : ""}`,
+        <rect x="${box.x}" y="${box.y}" width="${box.width}" height="${box.height}" rx="6" fill="#ffffff" stroke="${stroke}" stroke-width="${severity === "none" ? 1 : 2}" />
+        <text x="${box.x + 12}" y="${box.y + 24}" fill="#1b1b1b" font-size="13" font-weight="700">${escapeSvgText(truncateText(node.label, 24))}</text>
+        <text x="${box.x + 12}" y="${box.y + 44}" fill="#6b6b6b" font-size="10">${escapeSvgText(truncateText(node.path, 32))}</text>
+        <text x="${box.x + 12}" y="${box.y + 61}" fill="${stroke}" font-size="10" font-weight="700" letter-spacing="0.04em">${escapeSvgText(
+          `${severity.toUpperCase()}${node.landmineCount ? ` / ${node.landmineCount} LANDMINE(S)` : ""}`,
         )}</text>
       </g>`;
     })
@@ -1097,10 +1164,10 @@ function renderArchitectureDiagramSvg(diagram: BriefOutput["architectureDiagram"
     <svg class="diagram-svg" viewBox="0 0 ${width} ${height}" role="img" aria-label="Architecture diagram summary">
       <defs>
         <marker id="arrow" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto" markerUnits="strokeWidth">
-          <path d="M0,0 L8,4 L0,8 Z" fill="#64748b" fill-opacity="0.65" />
+          <path d="M0,0 L8,4 L0,8 Z" fill="#bdbdbd" />
         </marker>
       </defs>
-      <rect x="0" y="0" width="${width}" height="${height}" rx="10" fill="#0f172a" />
+      <rect x="0" y="0" width="${width}" height="${height}" rx="10" fill="#fafafa" stroke="#e4e3df" />
       ${edges}
       ${nodeMarkup}
     </svg>
@@ -1113,11 +1180,13 @@ function renderArchitectureDiagramSvg(diagram: BriefOutput["architectureDiagram"
 }
 
 function severityColor(severity: string): string {
-  if (severity === "critical") return "#b42318";
-  if (severity === "high") return "#c2410c";
-  if (severity === "medium") return "#b54708";
-  if (severity === "low") return "#0f766e";
-  return "#64748b";
+  // Grayscale ramp: severity is shown by weight, not hue, to keep the export
+  // monochrome and professional.
+  if (severity === "critical") return "#1b1b1b";
+  if (severity === "high") return "#565656";
+  if (severity === "medium") return "#8a8a8a";
+  if (severity === "low") return "#b0b0b0";
+  return "#cbcbcb";
 }
 
 function truncateText(value: string, length: number): string {
@@ -1168,166 +1237,210 @@ function normalizeExportText(value: string): string {
 }
 
 function exportCss(): string {
+  // Monochrome, print-first audit document. No accent colors — severity is
+  // conveyed through a grayscale weight ramp and uppercase labels so the PDF
+  // reads as a professional report rather than a colorful web page.
   return `
     :root {
       color-scheme: light;
-      --ink: #172033;
-      --muted: #526070;
-      --line: #d5dce6;
-      --panel: #f8fafc;
-      --accent: #0f766e;
-      --danger: #b42318;
-      --warn: #b54708;
+      --ink: #1b1b1b;
+      --ink-soft: #333333;
+      --muted: #6b6b6b;
+      --faint: #9a9a9a;
+      --line: #e4e3df;
+      --line-strong: #c9c7c1;
+      --panel: #f7f6f3;
     }
     * { box-sizing: border-box; }
+    html { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
     body {
       margin: 0;
-      background: #eef2f7;
+      background: #f1f0ec;
       color: var(--ink);
-      font: 14px/1.55 "IBM Plex Sans", ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      font: 13px/1.6 "IBM Plex Sans", ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Arial, sans-serif;
+      -webkit-font-smoothing: antialiased;
+      text-rendering: optimizeLegibility;
     }
     main {
-      max-width: 980px;
+      max-width: 820px;
       margin: 0 auto;
       background: #fff;
-      min-height: 100vh;
-      padding: 44px;
+      padding: 56px 56px 64px;
     }
     .cover {
-      border-bottom: 2px solid var(--ink);
-      padding-bottom: 26px;
-      margin-bottom: 28px;
+      margin-bottom: 36px;
+      padding-bottom: 28px;
+      border-bottom: 1px solid var(--line-strong);
     }
     .eyebrow {
-      margin: 0 0 12px;
-      color: var(--accent);
-      font: 700 12px/1.2 ui-monospace, SFMono-Regular, Menlo, monospace;
+      margin: 0 0 14px;
+      color: var(--muted);
+      font: 600 11px/1.2 ui-monospace, SFMono-Regular, Menlo, monospace;
+      letter-spacing: 0.18em;
       text-transform: uppercase;
     }
     h1, h2, h3 {
       margin: 0;
-      line-height: 1.2;
+      line-height: 1.25;
       color: var(--ink);
+      font-weight: 600;
     }
     h1 {
-      font-size: 34px;
+      font-size: 30px;
+      letter-spacing: -0.01em;
       overflow-wrap: anywhere;
     }
     h2 {
-      margin-top: 34px;
-      padding-top: 18px;
-      border-top: 1px solid var(--line);
-      font-size: 21px;
+      margin-top: 42px;
+      margin-bottom: 2px;
+      padding-bottom: 8px;
+      border-bottom: 1px solid var(--line);
+      font-size: 17px;
+      letter-spacing: -0.005em;
     }
     h3 {
-      margin-top: 16px;
-      font-size: 15px;
+      margin-top: 18px;
+      font-size: 13.5px;
     }
     h3 span {
       display: inline-block;
       margin-left: 8px;
-      color: var(--muted);
-      font: 600 12px/1.2 ui-monospace, SFMono-Regular, Menlo, monospace;
+      color: var(--faint);
+      font: 600 11px/1.2 ui-monospace, SFMono-Regular, Menlo, monospace;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
     }
-    p, dd, li {
-      overflow-wrap: anywhere;
-    }
+    p, dd, li { overflow-wrap: anywhere; }
+    p { margin: 8px 0 0; color: var(--ink-soft); }
     .lede {
       margin: 16px 0 0;
-      max-width: 780px;
-      font-size: 17px;
-      color: #283548;
+      max-width: 640px;
+      font-size: 15px;
+      color: var(--ink-soft);
     }
     .meta, .stats {
       display: grid;
       grid-template-columns: repeat(4, minmax(0, 1fr));
-      gap: 10px;
-      margin: 24px 0 0;
+      gap: 1px;
+      margin: 26px 0 0;
+      background: var(--line);
+      border: 1px solid var(--line);
     }
     .meta div, .stats div {
-      border: 1px solid var(--line);
-      background: var(--panel);
-      padding: 12px;
+      background: #fff;
+      padding: 12px 14px;
       min-width: 0;
     }
-    dt, th {
+    dt {
       color: var(--muted);
-      font-weight: 700;
+      font-weight: 600;
+      font-size: 11px;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
       text-align: left;
     }
-    dd {
-      margin: 4px 0 0;
-    }
+    dd { margin: 4px 0 0; color: var(--ink); }
     .stats span {
       display: block;
-      font-size: 24px;
-      font-weight: 700;
+      font-size: 22px;
+      font-weight: 600;
+      letter-spacing: -0.01em;
     }
     .stats small {
       color: var(--muted);
       font-weight: 600;
+      font-size: 11px;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
     }
     .item {
       break-inside: avoid;
       border: 1px solid var(--line);
+      border-left: 3px solid var(--line-strong);
       background: #fff;
       margin-top: 12px;
-      padding: 14px;
+      padding: 14px 16px;
     }
-    .critical { border-left: 5px solid var(--danger); }
-    .high { border-left: 5px solid #c2410c; }
-    .medium { border-left: 5px solid var(--warn); }
-    .low { border-left: 5px solid var(--accent); }
+    .item dl {
+      margin: 10px 0 0;
+      display: grid;
+      grid-template-columns: max-content 1fr;
+      gap: 4px 16px;
+    }
+    .item dt { align-self: start; }
+    .finding.critical, .landmine.critical { border-left-color: #1b1b1b; }
+    .finding.high, .landmine.high { border-left-color: #565656; }
+    .finding.medium, .landmine.medium { border-left-color: #8a8a8a; }
+    .finding.low, .landmine.low { border-left-color: #bdbdbd; }
     table {
       width: 100%;
       border-collapse: collapse;
-      margin-top: 12px;
-      table-layout: fixed;
+      margin-top: 14px;
+      font-size: 12.5px;
     }
-    th, td {
-      border: 1px solid var(--line);
+    thead th {
+      border-bottom: 1.5px solid var(--line-strong);
+      padding: 0 10px 8px;
+      color: var(--muted);
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+      text-align: left;
+    }
+    tbody th, tbody td, td {
+      border-bottom: 1px solid var(--line);
       padding: 8px 10px;
       vertical-align: top;
       overflow-wrap: anywhere;
+      text-align: left;
+    }
+    tbody th { font-weight: 600; color: var(--ink); }
+    table.kv { width: auto; min-width: 280px; margin-top: 10px; }
+    table.kv th { padding-left: 0; font-weight: 500; color: var(--ink-soft); }
+    table.kv td {
+      width: 88px;
+      text-align: right;
+      color: var(--muted);
+      font-variant-numeric: tabular-nums;
     }
     code {
-      font: 12px/1.4 ui-monospace, SFMono-Regular, Menlo, monospace;
+      font: 11.5px/1.4 ui-monospace, SFMono-Regular, Menlo, monospace;
       background: var(--panel);
       border: 1px solid var(--line);
-      padding: 1px 4px;
+      border-radius: 3px;
+      padding: 1px 5px;
     }
-    details {
-      margin-top: 10px;
-      color: var(--muted);
-    }
-    summary {
-      cursor: pointer;
-      font-weight: 700;
-      color: var(--ink);
-    }
+    details { margin-top: 10px; color: var(--muted); }
+    summary { cursor: pointer; font-weight: 600; color: var(--ink-soft); font-size: 12px; }
+    details ol { margin: 8px 0 0; padding-left: 18px; }
+    details li { margin-top: 4px; }
     blockquote {
       margin: 8px 0 0;
-      border-left: 3px solid var(--line);
-      padding-left: 10px;
+      border-left: 2px solid var(--line-strong);
+      padding-left: 12px;
       color: var(--muted);
+      font-style: italic;
     }
     a {
-      color: #075985;
-      text-decoration: none;
+      color: var(--ink);
+      text-decoration: underline;
+      text-decoration-color: var(--line-strong);
+      text-underline-offset: 2px;
       overflow-wrap: anywhere;
     }
-    .edges span {
-      color: var(--muted);
-      font-weight: 700;
+    ul.edges { margin: 12px 0 0; padding-left: 18px; }
+    ul.edges li {
+      margin-top: 4px;
+      font: 12px/1.5 ui-monospace, SFMono-Regular, Menlo, monospace;
     }
-    .diagram-figure {
-      margin: 16px 0 18px;
-      break-inside: avoid;
-    }
+    .edges span { color: var(--faint); }
+    .diagram-figure { margin: 16px 0 18px; break-inside: avoid; }
     .diagram-figure figcaption {
-      margin: 0 0 8px;
+      margin: 0 0 10px;
       color: var(--muted);
-      font: 700 12px/1.2 "JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, monospace;
+      font: 600 11px/1.2 ui-monospace, SFMono-Regular, Menlo, monospace;
+      letter-spacing: 0.1em;
       text-transform: uppercase;
     }
     .diagram-svg {
@@ -1335,24 +1448,22 @@ function exportCss(): string {
       width: 100%;
       max-height: 520px;
       border: 1px solid var(--line);
-      background: #0f172a;
+      background: #fff;
     }
-    .diagram-note {
-      margin: 8px 0 0;
-      color: var(--muted);
-      font-size: 12px;
-    }
+    .diagram-note { margin: 8px 0 0; color: var(--faint); font-size: 11.5px; }
+    @page { size: A4; }
     @media print {
       body { background: #fff; }
       main { padding: 0; max-width: none; }
       a { color: var(--ink); }
-      details { break-inside: avoid; }
+      h2 { break-after: avoid; }
+      details, .item, tr { break-inside: avoid; }
       .diagram-svg { max-height: 460px; }
     }
     @media (max-width: 720px) {
-      main { padding: 24px; }
+      main { padding: 28px 22px; }
       .meta, .stats { grid-template-columns: repeat(2, minmax(0, 1fr)); }
-      h1 { font-size: 28px; }
+      h1 { font-size: 26px; }
     }
   `;
 }

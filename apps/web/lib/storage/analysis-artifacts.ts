@@ -69,6 +69,18 @@ function uploadKey(userId: string, kind: UploadArtifactKind, fileName: string, n
   return `uploads/${userPart}/${kind}/${datePart}/${now.getTime()}-${randomUUID()}-${fileName}`;
 }
 
+/**
+ * Authorization check for client-supplied artifact keys: a key may only be
+ * referenced by the same user whose upload prefix produced it. This stops a
+ * caller from pointing an analysis at another account's upload (or at an
+ * internal `<analysisId>/...` pipeline artifact) by guessing or replaying a key.
+ */
+export function isOwnedUploadKey(userId: string, key: string): boolean {
+  const normalized = key.trim().replace(/^\/+/, "");
+  if (!normalized || normalized.includes("..")) return false;
+  return normalized.startsWith(`uploads/${sanitizeKeySegment(userId)}/`);
+}
+
 function sanitizeFileName(value: string): string {
   const base = value.split(/[\\/]/).pop() || "artifact";
   const sanitized = base.replace(/[^a-zA-Z0-9._-]+/g, "-").replace(/^-+|-+$/g, "");

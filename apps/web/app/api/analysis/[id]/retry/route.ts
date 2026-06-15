@@ -4,14 +4,14 @@ import { PipelineStageNameSchema } from "@codebrief/shared";
 import { createRetryAnalysisRecord, markAnalysisEnqueueFailed, NotFoundError, ServiceConfigurationError } from "@/lib/analysis/repository";
 import { getGitHubOAuthToken } from "@/lib/github/oauth";
 import { enqueueAnalysis } from "@/lib/queue/analysis";
-import { checkRateLimit, clientIp } from "@/lib/rate-limit";
+import { checkRateLimit } from "@/lib/rate-limit";
 
 export async function POST(request: Request, { params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;
   const { userId } = await auth();
   if (!userId) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 
-  const rateLimit = await checkRateLimit({ key: `analysis:retry:${userId}:${clientIp(request)}`, limit: 20, windowMs: 60 * 60 * 1000 });
+  const rateLimit = await checkRateLimit({ key: `analysis:retry:${userId}`, limit: 20, windowMs: 60 * 60 * 1000 });
   if (!rateLimit.ok) {
     return NextResponse.json(
       { error: "Analysis retry rate limit exceeded", retryAfterSeconds: rateLimit.retryAfterSeconds },

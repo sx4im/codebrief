@@ -124,7 +124,7 @@ export function ProgressTracker({ analysisId }: { analysisId: string }) {
             </div>
           </div>
           <div className="mt-4 h-2 overflow-hidden rounded bg-background">
-            <div className="h-full bg-blue transition-all" style={{ width: `${snapshot.progress}%` }} />
+            <div className="h-full bg-primary transition-all" style={{ width: `${snapshot.progress}%` }} />
           </div>
           {snapshot.errorMessage ? <p className="mt-3 text-sm text-danger">{snapshot.errorMessage}</p> : null}
         </div>
@@ -157,8 +157,8 @@ export function ProgressTracker({ analysisId }: { analysisId: string }) {
 }
 
 function icon(status: PipelineStageStatus) {
-  if (status === "done") return <CheckCircle2 className="h-4 w-4 text-green-500" />;
-  if (status === "running") return <Loader2 className="h-4 w-4 animate-spin text-blue" />;
+  if (status === "done") return <CheckCircle2 className="h-4 w-4 text-success" />;
+  if (status === "running") return <Loader2 className="h-4 w-4 animate-spin text-primary" />;
   if (status === "failed") return <XCircle className="h-4 w-4 text-danger" />;
   return <Circle className="h-4 w-4 text-muted" />;
 }

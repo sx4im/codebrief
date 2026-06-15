@@ -1,13 +1,13 @@
 import { NextResponse } from "next/server";
 import { auth, currentUser } from "@clerk/nextjs/server";
 import { getAccountExportForUser, ServiceConfigurationError } from "@/lib/analysis/repository";
-import { checkRateLimit, clientIp } from "@/lib/rate-limit";
+import { checkRateLimit } from "@/lib/rate-limit";
 
-export async function GET(request: Request) {
+export async function GET() {
   const { userId } = await auth();
   if (!userId) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 
-  const rateLimit = await checkRateLimit({ key: `account:export:${userId}:${clientIp(request)}`, limit: 10, windowMs: 60 * 60 * 1000 });
+  const rateLimit = await checkRateLimit({ key: `account:export:${userId}`, limit: 10, windowMs: 60 * 60 * 1000 });
   if (!rateLimit.ok) {
     return NextResponse.json(
       { error: "Account export rate limit exceeded", retryAfterSeconds: rateLimit.retryAfterSeconds },

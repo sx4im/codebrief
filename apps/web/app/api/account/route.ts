@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 import { auth, clerkClient } from "@clerk/nextjs/server";
 import { deleteAccountDataForUser, ServiceConfigurationError } from "@/lib/analysis/repository";
-import { checkRateLimit, clientIp } from "@/lib/rate-limit";
+import { checkRateLimit } from "@/lib/rate-limit";
 
 export async function DELETE(request: Request) {
   const { userId } = await auth();
@@ -12,7 +12,7 @@ export async function DELETE(request: Request) {
     return NextResponse.json({ error: "Type DELETE to confirm account deletion" }, { status: 400 });
   }
 
-  const rateLimit = await checkRateLimit({ key: `account:delete:${userId}:${clientIp(request)}`, limit: 5, windowMs: 60 * 60 * 1000 });
+  const rateLimit = await checkRateLimit({ key: `account:delete:${userId}`, limit: 5, windowMs: 60 * 60 * 1000 });
   if (!rateLimit.ok) {
     return NextResponse.json(
       { error: "Account deletion rate limit exceeded", retryAfterSeconds: rateLimit.retryAfterSeconds },

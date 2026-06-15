@@ -1,13 +1,21 @@
 import type { Metadata } from "next";
 import { ClerkProvider } from "@clerk/nextjs";
-import { IBM_Plex_Sans, JetBrains_Mono } from "next/font/google";
+import { Bricolage_Grotesque, Geist, JetBrains_Mono } from "next/font/google";
 import { isClerkConfigured } from "@/lib/auth/config";
 import "./globals.css";
 
-const sans = IBM_Plex_Sans({
+// Three-family stack per DESIGN.md: Bricolage Grotesque (display, sub for
+// rb-freigeist-neue), Geist (UI/body, sub for basier-square), JetBrains Mono (code).
+const display = Bricolage_Grotesque({
   subsets: ["latin"],
-  variable: "--font-geist",
-  weight: ["400", "500", "600", "700"],
+  variable: "--font-display",
+  weight: ["600", "700", "800"],
+});
+
+const sans = Geist({
+  subsets: ["latin"],
+  variable: "--font-sans",
+  weight: ["400", "500", "600"],
 });
 
 const mono = JetBrains_Mono({
@@ -66,7 +74,7 @@ function getAppUrl(): string {
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   const body = (
-    <html lang="en" className={`${sans.variable} ${mono.variable}`}>
+    <html lang="en" className={`${display.variable} ${sans.variable} ${mono.variable}`}>
       <body>{children}</body>
     </html>
   );

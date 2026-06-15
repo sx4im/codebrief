@@ -7,11 +7,11 @@ const EnvSchema = z.object({
   SOCKET_IO_URL: z.string().optional(),
   GITHUB_TOKEN: z.string().optional(),
   NVIDIA_API_KEY: z.string().optional(),
-  NVIDIA_ARCHITECTURE_MODEL: z.string().default("stepfun-ai/step-3.7-flash"),
-  NVIDIA_HISTORY_MODEL: z.string().default("stepfun-ai/step-3.7-flash"),
-  NVIDIA_SYNTHESIS_MODEL: z.string().default("stepfun-ai/step-3.7-flash"),
-  NVIDIA_RISK_MODEL: z.string().default("deepseek-ai/deepseek-v4-flash"),
-  NVIDIA_QA_MODEL: z.string().default("deepseek-ai/deepseek-v4-flash"),
+  NVIDIA_ARCHITECTURE_MODEL: z.string().default("openai/gpt-oss-120b"),
+  NVIDIA_HISTORY_MODEL: z.string().default("openai/gpt-oss-120b"),
+  NVIDIA_SYNTHESIS_MODEL: z.string().default("openai/gpt-oss-120b"),
+  NVIDIA_RISK_MODEL: z.string().default("openai/gpt-oss-120b"),
+  NVIDIA_QA_MODEL: z.string().default("openai/gpt-oss-120b"),
   // Per-request ceiling so a model that stalls (e.g. one that does not support
   // guided JSON and hangs instead of erroring) fails cleanly instead of wedging
   // the worker. Bounded retries cover transient 5xx/connection blips.

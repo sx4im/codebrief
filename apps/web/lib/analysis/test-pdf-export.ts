@@ -22,7 +22,8 @@ async function main() {
   const browser = await puppeteer.launch({ executablePath: chromePath, args: ["--no-sandbox"] });
   try {
     const page = await browser.newPage();
-    await page.setContent(html, { waitUntil: "networkidle0" });
+    await page.setJavaScriptEnabled(false);
+    await page.setContent(html, { waitUntil: "load" });
     const pdf = await page.pdf({ format: "A4", printBackground: true });
 
     // A valid PDF starts with "%PDF-" and ends with "%%EOF"; require real content.

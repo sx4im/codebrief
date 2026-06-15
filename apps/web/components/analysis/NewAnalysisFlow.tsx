@@ -75,7 +75,19 @@ export function NewAnalysisFlow() {
           issueCsvArtifactKey: issueCsvArtifactKey.trim() || undefined,
         }),
       });
-      const json = (await response.json()) as { analysisId?: string; projectId?: string; error?: string; retryAfterSeconds?: number };
+      const json = (await response.json()) as {
+        analysisId?: string;
+        projectId?: string;
+        error?: string;
+        retryAfterSeconds?: number;
+        code?: string;
+        upgradeUrl?: string;
+      };
+      // Free-analysis limit reached → send the user to the lifetime upgrade.
+      if (response.status === 402 || json.code === "upgrade_required") {
+        window.location.assign(json.upgradeUrl || "/settings?upgrade=required");
+        return;
+      }
       if (!response.ok || !json.analysisId || !json.projectId) {
         const retryText = json.retryAfterSeconds ? ` Retry after ${json.retryAfterSeconds}s.` : "";
         throw new Error(`${json.error || "Failed to start analysis"}.${retryText}`);
@@ -130,14 +142,14 @@ export function NewAnalysisFlow() {
                 type="button"
                 className={cn(
                   "focus-ring flex h-11 w-full cursor-pointer items-center gap-3 rounded border px-3 text-left text-sm transition-colors",
-                  active ? "border-blue bg-blue/10 text-text" : "border-border bg-panel text-muted hover:bg-panel2 hover:text-text",
+                  active ? "border-primary bg-primary/10 text-ink" : "border-border bg-card text-charcoal hover:bg-bone hover:text-ink",
                 )}
                 onClick={() => setStepIndex(index)}
               >
                 <span
                   className={cn(
                     "flex h-6 w-6 shrink-0 items-center justify-center rounded border text-xs",
-                    done ? "border-blue bg-blue text-white" : active ? "border-blue text-blue" : "border-border",
+                    done ? "border-primary bg-primary text-white" : active ? "border-primary text-primary" : "border-border text-mute",
                   )}
                 >
                   {done ? <Check className="h-3.5 w-3.5" /> : index + 1}
@@ -239,7 +251,7 @@ function RepoStep({
       <div className="flex flex-wrap items-center justify-between gap-3">
         <div>
           <div className="flex items-center gap-2 font-semibold">
-            <Github className="h-4 w-4 text-blue" />
+            <Github className="h-4 w-4 text-ink" />
             Select repository
           </div>
           <p className="mt-2 text-sm text-muted">Use a GitHub URL or load repositories from the connected account.</p>
@@ -250,13 +262,13 @@ function RepoStep({
         </Button>
       </div>
       <label className="mt-5 block text-sm text-muted" htmlFor="repoUrl">GitHub repository URL</label>
-      <div className="mt-2 flex items-center gap-2 rounded border border-border bg-background px-3">
-        <Search className="h-4 w-4 shrink-0 text-muted" />
+      <div className="group mt-2 flex items-center gap-2.5 rounded-md border border-border bg-card px-3.5 transition-colors focus-within:border-primary focus-within:ring-2 focus-within:ring-primary/25">
+        <Search className="h-4 w-4 shrink-0 text-mute transition-colors group-focus-within:text-primary" />
         <input
           id="repoUrl"
           value={repoUrl}
           onChange={(event) => setRepoUrl(event.target.value)}
-          className="focus-ring h-11 min-w-0 flex-1 bg-transparent font-mono text-sm outline-none"
+          className="h-11 min-w-0 flex-1 bg-transparent font-mono text-sm text-ink outline-none placeholder:text-ash"
         />
       </div>
       {repos.length > 0 ? (
@@ -267,7 +279,7 @@ function RepoStep({
               type="button"
               className={cn(
                 "focus-ring flex w-full cursor-pointer items-center justify-between gap-3 border-b border-border px-4 py-3 text-left transition-colors last:border-b-0 hover:bg-panel2",
-                selectedRepo?.fullName === repo.fullName ? "bg-blue/10" : "bg-background",
+                selectedRepo?.fullName === repo.fullName ? "bg-primary/10" : "bg-background",
               )}
               onClick={() => onSelect(repo)}
             >
@@ -332,12 +344,12 @@ function ScopeStep({
           type="checkbox"
           checked={includePrivate}
           onChange={(event) => setIncludePrivate(event.target.checked)}
-          className="h-5 w-5 accent-blue"
+          className="h-5 w-5 accent-primary"
         />
       </label>
       <div className="mt-5 grid gap-3 md:grid-cols-2">
         <ArtifactUploadField
-          icon={<FileArchive className="h-4 w-4 text-blue" />}
+          icon={<FileArchive className="h-4 w-4 text-ink" />}
           label="Docs export"
           accept=".zip,.md,.markdown,.mdx,.txt,.rst,.adoc,.html,.htm,.json"
           artifactKey={docsArtifactKey}
@@ -346,7 +358,7 @@ function ScopeStep({
           onClear={clearDocs}
         />
         <ArtifactUploadField
-          icon={<Table2 className="h-4 w-4 text-blue" />}
+          icon={<Table2 className="h-4 w-4 text-ink" />}
           label="Issue CSV"
           accept=".csv,text/csv"
           artifactKey={issueCsvArtifactKey}
@@ -416,7 +428,7 @@ function ArtifactUploadField({
         )}
       >
         <span className="flex items-center gap-2 text-sm">
-          {upload.status === "uploading" ? <Loader2 className="h-4 w-4 animate-spin text-blue" /> : upload.status === "done" ? <CheckCircle2 className="h-4 w-4 text-green-500" /> : <UploadCloud className="h-4 w-4 text-blue" />}
+          {upload.status === "uploading" ? <Loader2 className="h-4 w-4 animate-spin text-ink" /> : upload.status === "done" ? <CheckCircle2 className="h-4 w-4 text-success" /> : <UploadCloud className="h-4 w-4 text-ink" />}
           <span className="font-mono">{upload.fileName || "Choose file"}</span>
         </span>
         <span className="mt-2 break-words text-xs text-muted">
@@ -433,7 +445,7 @@ function ScopeOption({ active, title, body, onClick }: { active: boolean; title:
       type="button"
       className={cn(
         "focus-ring cursor-pointer rounded border p-4 text-left transition-colors",
-        active ? "border-blue bg-blue/10" : "border-border bg-background hover:bg-panel2",
+        active ? "border-primary bg-primary/10" : "border-border bg-background hover:bg-panel2",
       )}
       onClick={onClick}
     >

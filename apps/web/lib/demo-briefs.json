@@ -3036,5 +3036,448 @@
     "flaggedClaims": [],
     "slug": "gorm",
     "summary": "GORM is a full-featured, developer-friendly ORM library for Golang."
+  },
+  {
+    "id": "33a66ff2-db49-4d38-9920-4689a3f790e9",
+    "analysisId": "c5005ff8-4b1e-4571-a208-ec68af26c8d8",
+    "repoFullName": "sindresorhus/ts-extras",
+    "createdAt": "2026-06-14T09:12:28.429Z",
+    "systemNarrative": {
+      "purpose": {
+        "claim": "ts-extras is a collection of essential utilities for TypeScript projects.",
+        "sources": [
+          {
+            "type": "readme",
+            "path": "README.md"
+          }
+        ],
+        "confidence": 0.95
+      },
+      "mainWorkflows": [
+        {
+          "claim": "The library provides various type guards and utilities for type checking.",
+          "sources": [
+            {
+              "type": "file",
+              "path": "source/is-defined.ts"
+            }
+          ],
+          "confidence": 0.8,
+          "name": "Type Checking"
+        }
+      ],
+      "dataModel": {
+        "claim": "The library does not have a specific data model, as it provides utility functions for working with various data types.",
+        "sources": [
+          {
+            "type": "inferred",
+            "excerpt": "No specific data model is defined in the library."
+          }
+        ],
+        "confidence": 0.7
+      },
+      "integrations": [],
+      "architecturePattern": {
+        "claim": "The library follows a modular design pattern, with each utility function being a separate module.",
+        "sources": [
+          {
+            "type": "inferred",
+            "excerpt": "The library is organized into separate files for each utility function."
+          }
+        ],
+        "confidence": 0.8
+      },
+      "claims": [
+        {
+          "claim": "The library is written in TypeScript.",
+          "sources": [
+            {
+              "type": "dependency",
+              "path": "package.json"
+            }
+          ],
+          "confidence": 0.9
+        },
+        {
+          "claim": "The library provides a utility function for checking if a value is defined.",
+          "sources": [
+            {
+              "type": "file",
+              "path": "source/is-defined.ts"
+            }
+          ],
+          "confidence": 0.8
+        },
+        {
+          "claim": "The library provides a utility function for checking if a value is present (not null or undefined).",
+          "sources": [
+            {
+              "type": "file",
+              "path": "source/is-present.ts"
+            }
+          ],
+          "confidence": 0.8
+        }
+      ],
+      "confidence": 0.85,
+      "flaggedClaims": []
+    },
+    "decisions": [
+      {
+        "title": "Adopt a modular design pattern",
+        "description": "The library follows a modular design pattern, with each utility function being a separate module.",
+        "context": "Designing the library's architecture",
+        "evidence": [
+          {
+            "type": "inferred",
+            "excerpt": "The library is organized into separate files for each utility function."
+          }
+        ],
+        "assessment": "Sound: the modular design pattern allows for easier maintenance and extension of the library.",
+        "confidence": 0.8
+      },
+      {
+        "title": "Use type guards for type checking",
+        "description": "The library provides various type guards and utilities for type checking.",
+        "context": "Implementing type checking functionality",
+        "evidence": [
+          {
+            "type": "file",
+            "path": "source/is-defined.ts"
+          }
+        ],
+        "assessment": "Sound: type guards are a useful tool for ensuring type safety in TypeScript.",
+        "confidence": 0.8
+      },
+      {
+        "title": "Add `objectFromEntries` function",
+        "description": "A strongly-typed version of `Object.fromEntries()` was added to the library.",
+        "context": "Implementing utility functions",
+        "evidence": [
+          {
+            "type": "pr",
+            "url": "https://github.com/sindresorhus/ts-extras/pull/25"
+          }
+        ],
+        "assessment": "Sound: the `objectFromEntries` function provides a useful utility for working with objects.",
+        "confidence": 0.9
+      },
+      {
+        "title": "Fix `objectKeys` function to support interfaces",
+        "description": "The `objectKeys` function was updated to support interfaces.",
+        "context": "Fixing bugs and improving functionality",
+        "evidence": [
+          {
+            "type": "pr",
+            "url": "https://github.com/sindresorhus/ts-extras/pull/51"
+          }
+        ],
+        "assessment": "Sound: the update to `objectKeys` improves the library's functionality and usability.",
+        "confidence": 0.8
+      },
+      {
+        "title": "Add `setHas` function",
+        "description": "A `setHas` function was added to the library.",
+        "context": "Implementing utility functions",
+        "evidence": [
+          {
+            "type": "pr",
+            "url": "https://github.com/sindresorhus/ts-extras/pull/38"
+          }
+        ],
+        "assessment": "Sound: the `setHas` function provides a useful utility for working with sets.",
+        "confidence": 0.8
+      },
+      {
+        "title": "Improve type soundness of `objectFromEntries`",
+        "description": "The type soundness of `objectFromEntries` was improved.",
+        "context": "Fixing bugs and improving functionality",
+        "evidence": [
+          {
+            "type": "pr",
+            "url": "https://github.com/sindresorhus/ts-extras/pull/68"
+          }
+        ],
+        "assessment": "Sound: the improvement to `objectFromEntries` enhances the library's type safety.",
+        "confidence": 0.9
+      },
+      {
+        "title": "Run `tsc` on test files",
+        "description": "The library now runs `tsc` on test files to ensure type safety.",
+        "context": "Improving testing and type safety",
+        "evidence": [
+          {
+            "type": "pr",
+            "url": "https://github.com/sindresorhus/ts-extras/pull/64"
+          }
+        ],
+        "assessment": "Sound: running `tsc` on test files helps catch type errors and improves the library's overall quality.",
+        "confidence": 0.8
+      },
+      {
+        "title": "Add `assertDefined` and `assertIsPresent` functions",
+        "description": "The `assertDefined` and `assertIsPresent` functions were added to the library.",
+        "context": "Implementing utility functions",
+        "evidence": [
+          {
+            "type": "pr",
+            "url": "https://github.com/sindresorhus/ts-extras/pull/66"
+          }
+        ],
+        "assessment": "Sound: the `assertDefined` and `assertIsPresent` functions provide useful utilities for ensuring type safety.",
+        "confidence": 0.8
+      },
+      {
+        "title": "Fix typos in `assertError`",
+        "description": "Typos in the `assertError` function were fixed.",
+        "context": "Fixing bugs and improving functionality",
+        "evidence": [
+          {
+            "type": "pr",
+            "url": "https://github.com/sindresorhus/ts-extras/pull/58"
+          }
+        ],
+        "assessment": "Sound: fixing typos improves the library's overall quality and usability.",
+        "confidence": 0.8
+      },
+      {
+        "title": "Add `isInfinite` function",
+        "description": "The `isInfinite` function was added to the library.",
+        "context": "Implementing utility functions",
+        "evidence": [
+          {
+            "type": "pr",
+            "url": "https://github.com/sindresorhus/ts-extras/pull/29"
+          }
+        ],
+        "assessment": "Sound: the `isInfinite` function provides a useful utility for working with numbers.",
+        "confidence": 0.8
+      }
+    ],
+    "landmines": [
+      {
+        "location": "source/index.ts",
+        "category": "churn-trap",
+        "severity": "high",
+        "evidence": [
+          {
+            "type": "file",
+            "path": "source/index.ts"
+          },
+          {
+            "type": "metric",
+            "excerpt": "churn=20, complexity=1, incomingDeps=0, likelyTest=false"
+          }
+        ],
+        "explanation": "source/index.ts has a high churn count and no incoming dependencies, making it a potential churn trap.",
+        "remediation": "Refactor the code to reduce churn and improve test coverage.",
+        "remediationEstimate": "1-2 weeks",
+        "priority": 1,
+        "confidence": 0.8
+      },
+      {
+        "location": "source/key-in.ts",
+        "category": "coupling-cluster",
+        "severity": "medium",
+        "evidence": [
+          {
+            "type": "file",
+            "path": "source/key-in.ts"
+          },
+          {
+            "type": "file",
+            "path": "test/key-in.ts"
+          },
+          {
+            "type": "metric",
+            "excerpt": "coChanges=5, probability=0.7142857142857143"
+          }
+        ],
+        "explanation": "source/key-in.ts and test/key-in.ts are tightly coupled, making changes to one file likely to affect the other.",
+        "remediation": "Refactor the code to reduce coupling and improve modularity.",
+        "remediationEstimate": "1-2 weeks",
+        "priority": 2,
+        "confidence": 0.7
+      },
+      {
+        "location": "source/internal-types.ts",
+        "category": "knowledge-silo",
+        "severity": "low",
+        "evidence": [
+          {
+            "type": "file",
+            "path": "source/internal-types.ts"
+          },
+          {
+            "type": "metric",
+            "excerpt": "author=Sindre Sorhus, authorShare=1, commits=2, authorLastCommitAt=2026-04-17T16:08:37.000Z"
+          }
+        ],
+        "explanation": "source/internal-types.ts is a knowledge silo, with a single author responsible for all changes.",
+        "remediation": "Share knowledge and expertise with other team members to reduce reliance on a single individual.",
+        "remediationEstimate": "1-3 months",
+        "priority": 3,
+        "confidence": 0.6
+      },
+      {
+        "location": "@types/node",
+        "category": "dependency-debt",
+        "severity": "high",
+        "evidence": [
+          {
+            "type": "dependency",
+            "path": "package.json"
+          },
+          {
+            "type": "metric",
+            "excerpt": "majorVersionsBehind=5, latestVersion=25.9.3"
+          }
+        ],
+        "explanation": "The @types/node dependency is outdated, with 5 major versions behind the latest version.",
+        "remediation": "Update the @types/node dependency to the latest version.",
+        "remediationEstimate": "1 day",
+        "priority": 4,
+        "confidence": 0.9
+      }
+    ],
+    "assessment": {
+      "verdict": "build-on",
+      "reasons": [
+        {
+          "claim": "The library's architecture is well-structured and modular.",
+          "sources": [
+            {
+              "type": "inferred",
+              "excerpt": "The library is organized into separate files for each utility function."
+            }
+          ],
+          "confidence": 0.8
+        },
+        {
+          "claim": "The library provides a clear separation of concerns.",
+          "sources": [
+            {
+              "type": "file",
+              "path": "source/is-defined.ts"
+            }
+          ],
+          "confidence": 0.8
+        },
+        {
+          "claim": "The library has a strong focus on type safety.",
+          "sources": [
+            {
+              "type": "pr",
+              "url": "https://github.com/sindresorhus/ts-extras/pull/68"
+            }
+          ],
+          "confidence": 0.9
+        }
+      ],
+      "risks": [
+        {
+          "claim": "The high churn count in the source/index.ts file may indicate a potential maintenance issue.",
+          "sources": [
+            {
+              "type": "file",
+              "path": "source/index.ts"
+            }
+          ],
+          "confidence": 0.8
+        },
+        {
+          "claim": "The outdated @types/node dependency may introduce security vulnerabilities.",
+          "sources": [
+            {
+              "type": "dependency",
+              "path": "package.json"
+            }
+          ],
+          "confidence": 0.9
+        }
+      ],
+      "confidence": 0.8,
+      "uncertainty": "Limited information is available about the library's future development plans."
+    },
+    "topFindings": [
+      {
+        "claim": "The source/index.ts file has a high churn count, indicating a potential maintenance issue.",
+        "sources": [
+          {
+            "type": "file",
+            "path": "source/index.ts"
+          }
+        ],
+        "confidence": 0.8,
+        "title": "High Churn Count in source/index.ts",
+        "severity": "high"
+      },
+      {
+        "claim": "The @types/node dependency is outdated, introducing a potential security vulnerability.",
+        "sources": [
+          {
+            "type": "dependency",
+            "path": "package.json"
+          }
+        ],
+        "confidence": 0.9,
+        "title": "Outdated @types/node Dependency",
+        "severity": "high"
+      }
+    ],
+    "architectureDiagram": {
+      "nodes": [
+        {
+          "id": "source",
+          "label": "source",
+          "path": "source",
+          "severity": "high",
+          "landmineCount": 3
+        },
+        {
+          "id": "test",
+          "label": "test",
+          "path": "test",
+          "landmineCount": 0
+        }
+      ],
+      "edges": [
+        {
+          "id": "coupling:source--test",
+          "source": "source",
+          "target": "test",
+          "kind": "coupling",
+          "weight": 5
+        }
+      ]
+    },
+    "repoStats": {
+      "fileCount": 75,
+      "languageBreakdown": {
+        "editorconfig": 1,
+        "gitattributes": 1,
+        "yml": 1,
+        "gitignore": 1,
+        "npmrc": 1,
+        "license": 1,
+        "json": 3,
+        "md": 1,
+        "ts": 65
+      },
+      "commitCount": 60,
+      "pullRequestCount": 24,
+      "contributorCount": 7,
+      "repoAgeDays": 1702,
+      "commitsPerMonth": 1.2
+    },
+    "modelVersions": {
+      "architecture": "meta/llama-3.3-70b-instruct",
+      "history": "meta/llama-3.3-70b-instruct",
+      "risk": "meta/llama-3.3-70b-instruct",
+      "synthesis": "meta/llama-3.3-70b-instruct"
+    },
+    "flaggedClaims": [],
+    "slug": "ts-extras",
+    "summary": "ts-extras is a collection of essential utilities for TypeScript projects."
   }
 ]

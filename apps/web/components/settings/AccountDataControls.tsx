@@ -71,12 +71,12 @@ export function AccountDataControls({ isSignedIn }: AccountDataControlsProps) {
 
   return (
     <div className="mt-8 grid max-w-5xl gap-4 lg:grid-cols-2">
-      <section className="rounded border border-border bg-panel p-5">
+      <section className="rounded-lg border border-border bg-card p-5 shadow-card">
         <div className="flex items-start gap-3">
-          <Download className="mt-0.5 h-5 w-5 text-blue" />
+          <Download className="mt-0.5 h-5 w-5 text-ink" />
           <div className="min-w-0">
-            <h2 className="font-mono text-lg font-semibold">Export personal data</h2>
-            <p className="mt-2 text-sm leading-6 text-muted">
+            <h2 className="font-display text-lg font-bold text-ink">Export personal data</h2>
+            <p className="mt-2 text-sm leading-6 text-charcoal">
               Download a JSON archive of account, project, analysis, brief, Q&A, usage, and artifact-index records.
             </p>
           </div>
@@ -85,28 +85,28 @@ export function AccountDataControls({ isSignedIn }: AccountDataControlsProps) {
           {exporting ? <Loader2 className="h-4 w-4 animate-spin" /> : <Download className="h-4 w-4" />}
           Download JSON
         </Button>
-        {!isSignedIn ? <p className="mt-3 text-sm text-amber">Sign in to export account data.</p> : null}
+        {!isSignedIn ? <p className="mt-3 text-sm text-severity-medium">Sign in to export account data.</p> : null}
         <StatusLine message={exportMessage} error={exportError} />
       </section>
 
-      <section className="rounded border border-danger/60 bg-panel p-5">
+      <section className="rounded-lg border border-severity-critical/40 bg-card p-5 shadow-card">
         <div className="flex items-start gap-3">
-          <ShieldAlert className="mt-0.5 h-5 w-5 text-danger" />
+          <ShieldAlert className="mt-0.5 h-5 w-5 text-severity-critical" />
           <div className="min-w-0">
-            <h2 className="font-mono text-lg font-semibold">Delete account</h2>
-            <p className="mt-2 text-sm leading-6 text-muted">
+            <h2 className="font-display text-lg font-bold text-ink">Delete account</h2>
+            <p className="mt-2 text-sm leading-6 text-charcoal">
               Remove Codebrief database records for this user. Clerk identity deletion is attempted when Clerk credentials are configured.
             </p>
           </div>
         </div>
-        <label className="mt-5 block text-sm font-semibold" htmlFor="delete-confirmation">
-          Type <span className="font-mono text-danger">DELETE</span> to confirm
+        <label className="mt-5 block text-sm font-semibold text-ink" htmlFor="delete-confirmation">
+          Type <span className="font-mono text-severity-critical">DELETE</span> to confirm
         </label>
         <input
           id="delete-confirmation"
           value={confirmation}
           onChange={(event) => setConfirmation(event.target.value)}
-          className="focus-ring mt-2 h-10 w-full rounded border border-border bg-background px-3 font-mono text-sm text-text placeholder:text-muted"
+          className="focus-ring mt-2 h-11 w-full rounded-full border border-ink/20 bg-card px-4 font-mono text-sm text-ink placeholder:text-ash"
           placeholder="DELETE"
           disabled={!isSignedIn || deleting}
         />
@@ -114,7 +114,7 @@ export function AccountDataControls({ isSignedIn }: AccountDataControlsProps) {
           {deleting ? <Loader2 className="h-4 w-4 animate-spin" /> : <Trash2 className="h-4 w-4" />}
           Delete account data
         </Button>
-        {!isSignedIn ? <p className="mt-3 text-sm text-amber">Sign in to delete account data.</p> : null}
+        {!isSignedIn ? <p className="mt-3 text-sm text-severity-medium">Sign in to delete account data.</p> : null}
         <StatusLine message={deleteMessage} error={deleteError} />
       </section>
     </div>
@@ -124,7 +124,7 @@ export function AccountDataControls({ isSignedIn }: AccountDataControlsProps) {
 function StatusLine({ message, error }: { message: string | null; error: string | null }) {
   if (!message && !error) return null;
   return (
-    <div className={error ? "mt-4 flex gap-2 text-sm leading-6 text-danger" : "mt-4 flex gap-2 text-sm leading-6 text-blue"}>
+    <div className={error ? "mt-4 flex gap-2 text-sm leading-6 text-severity-critical" : "mt-4 flex gap-2 text-sm leading-6 text-success"}>
       {error ? <ShieldAlert className="mt-1 h-4 w-4 shrink-0" /> : <CheckCircle2 className="mt-1 h-4 w-4 shrink-0" />}
       <p className="min-w-0 break-words">{error || message}</p>
     </div>

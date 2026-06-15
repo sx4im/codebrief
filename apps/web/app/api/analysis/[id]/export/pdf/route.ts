@@ -32,8 +32,23 @@ export async function GET(_: Request, { params }: { params: Promise<{ id: string
   const browser = await puppeteer.launch({ executablePath: chromePath, args: ["--no-sandbox"] });
   try {
     const page = await browser.newPage();
-    await page.setContent(html, { waitUntil: "networkidle0" });
-    const pdf = await page.pdf({ format: "A4", printBackground: true });
+    // The export is a self-contained static document with no scripts of its own.
+    // Disabling JS removes any chance of script execution inside the headless
+    // browser, which is the meaningful residual risk of rendering with --no-sandbox.
+    await page.setJavaScriptEnabled(false);
+    await page.setContent(html, { waitUntil: "load" });
+    // Plain-text repo label for the running header (templates render raw HTML).
+    const repoLabel = brief.repoFullName.replace(/[<>&"]/g, "");
+    const footTextStyle =
+      "font-size:8px;color:#9a9a9a;font-family:Arial,Helvetica,sans-serif;width:100%;padding:0 16mm;";
+    const pdf = await page.pdf({
+      format: "A4",
+      printBackground: true,
+      margin: { top: "20mm", bottom: "18mm", left: "16mm", right: "16mm" },
+      displayHeaderFooter: true,
+      headerTemplate: `<div style="${footTextStyle}"><span style="float:left;letter-spacing:0.08em;text-transform:uppercase;">Codebrief technical audit</span><span style="float:right;">${repoLabel}</span></div>`,
+      footerTemplate: `<div style="${footTextStyle}text-align:right;"><span class="pageNumber"></span> / <span class="totalPages"></span></div>`,
+    });
     const body = new ArrayBuffer(pdf.byteLength);
     new Uint8Array(body).set(pdf);
     return new NextResponse(body, {

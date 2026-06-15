@@ -22,20 +22,44 @@ function loadArtifact<T>(dir: string, prefix: string): T | null {
 // demo reflects the current (adaptive-granularity) diagram builder without needing a
 // fresh paid agent run — the diagram is a deterministic function of those inputs.
 const byRepo = new Map<string, BriefOutput>();
+
+function ingestBriefDir(dir: string, allow?: (repo: string) => boolean) {
+  const briefFile = readdirSync(dir).find((f) => f.startsWith("brief-"));
+  if (!briefFile) return;
+  const parsed = BriefOutputSchema.safeParse(JSON.parse(readFileSync(path.join(dir, briefFile), "utf8")));
+  if (!parsed.success) return;
+  const brief = parsed.data;
+  if (allow && !allow(brief.repoFullName)) return;
+  const ast = loadArtifact<FileAstSummary[]>(dir, "ast");
+  const coupling = loadArtifact<CouplingCluster[]>(dir, "coupling");
+  if (ast) brief.architectureDiagram = buildArchitectureDiagram(ast, brief.landmines, coupling ?? []);
+  byRepo.set(brief.repoFullName, brief);
+}
+
 for (const runDir of runDirs) {
   const pipelineDir = path.join(corpusRoot, runDir, "pipeline");
   if (!existsSync(pipelineDir)) continue;
   for (const analysisId of readdirSync(pipelineDir)) {
-    const dir = path.join(pipelineDir, analysisId);
-    const briefFile = readdirSync(dir).find((f) => f.startsWith("brief-"));
-    if (!briefFile) continue;
-    const parsed = BriefOutputSchema.safeParse(JSON.parse(readFileSync(path.join(dir, briefFile), "utf8")));
-    if (!parsed.success) continue;
-    const brief = parsed.data;
-    const ast = loadArtifact<FileAstSummary[]>(dir, "ast");
-    const coupling = loadArtifact<CouplingCluster[]>(dir, "coupling");
-    if (ast) brief.architectureDiagram = buildArchitectureDiagram(ast, brief.landmines, coupling ?? []);
-    byRepo.set(brief.repoFullName, brief);
+    try {
+      ingestBriefDir(path.join(pipelineDir, analysisId));
+    } catch {
+      // skip malformed/partial analysis dirs
+    }
+  }
+}
+
+// Additional public repos analyzed outside the corpus run (e.g. the M2 E2E repo
+// in artifacts/pipeline). Only allowlisted public repos are pulled in so private
+// or throwaway test repos can never leak into the public demo dataset.
+const EXTRA_PUBLIC_REPOS = new Set(["sindresorhus/ts-extras"]);
+const extraRoot = path.resolve("artifacts/pipeline");
+if (existsSync(extraRoot)) {
+  for (const analysisId of readdirSync(extraRoot)) {
+    try {
+      ingestBriefDir(path.join(extraRoot, analysisId), (repo) => EXTRA_PUBLIC_REPOS.has(repo));
+    } catch {
+      // skip malformed/partial analysis dirs
+    }
   }
 }
 
@@ -51,7 +75,7 @@ function summaryFor(brief: BriefOutput): string {
   return `${cut.slice(0, cut.lastIndexOf(" "))}…`;
 }
 
-const order = ["shadcn-ui/ui", "supabase/supabase", "django/django", "rails/rails", "go-gorm/gorm"];
+const order = ["shadcn-ui/ui", "supabase/supabase", "django/django", "rails/rails", "go-gorm/gorm", "sindresorhus/ts-extras"];
 const repos = [...byRepo.keys()].sort((a, b) => {
   const ia = order.indexOf(a);
   const ib = order.indexOf(b);

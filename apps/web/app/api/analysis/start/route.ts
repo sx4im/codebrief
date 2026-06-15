@@ -1,15 +1,19 @@
 import { NextResponse } from "next/server";
 import { auth, currentUser } from "@clerk/nextjs/server";
 import { AnalysisConfigSchema } from "@codebrief/shared";
-import { createAnalysisRecord, markAnalysisEnqueueFailed, NotFoundError, ServiceConfigurationError } from "@/lib/analysis/repository";
+import { createAnalysisRecord, getAnalysisEntitlement, markAnalysisEnqueueFailed, NotFoundError, ServiceConfigurationError } from "@/lib/analysis/repository";
 import { getGitHubOAuthToken } from "@/lib/github/oauth";
 import { enqueueAnalysis } from "@/lib/queue/analysis";
-import { checkRateLimit, clientIp } from "@/lib/rate-limit";
+import { isOwnedUploadKey } from "@/lib/storage/analysis-artifacts";
+import { checkRateLimit } from "@/lib/rate-limit";
 
 export async function POST(request: Request) {
   const { userId } = await auth();
   if (!userId) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
-  const rateLimit = await checkRateLimit({ key: `analysis:start:${userId}:${clientIp(request)}`, limit: 10, windowMs: 60 * 60 * 1000 });
+  // Rate-limit keys are scoped to the authenticated user only. The client IP is
+  // derived from X-Forwarded-For, which the client controls, so including it would
+  // let a single account mint a fresh bucket per spoofed IP and bypass the cap.
+  const rateLimit = await checkRateLimit({ key: `analysis:start:${userId}`, limit: 10, windowMs: 60 * 60 * 1000 });
   if (!rateLimit.ok) {
     return NextResponse.json(
       { error: "Analysis start rate limit exceeded", retryAfterSeconds: rateLimit.retryAfterSeconds },
@@ -29,9 +33,40 @@ export async function POST(request: Request) {
     docsArtifactKey: optionalString(body.docsArtifactKey),
     issueCsvArtifactKey: optionalString(body.issueCsvArtifactKey),
   });
+  // Artifact keys are supplied by the client. Only allow references to uploads this
+  // user owns so a key cannot be pointed at another account's upload or at an
+  // internal pipeline artifact.
+  for (const artifactKey of [config.docsArtifactKey, config.issueCsvArtifactKey]) {
+    if (artifactKey && !isOwnedUploadKey(userId, artifactKey)) {
+      return NextResponse.json({ error: "Uploaded artifact does not belong to this account" }, { status: 400 });
+    }
+  }
   const user = await currentUser();
   const email = user?.primaryEmailAddress?.emailAddress || `${userId}@codebrief.local`;
   const wantsHtml = acceptsHtml(request);
+
+  // Entitlement gate: free accounts get a fixed number of lifetime analyses;
+  // beyond that a one-time purchase (plan="lifetime") is required.
+  let entitlement;
+  try {
+    entitlement = await getAnalysisEntitlement(userId, email);
+  } catch (error) {
+    return errorResponse(error);
+  }
+  if (!entitlement.canAnalyze) {
+    if (wantsHtml) return NextResponse.redirect(new URL("/settings?upgrade=required", request.url), { status: 303 });
+    return NextResponse.json(
+      {
+        error: "You've used all your free analyses. Upgrade to lifetime access to continue.",
+        code: "upgrade_required",
+        used: entitlement.used,
+        limit: entitlement.limit,
+        upgradeUrl: "/settings?upgrade=required",
+      },
+      { status: 402 },
+    );
+  }
+
   const githubToken = await getGitHubOAuthToken(userId).catch(() => null);
   if (config.includePrivate && !githubToken && !process.env.GITHUB_TOKEN) {
     return NextResponse.json({ error: "Private repository analysis requires GitHub OAuth or GITHUB_TOKEN" }, { status: 409 });

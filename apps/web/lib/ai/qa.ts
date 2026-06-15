@@ -9,7 +9,7 @@ let qaChain: Promise<unknown> = Promise.resolve();
 
 export async function answerQuestion(input: { brief: BriefOutput; question: string }): Promise<{ answer: QAAnswer; tokenUsage: number; mode: "nvidia" | "fallback" }> {
   const apiKey = process.env.NVIDIA_API_KEY;
-  const model = process.env.NVIDIA_QA_MODEL || "meta/llama-3.3-70b-instruct";
+  const model = process.env.NVIDIA_QA_MODEL || "openai/gpt-oss-120b";
   if (!apiKey) return { answer: answerFromBrief(input.brief, input.question), tokenUsage: 0, mode: "fallback" };
 
   const client = new OpenAI({
