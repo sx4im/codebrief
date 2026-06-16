@@ -1,5 +1,5 @@
-import { SignedIn, UserButton } from "@clerk/nextjs";
-import { FileSearch, Home, Plus, Settings } from "lucide-react";
+import { SignedIn, SignOutButton, UserButton } from "@clerk/nextjs";
+import { FileSearch, Home, LogOut, Plus, Settings } from "lucide-react";
 import { ButtonLink } from "@/components/ui/Button";
 import { isClerkConfigured } from "@/lib/auth/config";
 
@@ -47,6 +47,15 @@ export function Sidebar() {
                 <div className="text-sm text-text">Account</div>
               </div>
             </div>
+            <SignOutButton redirectUrl="/">
+              <button
+                type="button"
+                className="focus-ring mt-3 flex w-full items-center justify-center gap-2 rounded-full border border-border bg-card px-4 py-2 text-sm font-medium text-charcoal transition-colors hover:bg-bone hover:text-ink"
+              >
+                <LogOut className="h-4 w-4" />
+                Log out
+              </button>
+            </SignOutButton>
           </div>
         </SignedIn>
       ) : (

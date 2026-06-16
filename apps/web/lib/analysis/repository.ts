@@ -921,13 +921,24 @@ export function briefToHtml(brief: BriefOutput): string {
   const languageEntries = Object.entries(brief.repoStats.languageBreakdown).sort((a, b) => b[1] - a[1]);
   const languageShown = languageEntries.slice(0, LANGUAGE_BREAKDOWN_LIMIT);
   const languageRemainder = languageEntries.slice(LANGUAGE_BREAKDOWN_LIMIT);
-  const languageRows = languageShown
-    .map(([language, count]) => `<tr><th>${escapeHtml(language)}</th><td>${count}</td></tr>`)
+  const languageTotal = languageEntries.reduce((sum, [, count]) => sum + count, 0) || 1;
+  const languageMax = languageShown[0]?.[1] || 1;
+  // Compact two-column bar chart instead of a tall single-column table: each row
+  // shows the language, a proportional bar, and its file count + share.
+  const languageItems = languageShown
+    .map(([language, count]) => {
+      const pct = Math.round((count / languageTotal) * 100);
+      const barWidth = Math.max(4, Math.round((count / languageMax) * 100));
+      return `<div class="lang"><span class="lang-name">${escapeHtml(language)}</span><span class="lang-bar"><i style="width:${barWidth}%"></i></span><span class="lang-count">${count}<span class="lang-pct">${pct}%</span></span></div>`;
+    })
     .join("");
-  const languageMoreRow =
+  const languageMoreItem =
     languageRemainder.length > 0
-      ? `<tr><th>+${languageRemainder.length} more</th><td>${languageRemainder.reduce((sum, [, count]) => sum + count, 0)}</td></tr>`
+      ? `<div class="lang lang-more"><span class="lang-name">+${languageRemainder.length} more</span><span class="lang-bar"></span><span class="lang-count">${languageRemainder.reduce((sum, [, count]) => sum + count, 0)}</span></div>`
       : "";
+  const languageBreakdownHtml = languageItems
+    ? `<h3>Language Breakdown</h3><div class="langs">${languageItems}${languageMoreItem}</div>`
+    : "";
   const findings = brief.topFindings.map((finding) => renderFindingHtml(finding)).join("");
   const decisions = brief.decisions
     .map(
@@ -987,7 +998,7 @@ export function briefToHtml(brief: BriefOutput): string {
         ${brief.repoStats.repoAgeDays !== undefined ? `<div><span>${brief.repoStats.repoAgeDays}</span><small>days old</small></div>` : ""}
         ${brief.repoStats.commitsPerMonth !== undefined ? `<div><span>${brief.repoStats.commitsPerMonth}</span><small>commits/month</small></div>` : ""}
       </div>
-      ${languageRows ? `<h3>Language Breakdown</h3><table class="kv">${languageRows}${languageMoreRow}</table>` : ""}
+      ${languageBreakdownHtml}
     </section>`,
     `<section><h2>System Narrative</h2>
       ${renderClaimHtml("Purpose", brief.systemNarrative.purpose)}
@@ -1404,6 +1415,38 @@ function exportCss(): string {
       color: var(--muted);
       font-variant-numeric: tabular-nums;
     }
+    .langs {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 8px 36px;
+      margin-top: 12px;
+    }
+    .lang {
+      display: grid;
+      grid-template-columns: 84px 1fr auto;
+      align-items: center;
+      gap: 12px;
+      font-size: 12px;
+      break-inside: avoid;
+    }
+    .lang-name {
+      color: var(--ink);
+      font-weight: 500;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+    .lang-bar {
+      height: 6px;
+      background: var(--panel);
+      border: 1px solid var(--line);
+      border-radius: 999px;
+      overflow: hidden;
+    }
+    .lang-bar i { display: block; height: 100%; background: var(--ink-soft); }
+    .lang-count { color: var(--muted); font-variant-numeric: tabular-nums; white-space: nowrap; text-align: right; }
+    .lang-pct { margin-left: 8px; color: var(--faint); }
+    .lang-more .lang-name { color: var(--muted); font-style: italic; }
     code {
       font: 11.5px/1.4 ui-monospace, SFMono-Regular, Menlo, monospace;
       background: var(--panel);
@@ -1464,6 +1507,9 @@ function exportCss(): string {
       main { padding: 28px 22px; }
       .meta, .stats { grid-template-columns: repeat(2, minmax(0, 1fr)); }
       h1 { font-size: 26px; }
+    }
+    @media (max-width: 520px) {
+      .langs { grid-template-columns: 1fr; }
     }
   `;
 }

@@ -26,19 +26,18 @@ export default async function PublicDemoBriefPage({ params }: { params: Promise<
   const brief = getDemoBrief(slug);
   if (!brief) notFound();
 
+  // Skip sections with no content so empty chapters don't leave blank numbered slots.
   const chapters = [
-    <TopFindings key="findings" findings={brief.topFindings} />,
-    <FlaggedClaims key="claims" claims={brief.flaggedClaims} />,
+    brief.topFindings.length > 0 ? <TopFindings key="findings" findings={brief.topFindings} /> : null,
+    brief.flaggedClaims.length > 0 ? <FlaggedClaims key="claims" claims={brief.flaggedClaims} /> : null,
     <SystemNarrative key="narrative" narrative={brief.systemNarrative} />,
-    <DecisionArchaeology key="decisions" decisions={brief.decisions} />,
-    <LandmineMap key="landmines" landmines={brief.landmines} />,
+    brief.decisions.length > 0 ? <DecisionArchaeology key="decisions" decisions={brief.decisions} /> : null,
+    brief.landmines.length > 0 ? <LandmineMap key="landmines" landmines={brief.landmines} /> : null,
     <RewriteAssessment key="assessment" assessment={brief.assessment} />,
-    <ArchitectureDiagram
-      key="diagram"
-      diagram={brief.architectureDiagram}
-      landmines={brief.landmines}
-    />,
-  ];
+    brief.architectureDiagram.nodes.length > 0 ? (
+      <ArchitectureDiagram key="diagram" diagram={brief.architectureDiagram} landmines={brief.landmines} />
+    ) : null,
+  ].filter((section) => section !== null);
 
   return (
     <div className="min-h-screen bg-canvas">

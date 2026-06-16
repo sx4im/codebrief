@@ -59,16 +59,21 @@ export default async function BriefPage({ params }: { params: Promise<{ projectI
 type Brief = NonNullable<Awaited<ReturnType<typeof getBriefForUser>>>;
 
 function BriefStory({ analysisId, brief }: { analysisId: string; brief: Brief }) {
+  // Only render chapters that produce content, so empty sections (e.g. no
+  // flagged claims) don't leave a blank numbered slot and the NN/total count
+  // stays contiguous.
   const chapters = [
-    <TopFindings key="findings" findings={brief.topFindings} />,
-    <FlaggedClaims key="claims" claims={brief.flaggedClaims} />,
+    brief.topFindings.length > 0 ? <TopFindings key="findings" findings={brief.topFindings} /> : null,
+    brief.flaggedClaims.length > 0 ? <FlaggedClaims key="claims" claims={brief.flaggedClaims} /> : null,
     <SystemNarrative key="narrative" narrative={brief.systemNarrative} />,
-    <DecisionArchaeology key="decisions" decisions={brief.decisions} />,
-    <LandmineMap key="landmines" landmines={brief.landmines} />,
+    brief.decisions.length > 0 ? <DecisionArchaeology key="decisions" decisions={brief.decisions} /> : null,
+    brief.landmines.length > 0 ? <LandmineMap key="landmines" landmines={brief.landmines} /> : null,
     <RewriteAssessment key="assessment" assessment={brief.assessment} />,
     <QAChat key="qa" analysisId={analysisId} />,
-    <ArchitectureDiagram key="diagram" diagram={brief.architectureDiagram} landmines={brief.landmines} />,
-  ];
+    brief.architectureDiagram.nodes.length > 0 ? (
+      <ArchitectureDiagram key="diagram" diagram={brief.architectureDiagram} landmines={brief.landmines} />
+    ) : null,
+  ].filter((section) => section !== null);
 
   return (
     <MotionProvider>
