@@ -45,3 +45,26 @@ textarea {
 .focus-ring {
   @apply focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-focus/60 focus-visible:ring-offset-2 focus-visible:ring-offset-canvas;
 }
+
+/* Animated brand background: slow drifting glows behind the landing content. */
+@keyframes aurora-drift {
+  0%,
+  100% {
+    transform: translate(0, 0) scale(1);
+  }
+  33% {
+    transform: translate(5%, -4%) scale(1.08);
+  }
+  66% {
+    transform: translate(-4%, 4%) scale(0.95);
+  }
+}
+.aurora-blob {
+  animation: aurora-drift 22s ease-in-out infinite;
+  will-change: transform;
+}
+@media (prefers-reduced-motion: reduce) {
+  .aurora-blob {
+    animation: none;
+  }
+}

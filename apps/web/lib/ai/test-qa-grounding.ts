@@ -1,7 +1,7 @@
 import assert from "node:assert/strict";
 import type { QAAnswer } from "@codebrief/shared";
 import { sampleBrief } from "@/lib/sample-data";
-import { collectBriefSourceKeys, sourceKey, validateAnswerGrounding } from "./qa-grounding";
+import { collectBriefSourceKeys, sourceLocators, validateAnswerGrounding } from "./qa-grounding";
 
 const keys = collectBriefSourceKeys(sampleBrief);
 
@@ -11,7 +11,15 @@ const realFileSource = [...sampleBrief.landmines.flatMap((landmine) => landmine.
   (source) => source.type === "file" && Boolean(source.path),
 );
 assert.ok(realFileSource, "brief should contain at least one file evidence source");
-assert.ok(keys.has(sourceKey(realFileSource)), "brief file source should be collected");
+assert.ok(sourceLocators(realFileSource).some((locator) => keys.has(locator)), "brief file source should be collected");
+
+// Real source cited with a paraphrased excerpt is still grounded (locator match).
+const realWithDifferentExcerpt: QAAnswer = {
+  answer: "Cited a real path with my own wording.",
+  sources: [{ type: realFileSource.type, path: realFileSource.path, excerpt: "model paraphrased this excerpt differently" }],
+  confidence: "medium",
+};
+assert.deepEqual(validateAnswerGrounding(realWithDifferentExcerpt, keys), [], "real path with paraphrased excerpt should stay grounded");
 
 // An answer citing a real brief source is grounded.
 const grounded: QAAnswer = { answer: "Grounded in a real brief source.", sources: [realFileSource], confidence: "high" };

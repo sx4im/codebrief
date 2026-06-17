@@ -96,7 +96,18 @@ export function LandmineMap({ landmines }: { landmines: Landmine[] }) {
         </div>
       </div>
       <div className="overflow-x-auto rounded border border-border">
-        <table className="w-full border-collapse text-sm">
+        {/* table-fixed: a filter/transform on the StoryScroll Reveal ancestor defeats
+            overflow-x clipping, so an auto-width table's min-content width leaks out and
+            scrolls the whole page. Fixed layout makes columns respect the container. */}
+        <table className="w-full table-fixed border-collapse text-sm">
+          <colgroup>
+            <col className="w-[26%]" />
+            <col className="w-[15%]" />
+            <col className="w-[12%]" />
+            <col className="w-[14%]" />
+            <col className="w-[25%]" />
+            <col className="w-[8%]" />
+          </colgroup>
           <thead className="bg-panel2 text-left text-xs uppercase tracking-wide text-muted">
             <tr>
               <SortableHeader label="Location" active={sort.key === "location"} direction={sort.direction} onClick={() => toggleSort("location")} />
@@ -129,7 +140,7 @@ export function LandmineMap({ landmines }: { landmines: Landmine[] }) {
                     <td className="min-w-56 px-4 py-4">
                       <div className="flex items-start gap-2">
                         {isExpanded ? <ChevronUp className="mt-0.5 h-4 w-4 shrink-0 text-mute" /> : <ChevronDown className="mt-0.5 h-4 w-4 shrink-0 text-mute" />}
-                        <span className="font-mono text-xs text-ink">{landmine.location}</span>
+                        <span className="break-all font-mono text-xs text-ink">{landmine.location}</span>
                       </div>
                     </td>
                     <td className="min-w-40 px-4 py-4">{landmine.category}</td>

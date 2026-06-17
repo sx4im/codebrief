@@ -9,7 +9,7 @@ export function MarketingNav() {
       <nav className="mx-auto flex h-[60px] max-w-content items-center justify-between px-4 sm:px-6">
         <Link href="/" className="flex items-center gap-2.5 text-ink">
           {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img src="/logo-mark.svg" alt="" width={26} height={26} className="rounded-[7px]" />
+          <img src="/logo-mark.svg" alt="" width={26} height={26} className="-translate-y-0.5 rounded-[7px]" />
           <span className="font-display text-xl font-bold tracking-tightest">Codebrief</span>
         </Link>
         <div className="hidden items-center gap-8 text-sm font-medium text-charcoal md:flex">

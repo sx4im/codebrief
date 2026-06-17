@@ -18,7 +18,18 @@ export async function answerQuestion(input: { brief: BriefOutput; question: stri
     timeout: Number(process.env.NVIDIA_REQUEST_TIMEOUT_MS) || 120_000,
     maxRetries: Number(process.env.NVIDIA_MAX_RETRIES) || 2,
   });
-  const task = qaChain.then(() => callQA(client, model, input));
+  const task = qaChain
+    .then(() => callQA(client, model, input))
+    .catch((error): { answer: QAAnswer; tokenUsage: number; mode: "fallback" } => {
+      // The model path can still throw on hard questions (NIM 400s, socket drops).
+      // Degrade to the brief-derived answer instead of 500ing the Q&A request.
+      console.error("[qa] model call failed, using brief fallback:", error instanceof Error ? error.message : error);
+      return {
+        answer: { ...answerFromBrief(input.brief, input.question), confidence: "low", caveat: "Q&A model was unavailable; this answer is derived from the persisted brief only." },
+        tokenUsage: 0,
+        mode: "fallback",
+      };
+    });
   qaChain = task.catch(() => undefined);
   return task;
 }
@@ -110,7 +121,10 @@ async function callJson(
     }
     return { text: content, tokenUsage: usage };
   });
-  if (!text) throw new Error(`NVIDIA NIM model ${model} returned an empty response`);
+  // Empty content (e.g. budget consumed by reasoning) is a failed attempt, not a
+  // crash: return null so callQA's answerFromBrief fallback handles it instead of
+  // 500ing the whole Q&A request.
+  if (!text) return { content: null, tokenUsage };
   return { content: JSON.parse(text), tokenUsage };
 }
 

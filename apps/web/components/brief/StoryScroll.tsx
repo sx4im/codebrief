@@ -123,7 +123,7 @@ export function StoryHero({
       {/* soft brand wash behind the hero */}
       <div
         aria-hidden
-        className="pointer-events-none absolute -top-24 left-1/2 -z-10 h-[420px] w-[820px] max-w-[120vw] -translate-x-1/2 rounded-full opacity-60 blur-3xl"
+        className="pointer-events-none absolute -top-24 left-1/2 -z-10 h-[420px] w-[820px] max-w-full -translate-x-1/2 rounded-full opacity-60 blur-3xl"
         style={{
           background:
             "radial-gradient(closest-side, rgba(255,106,61,0.16), rgba(244,168,160,0.08), transparent)",
