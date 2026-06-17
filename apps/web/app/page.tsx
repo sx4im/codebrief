@@ -44,7 +44,7 @@ export default function LandingPage() {
                 <span className="h-1.5 w-1.5 animate-pulse rounded-full bg-primary" />
                 AI technical due diligence for inherited codebases
               </span>
-              <h1 className="font-display mt-6 max-w-[14ch] text-5xl font-bold leading-[1.02] tracking-tightest text-ink sm:text-6xl lg:text-[68px]">
+              <h1 className="font-campaign mt-6 max-w-[12ch] text-6xl text-ink sm:text-7xl lg:text-[88px]">
                 Know what you inherited before you touch it.
               </h1>
               <p className="mt-6 max-w-xl text-lg leading-relaxed text-charcoal">

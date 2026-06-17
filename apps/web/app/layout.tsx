@@ -1,21 +1,28 @@
 import type { Metadata } from "next";
 import { ClerkProvider } from "@clerk/nextjs";
-import { Bricolage_Grotesque, Geist, JetBrains_Mono } from "next/font/google";
+import { Anton, Inter, JetBrains_Mono } from "next/font/google";
 import { isClerkConfigured } from "@/lib/auth/config";
 import "./globals.css";
 
-// Three-family stack per DESIGN.md: Bricolage Grotesque (display, sub for
-// rb-freigeist-neue), Geist (UI/body, sub for basier-square), JetBrains Mono (code).
-const display = Bricolage_Grotesque({
+// Font stack per DESIGN.md (Nike): Inter as the Helvetica-Now substitute for all
+// headings + UI, Anton as the condensed display for the 96px uppercase campaign
+// tier, JetBrains Mono for code/citations.
+const display = Inter({
   subsets: ["latin"],
   variable: "--font-display",
-  weight: ["600", "700", "800"],
+  weight: ["500", "600", "700"],
 });
 
-const sans = Geist({
+const sans = Inter({
   subsets: ["latin"],
   variable: "--font-sans",
-  weight: ["400", "500", "600"],
+  weight: ["400", "500", "600", "700"],
+});
+
+const campaign = Anton({
+  subsets: ["latin"],
+  variable: "--font-campaign",
+  weight: ["400"],
 });
 
 const mono = JetBrains_Mono({
@@ -74,7 +81,7 @@ function getAppUrl(): string {
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   const body = (
-    <html lang="en" className={`${display.variable} ${sans.variable} ${mono.variable}`}>
+    <html lang="en" className={`${display.variable} ${sans.variable} ${campaign.variable} ${mono.variable}`}>
       <body>{children}</body>
     </html>
   );

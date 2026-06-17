@@ -13,8 +13,8 @@
 html,
 body {
   min-height: 100%;
-  background: #f9f7f3;
-  color: #202020;
+  background: #ffffff;
+  color: #111111;
   font-family: var(--font-sans), system-ui, sans-serif;
   -webkit-font-smoothing: antialiased;
   text-rendering: optimizeLegibility;
@@ -33,13 +33,23 @@ textarea {
 }
 
 ::selection {
-  background: rgba(234, 40, 4, 0.18);
+  background: rgba(17, 17, 17, 0.14);
 }
 
-/* Display headlines: Bricolage Grotesque, tight stacking per DESIGN.md. */
+/* Section/heading tier: Helvetica-Now substitute (Inter), tight optical fit. */
 .font-display {
-  font-family: var(--font-display), "Bricolage Grotesque", system-ui, sans-serif;
-  letter-spacing: -0.02em;
+  font-family: var(--font-display), "Inter", system-ui, sans-serif;
+  letter-spacing: -0.01em;
+}
+
+/* Campaign tier per DESIGN.md: towering condensed uppercase, line-height 0.9,
+   reserved for hero lockups only. */
+.font-campaign {
+  font-family: var(--font-campaign), "Anton", "Impact", system-ui, sans-serif;
+  text-transform: uppercase;
+  line-height: 0.9;
+  letter-spacing: -0.005em;
+  font-weight: 400;
 }
 
 .focus-ring {
