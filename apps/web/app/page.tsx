@@ -37,14 +37,14 @@ export default function LandingPage() {
 
       <MotionProvider>
         {/* Hero */}
-        <section className="mx-auto grid max-w-content gap-12 px-4 py-16 sm:px-6 lg:grid-cols-[1fr_480px] lg:items-center lg:py-24">
+        <section className="mx-auto grid max-w-content gap-12 px-4 py-16 sm:px-6 lg:grid-cols-[1fr_400px] lg:items-center lg:py-24">
           <Reveal>
             <div>
               <span className="inline-flex items-center gap-2 rounded-full border border-border bg-card/80 px-3 py-1.5 text-xs font-medium text-charcoal backdrop-blur">
                 <span className="h-1.5 w-1.5 animate-pulse rounded-full bg-primary" />
                 AI technical due diligence for inherited codebases
               </span>
-              <h1 className="font-campaign mt-6 max-w-[12ch] text-6xl text-ink sm:text-7xl lg:text-[88px]">
+              <h1 className="font-campaign mt-6 text-balance text-5xl text-ink sm:text-6xl lg:text-[58px] xl:text-[64px]">
                 Know what you inherited before you touch it.
               </h1>
               <p className="mt-6 max-w-xl text-lg leading-relaxed text-charcoal">
