@@ -9,3 +9,11 @@ dist/
 coverage/
 *.tsbuildinfo
 
+# Internal working docs — never publish to GitHub
+BUILD-LOG.md
+DECISIONS.md
+DESIGN.md
+codebrief-PRD.md
+codebrief-instructions.md
+drizzle.config.ts
+

@@ -7,16 +7,25 @@
 
 ### Know what you inherited before you touch it.
 
-**Codebrief** turns a GitHub repository into an evidence-backed technical brief — system narrative, decision archaeology, a landmine map, and a rewrite assessment — so you can take over an unfamiliar codebase with confidence.
+**Codebrief turns any GitHub repository into an evidence-backed technical brief** — system narrative, decision archaeology, a landmine map, and a build-on-vs-rewrite verdict — so you can take over an unfamiliar codebase with confidence. Every claim cites the commit, PR, file, or metric it came from.
 
+<br />
+
+[![Stars](https://img.shields.io/github/stars/sx4im/codebrief?style=flat-square&logo=github&label=Stars&color=0A0A0A)](https://github.com/sx4im/codebrief/stargazers)
+[![Forks](https://img.shields.io/github/forks/sx4im/codebrief?style=flat-square&logo=github&label=Forks&color=0A0A0A)](https://github.com/sx4im/codebrief/network/members)
+[![Issues](https://img.shields.io/github/issues/sx4im/codebrief?style=flat-square&logo=github&label=Issues&color=0A0A0A)](https://github.com/sx4im/codebrief/issues)
+[![Last commit](https://img.shields.io/github/last-commit/sx4im/codebrief?style=flat-square&logo=github&label=Last%20commit&color=0A0A0A)](https://github.com/sx4im/codebrief/commits)
 [![License: MIT](https://img.shields.io/badge/License-MIT-0A0A0A.svg?style=flat-square)](LICENSE)
+
 [![Next.js](https://img.shields.io/badge/Next.js-16-0A0A0A?style=flat-square&logo=nextdotjs&logoColor=white)](https://nextjs.org/)
 [![TypeScript](https://img.shields.io/badge/TypeScript-5-3178C6?style=flat-square&logo=typescript&logoColor=white)](https://www.typescriptlang.org/)
 [![PostgreSQL](https://img.shields.io/badge/PostgreSQL-Drizzle-4169E1?style=flat-square&logo=postgresql&logoColor=white)](https://orm.drizzle.team/)
 [![Redis](https://img.shields.io/badge/Queue-BullMQ%20%2F%20Redis-DC382D?style=flat-square&logo=redis&logoColor=white)](https://docs.bullmq.io/)
-[![Powered by NVIDIA NIM](https://img.shields.io/badge/AI-NVIDIA%20NIM-76B900?style=flat-square&logo=nvidia&logoColor=white)](https://build.nvidia.com/)
+[![NVIDIA NIM](https://img.shields.io/badge/AI-NVIDIA%20NIM-76B900?style=flat-square&logo=nvidia&logoColor=white)](https://build.nvidia.com/)
 
-[Live demo](#-live-demo) · [How it works](#-how-it-works) · [Quick start](#-quick-start) · [Tech stack](#-tech-stack)
+[Live demo](#live-demo) · [How it works](#how-it-works) · [Quick start](#quick-start) · [Tech stack](#tech-stack)
+
+<sub>If Codebrief is useful to you, consider leaving a ⭐ — it helps others find the project.</sub>
 
 </div>
 
@@ -39,17 +48,17 @@ Point it at a repository and a multi-agent pipeline ingests the Git history, par
 
 ## Table of contents
 
-- [What you get](#-what-you-get)
-- [Live demo](#-live-demo)
-- [How it works](#-how-it-works)
-- [Tech stack](#-tech-stack)
-- [Project structure](#-project-structure)
-- [Quick start](#-quick-start)
-- [Verification](#-verification)
-- [Scripts reference](#-scripts-reference)
-- [License](#-license)
+- [What you get](#what-you-get)
+- [Live demo](#live-demo)
+- [How it works](#how-it-works)
+- [Tech stack](#tech-stack)
+- [Project structure](#project-structure)
+- [Quick start](#quick-start)
+- [Verification](#verification)
+- [Scripts reference](#scripts-reference)
+- [License](#license)
 
-## ✦ What you get
+## What you get
 
 Every analysis produces a single, scrollable brief with sourced sections:
 
@@ -72,7 +81,7 @@ Every analysis produces a single, scrollable brief with sourced sections:
   <em>Scroll-driven storytelling brief (left) · interactive architecture diagram (right)</em>
 </div>
 
-## ✦ Live demo
+## Live demo
 
 Pre-generated briefs for well-known open-source projects are publicly viewable — no sign-in required:
 
@@ -81,29 +90,32 @@ Pre-generated briefs for well-known open-source projects are publicly viewable �
 /demo/[slug]    → a full brief (e.g. /demo/gorm, /demo/supabase, /demo/django)
 ```
 
-Run the app locally (see [Quick start](#-quick-start)) and open <http://localhost:3000/demo>.
+Run the app locally (see [Quick start](#quick-start)) and open <http://localhost:3000/demo>.
 
-## ✦ How it works
+## How it works
 
 Codebrief runs a sequential, durable pipeline. Each stage persists its output before the next begins, so a failed run can be retried with clean inputs and live progress streams to the UI over websockets.
 
 ```mermaid
 flowchart LR
-    A[GitHub repo] --> B[Ingestion<br/>commits · PRs · files]
-    B --> C[Static analysis<br/>tree-sitter AST · risk scoring]
-    C --> D{Multi-agent<br/>synthesis}
-    D --> E[Architecture]
-    D --> F[History]
-    D --> G[Risk]
-    D --> H[Synthesis]
-    E & F & G & H --> I[Source validation<br/>every claim must cite evidence]
-    I --> J[(Postgres + R2<br/>artifacts)]
-    J --> K[Technical brief<br/>web · PDF · Markdown]
+    A["GitHub repo"] --> B["Ingestion<br/>commits, PRs, files"]
+    B --> C["Static analysis<br/>tree-sitter AST, risk scoring"]
+    C --> D["Multi-agent synthesis"]
+    D --> E["Architecture"]
+    D --> F["History"]
+    D --> G["Risk"]
+    D --> H["Synthesis"]
+    E --> V["Source validation<br/>every claim must cite evidence"]
+    F --> V
+    G --> V
+    H --> V
+    V --> S["Postgres + R2<br/>artifacts"]
+    S --> O["Technical brief<br/>web, PDF, Markdown"]
 ```
 
 **Grounding is enforced, not hoped for.** After every agent call, outputs are validated against their citations. Invalid citations trigger one correction retry; claim-like output that still can't be sourced is downgraded to `confidence: 0` rather than shipped as fact. Unrecoverable output fails the analysis instead of polluting the brief.
 
-## ✦ Tech stack
+## Tech stack
 
 | Layer | Technology |
 | --- | --- |
@@ -119,7 +131,7 @@ flowchart LR
 | **Observability** | Sentry (browser · server · edge) |
 | **Validation** | Zod schemas shared across web + pipeline |
 
-## ✦ Project structure
+## Project structure
 
 This is an npm-workspaces monorepo.
 
@@ -133,7 +145,7 @@ codebrief/
 └── assets/              # Brand assets & documentation screenshots
 ```
 
-## ✦ Quick start
+## Quick start
 
 ### Prerequisites
 
@@ -183,7 +195,7 @@ curl http://localhost:3000/api/health
 curl http://localhost:3000/api/health?deep=1
 ```
 
-## ✦ Verification
+## Verification
 
 All gates pass on a clean checkout:
 
@@ -196,7 +208,7 @@ npm audit                  # dependency audit
 
 PDF export is exercised end-to-end through the real route (`briefToHtml → puppeteer-core → Chrome`) when `PUPPETEER_EXECUTABLE_PATH` is set; otherwise the route cleanly falls back to HTML.
 
-## ✦ Scripts reference
+## Scripts reference
 
 | Command | Description |
 | --- | --- |
@@ -209,7 +221,7 @@ PDF export is exercised end-to-end through the real route (`briefToHtml → pupp
 | `npm run pipeline:build-demo-briefs` | Regenerate the public demo briefs |
 | `npm run typecheck` · `npm test` | Full verification |
 
-## ✦ License
+## License
 
 [MIT](LICENSE) © 2026 Saim Shafique
 
