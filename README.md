@@ -25,7 +25,11 @@
 
 [Live demo](#live-demo) · [How it works](#how-it-works) · [Quick start](#quick-start) · [Tech stack](#tech-stack)
 
-<sub>If Codebrief is useful to you, consider leaving a ⭐ — it helps others find the project.</sub>
+<br />
+
+[![Star Codebrief on GitHub](https://img.shields.io/github/stars/sx4im/codebrief?style=for-the-badge&logo=github&label=STAR%20THIS%20REPO&color=0A0A0A)](https://github.com/sx4im/codebrief)
+
+<sub>If Codebrief is useful to you, a ⭐ helps others discover it.</sub>
 
 </div>
 
