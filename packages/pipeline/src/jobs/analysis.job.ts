@@ -267,9 +267,10 @@ async function stage<T>(
     clearInterval(heartbeat);
     const message = error instanceof Error ? error.message : String(error);
     await context.store.markStageFailed(analysisId, stageName, message);
-    await context.store.markAnalysisFailed(analysisId, message);
     await context.emitter.emit({ event: "stage_failed", analysisId, stage: stageName, error: message });
-    await context.emitter.emit({ event: "analysis_failed", analysisId, error: message });
+    // Analysis-level failure (markAnalysisFailed + analysis_failed) is owned by the
+    // outer catch in runAnalysisJob, which also covers non-stage throws. Emitting it
+    // here too would double-mark and fire analysis_failed twice per stage failure.
     throw error;
   }
 }

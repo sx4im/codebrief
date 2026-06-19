@@ -1,7 +1,7 @@
 "use client";
 
 import { useRef, type ReactNode } from "react";
-import { motion, MotionConfig, useScroll, useSpring, useTransform } from "framer-motion";
+import { LazyMotion, domAnimation, m, MotionConfig, useScroll, useSpring, useTransform } from "framer-motion";
 
 // Premium "storytelling" scroll layer for the brief pages.
 // Wraps the existing (untouched) section components in scroll-reveal motion,
@@ -11,13 +11,24 @@ import { motion, MotionConfig, useScroll, useSpring, useTransform } from "framer
 // than by branching markup on useReducedMotion(): the hook resolves differently
 // on the server vs the client, which would desync the `initial` props and break
 // hydration. MotionConfig keeps the rendered markup identical on both sides and
-// lets framer suppress transform animations for users who ask for less motion.
+// lets framer suppress transform animations for users who ask for less m.
 
 const EASE = [0.22, 1, 0.36, 1] as const;
 
+// Zero-pad a chapter index (1 → "01"). Pure, so hoisted out of Chapter to avoid
+// reallocating it on every render.
+const pad = (n: number) => String(n).padStart(2, "0");
+
 /** Honors prefers-reduced-motion without causing SSR/CSR hydration drift. */
 export function MotionProvider({ children }: { children: ReactNode }) {
-  return <MotionConfig reducedMotion="user">{children}</MotionConfig>;
+  // LazyMotion + the lightweight `m` components ship ~30kb less than importing the
+  // full `motion`. `domAnimation` covers what the brief pages use (opacity/transform
+  // + whileInView); it omits only drag/layout, which nothing here needs.
+  return (
+    <MotionConfig reducedMotion="user">
+      <LazyMotion features={domAnimation}>{children}</LazyMotion>
+    </MotionConfig>
+  );
 }
 
 /** Thin gradient bar pinned to the top that fills as the page scrolls. */
@@ -29,7 +40,7 @@ export function ScrollProgress() {
     mass: 0.3,
   });
   return (
-    <motion.div
+    <m.div
       aria-hidden
       style={{ scaleX }}
       className="fixed inset-x-0 top-0 z-[60] h-[3px] origin-left bg-gradient-to-r from-primary via-primary-glow to-primary-pink"
@@ -50,7 +61,7 @@ export function Reveal({
   y?: number;
 }) {
   return (
-    <motion.div
+    <m.div
       className={className}
       initial={{ opacity: 0, y, filter: "blur(10px)" }}
       whileInView={{ opacity: 1, y: 0, filter: "blur(0px)" }}
@@ -58,7 +69,7 @@ export function Reveal({
       transition={{ duration: 0.75, ease: EASE, delay }}
     >
       {children}
-    </motion.div>
+    </m.div>
   );
 }
 
@@ -76,7 +87,6 @@ export function Chapter({
   total: number;
   children: ReactNode;
 }) {
-  const pad = (n: number) => String(n).padStart(2, "0");
   return (
     <Reveal className="scroll-mt-24">
       <div className="mb-7 flex items-center gap-4">
@@ -84,7 +94,7 @@ export function Chapter({
           {pad(index)}
           <span className="text-stone"> / {pad(total)}</span>
         </span>
-        <motion.span
+        <m.span
           aria-hidden
           className="h-px flex-1 origin-left bg-gradient-to-r from-border to-transparent"
           initial={{ scaleX: 0 }}
@@ -129,64 +139,64 @@ export function StoryHero({
             "radial-gradient(closest-side, rgba(255,106,61,0.16), rgba(244,168,160,0.08), transparent)",
         }}
       />
-      <motion.div style={{ y, opacity }}>
+      <m.div style={{ y, opacity }}>
         <div className="flex flex-wrap items-start justify-between gap-4">
           <div>
-            <motion.div
+            <m.div
               className="text-xs font-semibold uppercase tracking-[0.2em] text-primary"
               initial={{ opacity: 0, y: 16 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.6, ease: EASE }}
             >
               {eyebrow}
-            </motion.div>
-            <motion.h1
+            </m.div>
+            <m.h1
               className="font-display mt-3 text-4xl font-bold tracking-tight text-ink sm:text-5xl"
               initial={{ opacity: 0, y: 22, filter: "blur(8px)" }}
               animate={{ opacity: 1, y: 0, filter: "blur(0px)" }}
               transition={{ duration: 0.8, ease: EASE, delay: 0.08 }}
             >
               {title}
-            </motion.h1>
+            </m.h1>
             {subtitle ? (
-              <motion.p
+              <m.p
                 className="mt-4 max-w-3xl text-base leading-relaxed text-charcoal sm:text-lg"
                 initial={{ opacity: 0, y: 18 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.8, ease: EASE, delay: 0.18 }}
               >
                 {subtitle}
-              </motion.p>
+              </m.p>
             ) : null}
           </div>
           {action ? (
-            <motion.div
+            <m.div
               initial={{ opacity: 0, y: 12 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.7, ease: EASE, delay: 0.28 }}
             >
               {action}
-            </motion.div>
+            </m.div>
           ) : null}
         </div>
-      </motion.div>
+      </m.div>
 
       {/* scroll cue */}
-      <motion.div
+      <m.div
         aria-hidden
         className="mt-12 flex items-center gap-3 text-xs font-medium uppercase tracking-[0.2em] text-mute"
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         transition={{ duration: 0.8, delay: 0.5 }}
       >
-        <motion.span
+        <m.span
           className="block h-8 w-px bg-gradient-to-b from-primary to-transparent"
           animate={{ scaleY: [0.4, 1, 0.4], opacity: [0.4, 1, 0.4] }}
           transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }}
           style={{ transformOrigin: "top" }}
         />
         Scroll to read the brief
-      </motion.div>
+      </m.div>
     </div>
   );
 }

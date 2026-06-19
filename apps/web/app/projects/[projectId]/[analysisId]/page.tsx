@@ -15,8 +15,7 @@ import { ScrollProgress, StoryHero, Chapter, MotionProvider } from "@/components
 import { getBriefForUser, ServiceConfigurationError } from "@/lib/analysis/repository";
 
 export default async function BriefPage({ params }: { params: Promise<{ projectId: string; analysisId: string }> }) {
-  const { projectId, analysisId } = await params;
-  const { userId } = await auth();
+  const [{ projectId, analysisId }, { userId }] = await Promise.all([params, auth()]);
   let brief = null;
   let error: string | null = null;
   if (userId) {
@@ -91,7 +90,7 @@ function BriefStory({ analysisId, brief }: { analysisId: string; brief: Brief })
       />
       <div className="mt-20 space-y-24">
         {chapters.map((section, i) => (
-          <Chapter key={i} index={i + 1} total={chapters.length}>
+          <Chapter key={section.key} index={i + 1} total={chapters.length}>
             {section}
           </Chapter>
         ))}

@@ -4,7 +4,7 @@ import type { AnalysisJobPayload } from "@codebrief/shared";
 
 let queue: Queue<AnalysisJobPayload, unknown, string> | null = null;
 
-export function getAnalysisQueue(): Queue<AnalysisJobPayload> {
+function getAnalysisQueue(): Queue<AnalysisJobPayload> {
   if (queue) return queue;
   const redisUrl = process.env.REDIS_URL;
   if (!redisUrl) {

@@ -41,7 +41,11 @@ type ModuleNodeData = {
 
 const nodeTypes = { module: ModuleNode };
 
-export function ArchitectureDiagram({ diagram, landmines = [] }: { diagram: Diagram; landmines?: Landmine[] }) {
+// Stable empty default so an omitted `landmines` prop reuses one reference instead
+// of allocating a fresh [] each render (which would bust the useMemo deps below).
+const EMPTY_LANDMINES: Landmine[] = [];
+
+export function ArchitectureDiagram({ diagram, landmines = EMPTY_LANDMINES }: { diagram: Diagram; landmines?: Landmine[] }) {
   const [edgeMode, setEdgeMode] = useState<"all" | "coupling">("all");
   const [selectedNodeId, setSelectedNodeId] = useState<string | null>(diagram.nodes[0]?.id || null);
   const selectedNode = diagram.nodes.find((node) => node.id === selectedNodeId) || diagram.nodes[0] || null;
@@ -53,7 +57,11 @@ export function ArchitectureDiagram({ diagram, landmines = [] }: { diagram: Diag
   const connectedEdgeIds = useMemo(
     () =>
       selectedNodeId
-        ? new Set(diagram.edges.filter((edge) => edge.source === selectedNodeId || edge.target === selectedNodeId).map((edge) => edge.id))
+        ? new Set(
+            diagram.edges.flatMap((edge) =>
+              edge.source === selectedNodeId || edge.target === selectedNodeId ? [edge.id] : [],
+            ),
+          )
         : null,
     [diagram.edges, selectedNodeId],
   );
@@ -394,7 +402,7 @@ function computeLayout(diagram: Diagram): Map<string, { x: number; y: number }> 
     for (let i = 0; i < row.length; i += perRow) out.push(row.slice(i, i + perRow));
     return out;
   };
-  const connectedRows = layers.filter((l): l is string[] => Boolean(l && l.length)).flatMap(wrap);
+  const connectedRows = layers.flatMap((l) => (l && l.length ? wrap(l) : []));
   const widestConnected = Math.max(0, ...connectedRows.map((l) => l.length));
   const cols = Math.min(MAX_PER_ROW, Math.max(widestConnected, Math.ceil(Math.sqrt(isolatedIds.length)) || 0, 1));
   const isolatedRows: string[][] = [];

@@ -7,8 +7,7 @@ import { enqueueAnalysis } from "@/lib/queue/analysis";
 import { checkRateLimit } from "@/lib/rate-limit";
 
 export async function POST(request: Request, { params }: { params: Promise<{ id: string }> }) {
-  const { id } = await params;
-  const { userId } = await auth();
+  const [{ id }, { userId }] = await Promise.all([params, auth()]);
   if (!userId) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 
   const rateLimit = await checkRateLimit({ key: `analysis:retry:${userId}`, limit: 20, windowMs: 60 * 60 * 1000 });

@@ -199,7 +199,7 @@ export interface AccountDeletionSummary {
   artifactsDeleted: number;
 }
 
-export function parseGitHubRepoUrl(repoUrl: string): { owner: string; name: string; normalizedUrl: string } | null {
+function parseGitHubRepoUrl(repoUrl: string): { owner: string; name: string; normalizedUrl: string } | null {
   const trimmed = repoUrl.trim();
   const match = trimmed.match(/^https:\/\/github\.com\/([^/]+)\/([^/#?]+)(?:[/?#].*)?$/);
   if (!match?.[1] || !match[2]) return null;

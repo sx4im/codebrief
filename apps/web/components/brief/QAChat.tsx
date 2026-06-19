@@ -131,6 +131,7 @@ export function QAChat({ analysisId }: { analysisId: string }) {
             if (event.key === "Enter") void ask();
           }}
           className="focus-ring min-w-0 flex-1 rounded-full border border-ink/20 bg-card px-4 py-2 text-sm text-ink placeholder:text-ash"
+          aria-label="Ask a question about this repository"
           placeholder="What would break if I removed the jobs module?"
         />
         <Button onClick={() => void ask()} disabled={loading}>

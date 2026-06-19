@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { SignIn } from "@clerk/nextjs";
-import { AuthShell, ClerkConfigurationNotice, clerkAuthAppearance } from "@/components/auth/AuthShell";
+import { AuthShell, ClerkConfigurationNotice } from "@/components/auth/AuthShell";
+import { clerkAuthAppearance } from "@/components/auth/clerkAppearance";
 import { isClerkConfigured } from "@/lib/auth/config";
 
 export const metadata: Metadata = {

@@ -12,8 +12,7 @@ import { answerQuestion } from "@/lib/ai/qa";
 import { checkRateLimit } from "@/lib/rate-limit";
 
 export async function GET(_: Request, { params }: { params: Promise<{ id: string }> }) {
-  const { id } = await params;
-  const { userId } = await auth();
+  const [{ id }, { userId }] = await Promise.all([params, auth()]);
   if (!userId) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   try {
     return NextResponse.json({ messages: await getQaMessagesForUser(userId, id) });
@@ -26,8 +25,7 @@ export async function GET(_: Request, { params }: { params: Promise<{ id: string
 }
 
 export async function POST(request: Request, { params }: { params: Promise<{ id: string }> }) {
-  const { id } = await params;
-  const { userId } = await auth();
+  const [{ id }, { userId }] = await Promise.all([params, auth()]);
   if (!userId) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   const rateLimit = await checkRateLimit({ key: `qa:${userId}:${id}`, limit: 30, windowMs: 60 * 60 * 1000 });
   if (!rateLimit.ok) {

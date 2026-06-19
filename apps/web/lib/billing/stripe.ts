@@ -9,7 +9,7 @@ export function isStripeConfigured(): boolean {
   return Boolean(process.env.STRIPE_SECRET_KEY);
 }
 
-export function getStripe(): Stripe {
+function getStripe(): Stripe {
   const key = process.env.STRIPE_SECRET_KEY;
   if (!key) throw new ServiceConfigurationError("STRIPE_SECRET_KEY is not configured");
   cached ||= new Stripe(key);

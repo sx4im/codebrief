@@ -49,7 +49,7 @@ export function Footer() {
             />
           </div>
         </div>
-        <div className="mt-14 border-t border-white/15 pt-6 text-xs text-on-dark-mute">
+        <div className="mt-14 border-t border-white/15 pt-6 text-xs text-on-dark-mute" suppressHydrationWarning>
           © {new Date().getFullYear()} Codebrief. Free and open.
         </div>
       </div>

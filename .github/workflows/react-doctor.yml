@@ -1,0 +1,16 @@
+name: React Doctor
+on:
+  pull_request:
+jobs:
+  scan:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0 # need the base branch so --scope changed can diff
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      - name: React Doctor (changed-scope scan)
+        working-directory: apps/web # diagnostics are scanned from the Next.js app
+        run: npx -y react-doctor@latest --verbose --scope changed

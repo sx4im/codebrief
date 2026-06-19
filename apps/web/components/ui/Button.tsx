@@ -21,7 +21,9 @@ export function Button({
   variant = "primary",
   ...props
 }: ButtonHTMLAttributes<HTMLButtonElement> & { variant?: keyof typeof variants }) {
-  return <button className={cn(base, variants[variant], className)} {...props} />;
+  // Default to "button" so this reusable control never accidentally submits a
+  // form; callers can still override via the spread props (e.g. type="submit").
+  return <button type="button" className={cn(base, variants[variant], className)} {...props} />;
 }
 
 export function ButtonLink({

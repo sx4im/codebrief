@@ -57,7 +57,7 @@ export default async function PublicDemoBriefPage({ params }: { params: Promise<
           />
           <div className="mt-24 space-y-28">
             {chapters.map((section, i) => (
-              <Chapter key={i} index={i + 1} total={chapters.length}>
+              <Chapter key={section.key} index={i + 1} total={chapters.length}>
                 {section}
               </Chapter>
             ))}

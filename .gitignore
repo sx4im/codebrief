@@ -17,3 +17,6 @@ codebrief-PRD.md
 codebrief-instructions.md
 drizzle.config.ts
 
+
+# Local Claude Code agent settings
+.claude/

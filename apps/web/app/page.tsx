@@ -12,6 +12,7 @@ import {
   ScanSearch,
   ShieldCheck,
 } from "lucide-react";
+import Link from "next/link";
 import { ButtonLink } from "@/components/ui/Button";
 import { MarketingNav } from "@/components/layout/MarketingNav";
 import { Footer } from "@/components/layout/Footer";
@@ -60,13 +61,13 @@ export default function LandingPage() {
                   View public demo
                 </ButtonLink>
               </div>
-              <a
+              <Link
                 href="/demo"
                 className="mt-7 inline-flex items-center gap-2 text-sm text-mute transition-colors hover:text-ink"
               >
                 <ShieldCheck className="h-4 w-4 text-primary" />
                 {demoBriefs.length} open-source repos analyzed, publicly viewable
-              </a>
+              </Link>
             </div>
           </Reveal>
 

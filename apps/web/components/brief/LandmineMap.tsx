@@ -23,8 +23,11 @@ export function LandmineMap({ landmines }: { landmines: Landmine[] }) {
   const filtered = useMemo(
     () =>
       landmines
-        .filter((landmine) => severity === "all" || landmine.severity === severity)
-        .filter((landmine) => category === "all" || landmine.category === category)
+        .filter(
+          (landmine) =>
+            (severity === "all" || landmine.severity === severity) &&
+            (category === "all" || landmine.category === category),
+        )
         .sort((a, b) => compareLandmines(a, b, sort.key, sort.direction)),
     [category, landmines, severity, sort],
   );
